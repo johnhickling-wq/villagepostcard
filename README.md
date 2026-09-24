@@ -1,6 +1,7 @@
 # Postcard Perfect
 
-A cosy, touch-only hidden-object game for phones. Tidy picture-perfect villages
+A cosy, touch-only hidden-object game for phones, played in landscape. Tidy
+picture-perfect villages
 by tapping what's wrong:
 
 - litter is popped away;
@@ -29,7 +30,7 @@ in-game Travel Office.
 
 ```sh
 npm install          # dev tools only (esbuild, playwright)
-npm run dev          # http://localhost:5173 — open on a phone or with device emulation
+npm run dev          # http://localhost:5173 — open on a phone held sideways, or with device emulation
 npm run build        # dist/: one bundled game.js plus content and assets, ready for an iOS wrapper
 ```
 
@@ -49,6 +50,7 @@ src/core/      pure rules, no DOM; the bot runs them in Node
 src/render/    canvas scene: grading, props, fix animations, particles, ambient life
 src/engine/    assets (atlases/manifests), procedural WebAudio sound and music, input, haptics, storage
 src/ui/        screens (title, map hub, play, results, album, noticeboard, travel, judging)
+styles/        main.css (components), screens.css (screen styling), layout.css (landscape layout)
 content/       all game content as JSON: common rules plus one folder per village
 assets/        built runtime art (atlases, plates, fonts, icons)
 art_src/       source art and the prompts that made it
@@ -94,5 +96,5 @@ by the tools in `tools/art/`. Replace any source image and rerun
 npm run validate   # content pack integrity
 npm run bot        # fairness + difficulty across thousands of generated messes
 npm run economy    # full-village playthrough simulation
-node tools/qa/shots.mjs tutorial|map|screens|gallery|fixes|hints|restore|judging   # phone-viewport screenshots
+node tools/qa/shots.mjs tutorial|map|screens|gallery|fixes|hints|restore|judging|dialogs   # 844x390 landscape phone screenshots
 ```

@@ -46,7 +46,7 @@ Copy `content/villages/honeycombe/` as a template:
   - **`scenes`** (in unlock order) and **`start`**.
   - **`projects`**: each scene needs one access project with `unlocks`, plus
     two beautification projects.
-  - **`map.pins`**: coordinates on the 1000×1500 map.
+  - **`map.pins`**: coordinates on the 1500×1000 map.
   - **`finale`**.
   - **`letters`**: intro, welcome, teaser and finale.
   - **`difficultyBase`**: pack 2 should be about 0.15 so it starts a notch
@@ -63,12 +63,14 @@ tagged with the village's themes.
 ## 2. Generate the art
 
 1. Write the prompts:
-   - `art_src/<id>/plates.json`: one prompt per scene. Reuse the `common` text
-     from Honeycombe; it asks for the collage style, a clear foreground, no
-     people and no text.
+   - `art_src/<id>/plates.json`: one prompt per scene, generated as wide 3:2
+     landscape plates. Reuse the `common` text from Honeycombe; it asks for
+     the collage style, a clear foreground across the full width, no people
+     and no text.
    - `art_src/sheets.json`: add sheets for the new props, the collectibles and
      a `villagers` portrait sheet.
-   - `art_src/<id>/extra.json`: a `map` prompt.
+   - `art_src/<id>/extra.json`: a `map` prompt (3:2 landscape). Pin
+     coordinates in `village.json` use the map's 1500 × 1000 units.
 2. Generate. `OPENROUTER_API_KEY` must be set.
 
    ```sh
@@ -127,7 +129,7 @@ python3 tools/art/grid.py art_src/<id>/plates/<scene>.webp out.jpg 100 400 600 9
 python3 tools/art/overlay.py <id> <scene> out.jpg --restored                          # draw all slots and props
 ```
 
-Scene coordinates are 1000 wide and 1500 tall, whatever the image size.
+Scene coordinates are 1500 wide and 1000 tall (the game is played in landscape), whatever the image size.
 
 ## 4. Check and tune
 
@@ -155,5 +157,5 @@ Adjust the project `cost` and `rosettes` in `village.json` if needed.
 Run `npm run dev` and open http://localhost:5173.
 
 The QA harness (`node tools/qa/shots.mjs <scenario>`) screenshots flows on a
-390×844 phone viewport. `gallery` shows every scene of the pack under a
+844×390 landscape phone viewport. `gallery` shows every scene of the pack under a
 different weather condition at Tier 5.

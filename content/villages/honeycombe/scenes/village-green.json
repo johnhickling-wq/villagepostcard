@@ -14,7 +14,7 @@
   "nearY": 1000,
   "nearScale": 1.25
  },
- "difficultyOffset": 0.2,
+ "difficultyOffset": 0.05,
  "ambience": [
   "birds",
   "ducks",

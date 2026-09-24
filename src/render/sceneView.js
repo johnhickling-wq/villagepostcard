@@ -23,7 +23,7 @@ export class SceneView {
     this.assets = app.assets;
     this.particles = new Particles();
     this.cam = { x: 500, y: 750, zoom: 1 };
-    this.view = { x: 0, y: 0, w: 390, h: 600 };
+    this.view = { x: 0, y: 0, w: 844, h: 390 };
     this.time = 0;
     this.fx = new Map();
     this.screenFx = [];

@@ -32,7 +32,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from cutout import cut  # noqa: E402
 
 FORCE = "--force" in sys.argv
-GRID = 20  # plate colour grid cell size, in scene units (scene is 1000 wide)
+GRID = 20  # plate colour grid cell size, in scene units
 
 
 def newer(src, dst):

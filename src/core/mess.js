@@ -317,11 +317,15 @@ function propFault(ctx, type, f, subtlety) {
     fault.amount = bySubtlety(f.amount, subtlety);
     fault.shape = { kind: 'poly', pts: propPoly(g, 0) };
   }
-  if (!inScene(scene, fault.shape) && type === 'toppled') {
-    // fell out of frame: fall the other way instead
+  if (type === 'toppled' && (!inScene(scene, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape)))) {
+    // fell out of frame or onto something else: fall the other way instead
     fault.angle = -fault.angle;
     fault.pivot = [g.px + Math.sign(fault.angle) * g.w / 2, g.py];
     fault.shape = { kind: 'poly', pts: propPoly(g, fault.angle, fault.pivot) };
+    if (!inScene(scene, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape))) {
+      ctx.used.delete(p.id);
+      return null;
+    }
   }
   fault.size = G.shapeSize(fault.shape);
   [fault.cx, fault.cy] = G.shapeCenter(fault.shape);

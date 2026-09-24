@@ -3,7 +3,7 @@
 
 Usage (CLI):
   python3 tools/art/orgen.py --model google/gemini-3.1-flash-image \
-      --aspect 2:3 --size 2K --out out.png "prompt text" [--ref ref.png ...]
+      --aspect 3:2 --size 2K --out out.png "prompt text" [--ref ref.png ...]
 
 The API key is read from the OPENROUTER_API_KEY environment variable.
 Every call is appended to tools/art/.spend.log so we can keep track of credit.

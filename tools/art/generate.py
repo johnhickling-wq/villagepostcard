@@ -118,7 +118,7 @@ def extra(village):
     for key, spec in cfg.items():
         if "prompt" not in spec:
             continue
-        jobs.append((key, SRC / spec["src"], spec.get("model", "openai/gpt-5.4-image-2"), spec["prompt"], refs, spec.get("aspect", "2:3"), spec.get("size", "2K")))
+        jobs.append((key, SRC / spec["src"], spec.get("model", "openai/gpt-5.4-image-2"), spec["prompt"], refs, spec.get("aspect", "3:2"), spec.get("size", "2K")))
     run(jobs)
 
 

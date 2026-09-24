@@ -49,6 +49,11 @@ railway tickets, rosettes, cork noticeboards.
 
 ## 3. The session loop (60–120 seconds)
 
+The game is played in **landscape** on a phone. The scene fills the full
+height of the screen between two slim rails: score, time, combo and hint
+tools on the left, and what is left to tidy on the right. Holding the phone
+upright shows a "turn your phone sideways" card.
+
 ```
 Village map ──► pick a scene (pinned postcard)
       ▲             │  preview: tier, condition, rosettes, best stamps

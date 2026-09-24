@@ -4,7 +4,7 @@
   "description": "A cosy tap-to-tidy hidden-object game in picture-perfect villages.",
   "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "background_color": "#22302c",
   "theme_color": "#22302c",
   "icons": [

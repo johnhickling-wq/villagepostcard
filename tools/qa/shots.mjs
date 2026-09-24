@@ -9,7 +9,7 @@ await mkdir(out, { recursive: true });
 const url = process.env.URL || 'http://localhost:5173/';
 const exe = process.env.CHROMIUM || undefined;
 const browser = await chromium.launch({ executablePath: exe, args: ['--autoplay-policy=no-user-gesture-required'] });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+const ctx = await browser.newContext({ viewport: { width: +(process.env.VW || 844), height: +(process.env.VH || 390) }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();
 const logs = [];
 page.on('console', (m) => logs.push(`[${m.type()}] ${m.text()}`));

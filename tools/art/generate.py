@@ -41,7 +41,7 @@ ONLY = set(flags["--only"].split(",")) if "--only" in flags else None
 def ref_png(src, size):
     """Downscaled PNG copy of a reference image (cheaper to upload)."""
     from PIL import Image
-    out = ROOT / "scratch_art" / f"_ref_{src.stem}_{size}.png"
+    out = ROOT / "scratch_art" / f"_ref_{src.parent.name}_{src.stem}_{size}.png"
     out.parent.mkdir(exist_ok=True)
     if not out.exists():
         im = Image.open(src).convert("RGB")
@@ -79,10 +79,16 @@ def run(jobs):
 def plates(village):
     cfg = json.loads((SRC / village / "plates.json").read_text())
     model = cfg.get("model", "openai/gpt-5.4-image-2")
-    refs = [ref_png(STYLE_REF, 512)]
     jobs = []
     for sid, prompt in cfg["plates"].items():
-        jobs.append((sid, SRC / village / "plates" / f"{sid}.webp", model, cfg["common"] + " " + prompt, refs, "2:3", "2K"))
+        refs = [ref_png(STYLE_REF, 512)]
+        # optional per-scene reference (e.g. an earlier crop of the same place)
+        if cfg.get("refDir"):
+            r = SRC / village / cfg["refDir"] / f"{sid}.webp"
+            if r.exists():
+                refs.append(ref_png(r, 768))
+        jobs.append((sid, SRC / village / "plates" / f"{sid}.webp", model, cfg["common"] + " " + prompt, refs,
+                     cfg.get("aspect", "3:2"), cfg.get("size", "2K")))
     run(jobs)
 
 

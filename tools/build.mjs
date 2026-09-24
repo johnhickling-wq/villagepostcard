@@ -41,6 +41,7 @@ await writeFile(path.join(out, 'postcard-perfect.html'), `<title>Postcard Perfec
 <link rel="stylesheet" href="${fonts}">
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/screens.css">
+<link rel="stylesheet" href="styles/layout.css">
 <div id="app">
   <canvas id="scene"></canvas>
   <div id="ui"></div>

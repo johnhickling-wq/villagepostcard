@@ -64,8 +64,6 @@
 
 /* ========================================================== play (HUD) */
 .play { color: var(--ink); }
-.hud-top { position: absolute; left: 0; right: 0; top: 0; padding: calc(var(--safe-top) + 8px) 10px 0; display: flex; align-items: center; gap: 10px; }
-.hud-title { flex: 1; min-width: 0; color: var(--paper); text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
 .hud-scene { font-size: 26px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hud-sub { gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.9; white-space: nowrap; overflow: hidden; flex-wrap: nowrap; }
 .hud-sub > span { flex: none; }
@@ -73,13 +71,8 @@
 .hud-cond svg { width: 15px; height: 15px; }
 .hud-score { min-width: 86px; justify-content: flex-start; }
 .hud-score svg { width: 22px; height: 22px; padding: 2px; }
-.hud-progress { position: absolute; left: 12px; right: 12px; top: calc(var(--safe-top) + 62px); height: 30px; display: flex; align-items: center; gap: 10px; }
-.hud-progress-track { position: relative; flex: 1; height: 10px; border-radius: 5px; background: rgba(244, 236, 216, 0.2); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3); }
-.hud-progress-fill { display: block; height: 100%; width: 0; border-radius: 5px; background: linear-gradient(90deg, #e3a72f, #f2c14e); transition: width 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
-.hud-bee { position: absolute; left: -14px; top: -2px; width: 28px; height: 28px; color: var(--ink); background: #f2c14e; border-radius: 50%; padding: 3px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35); transition: left 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+.hud-bee { position: absolute; width: 28px; height: 28px; color: var(--ink); background: #f2c14e; border-radius: 50%; padding: 3px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35); transition: left 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
 .hud-bee svg { width: 100%; height: 100%; }
-.hud-left { color: var(--paper); white-space: nowrap; font-size: 12px; }
-.hud-left span:first-child { font-family: var(--display); font-size: 17px; letter-spacing: 0; }
 .hud-time { color: var(--mustard); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 14px; min-width: 38px; text-align: right; }
 .hud-time.over { color: rgba(244, 236, 216, 0.55); }
 .hud-combo { position: absolute; right: 14px; top: calc(var(--safe-top) + 100px); z-index: 5; padding: 6px 12px 8px; border-radius: 8px; background: var(--red); color: var(--white); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35); transform-origin: right center; }
@@ -94,7 +87,6 @@
 .hud-callout.show { animation: callout 1.3s cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
 @keyframes callout { 0% { opacity: 0; transform: scale(0.3) rotate(-10deg); } 18% { opacity: 1; transform: scale(1.1) rotate(-4deg); } 30% { transform: scale(1) rotate(-4deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-30px) rotate(-4deg); } }
 
-.hud-bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 8px calc(var(--safe-bottom) + 10px); display: flex; align-items: flex-end; gap: 8px; }
 .tray { flex: 1; min-height: 76px; padding: 8px 6px; overflow-x: auto; scrollbar-width: none; }
 .tray::-webkit-scrollbar { display: none; }
 .tray-chips { display: flex; gap: 4px; justify-content: center; min-width: max-content; margin: 0 auto; }

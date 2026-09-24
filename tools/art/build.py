@@ -128,7 +128,7 @@ def build_atlases():
         manifest_path.write_text(json.dumps(manifest, indent=1))
 
 
-def inpaint(im, polys, scene_w=1000):
+def inpaint(im, polys, scene_w):
     """Remove baked-in objects that the game replaces with interactive props
     (e.g. a painted shop sign replaced by a sign that can hang crooked)."""
     import cv2
@@ -145,7 +145,7 @@ def inpaint(im, polys, scene_w=1000):
     return Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB))
 
 
-def color_grid(im, scene_w=1000):
+def color_grid(im, scene_w):
     """Average colour per GRID x GRID scene-unit cell, as a base64 RGB string."""
     scale = im.width / scene_w
     gw = scene_w // GRID
@@ -169,17 +169,19 @@ def build_images():
             dst = odir / "plates" / f"{sid}.webp"
             key = f"plate/{sid}"
             scene_json = ROOT / "content" / "villages" / village / "scenes" / f"{sid}.json"
-            erase = json.loads(scene_json.read_text()).get("erase", []) if scene_json.exists() else []
+            sdata = json.loads(scene_json.read_text()) if scene_json.exists() else {}
+            erase = sdata.get("erase", [])
             src_newer = newer(png, dst) or (scene_json.exists() and newer(scene_json, dst))
             if src_newer or key not in manifest["images"]:
                 im = Image.open(png).convert("RGB")
+                scene_w = (sdata.get("size") or [1500 if im.width > im.height else 1000])[0]
                 if erase:
-                    im = inpaint(im, erase)
+                    im = inpaint(im, erase, scene_w)
                 im.save(dst, "WEBP", quality=80, method=6)
                 th = im.resize((480, round(480 * im.height / im.width)), Image.LANCZOS)
                 th.save(odir / "plates" / f"{sid}.thumb.webp", "WEBP", quality=78, method=6)
                 manifest["images"][key] = {"src": f"plates/{sid}.webp", "thumb": f"plates/{sid}.thumb.webp",
-                                           "w": im.width, "h": im.height, "grid": color_grid(im)}
+                                           "w": im.width, "h": im.height, "grid": color_grid(im, scene_w)}
                 print(f"  plate {village}/{sid} {im.size}")
         extra = SRC / village / "extra.json"
         if extra.exists():

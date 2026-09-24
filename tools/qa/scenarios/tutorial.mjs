@@ -4,7 +4,7 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await wait(2500);
-  await page.mouse.click(195, 600);
+  await page.mouse.click(420, 300);
   await wait(800);
   for (let i = 0; i < 2; i++) {
     await page.locator('.letter .btn').click({ force: true }); // finish typing

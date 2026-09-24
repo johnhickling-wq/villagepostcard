@@ -22,15 +22,14 @@ export class ResultsScreen {
     this.stampsRow = h('div.results-stamps', this.stampSlots);
     this.panel = h('div.results-panel.card.paper.hidden');
     this.buttons = h('div.results-buttons.hidden',
-      h('button.btn.teal.big', { text: 'Continue', onclick: () => this.done() }),
       h('button.btn.mustard.small', { text: 'Snap it again', onclick: () => this.again() }),
+      h('button.btn.teal', { text: 'Continue', onclick: () => this.done() }),
     );
+    // landscape: the print on the left, the tally on the right
     this.el = h('div.results',
       h('div.results-flash'),
       h('div.results-slot', this.pc),
-      this.stampsRow,
-      this.panel,
-      this.buttons,
+      h('div.results-side', this.stampsRow, this.panel, this.buttons),
     );
     this.el.addEventListener('pointerdown', () => { this.fast = true; }, { passive: true });
   }

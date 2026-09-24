@@ -28,9 +28,8 @@ export class PlayScreen {
     const cond = c.conditions[this.play.condition];
     this.scoreEl = h('span.hud-score-num', { text: '0' });
     this.timeEl = h('span.hud-time', { text: '0:00' });
-    this.leftEl = h('span', { text: String(this.mess.faults.length) });
-    this.fill = h('i.hud-progress-fill');
-    this.bee = h('div.hud-bee', svg(ICONS.bee));
+    this.leftEl = h('span.hud-left-num.display', { text: String(this.mess.faults.length) });
+    this.countRing = h('div.count-ring', h('div.hud-bee', svg(ICONS.bee)));
     this.comboEl = h('div.hud-combo.hidden', h('span.hud-combo-x', { text: '×1.2' }), h('i.hud-combo-bar', h('b')));
     this.callout = h('div.hud-callout.display');
     this.tray = h('div.tray-chips');
@@ -46,24 +45,31 @@ export class PlayScreen {
     this.viewfinder = h('div.viewfinder.hidden', h('i.vf.tl'), h('i.vf.tr'), h('i.vf.bl'), h('i.vf.br'), h('div.vf-center'), h('div.vf-text.typed', { text: 'Hold still…' }));
     this.flashOverlay = h('div.white-flash');
     this.zoomReset = h('button.zoom-reset.chip.hidden', { onclick: () => { this.app.sfx('ui.tap'); const v = this.app.view; v.focus(v.W / 2, v.H / 2, 1, 0.4); } }, icon('eye'), h('span', { text: 'Whole scene' }));
-
-    const head = h('div.hud-top',
-      h('button.iconbtn.hud-pause', { 'aria-label': 'Pause', onclick: () => this.pause() }, icon('pause')),
-      h('div.hud-title',
-        h('div.script.hud-scene', { text: this.scene.name }),
-        h('div.hud-sub.row',
-          h('span.hud-cond', icon(CONDITION_ICONS[this.play.condition]), h('span', { text: cond.name })),
-          h('span.dot', { text: '·' }),
-          h('span', { text: this.play.daily ? 'Daily' : tier.name }),
-        ),
+    // the caption tab taped to the top of the print
+    this.tab = h('div.hud-tab.card.paper',
+      h('div.script.hud-scene', { text: this.scene.name }),
+      h('div.hud-sub.row',
+        h('span.hud-cond', icon(CONDITION_ICONS[this.play.condition]), h('span', { text: cond.name })),
+        h('span.dot', { text: '·' }),
+        h('span', { text: this.play.daily ? 'Daily Postcard' : tier.name }),
       ),
-      h('div.hud-score.chip', icon('camera'), this.scoreEl),
     );
-    const progress = h('div.hud-progress', h('div.hud-progress-track', this.fill), this.bee,
-      h('div.hud-left.label', this.leftEl, h('span', { text: ' to tidy' })), this.timeEl);
-    const bottom = h('div.hud-bottom', this.loupeBtn, h('div.tray.card', this.tray), this.flashBtn);
-    this.corners = ['tl', 'tr', 'bl', 'br'].map((c) => h(`div.photo-corner.${c}`));
-    this.el = h('div.play.passthrough', ...this.corners, head, progress, this.comboEl, this.callout, bottom, this.shaky, this.coach, this.finger, this.viewfinder, this.flashOverlay, this.zoomReset);
+    const left = h('div.rail.rail-left',
+      h('button.iconbtn.hud-pause', { 'aria-label': 'Pause', onclick: () => this.pause() }, icon('pause')),
+      h('div.hud-score.chip', icon('camera'), this.scoreEl),
+      h('div.hud-clock.label', icon('clock'), this.timeEl),
+      this.comboEl,
+      h('div.grow'),
+      this.loupeBtn,
+    );
+    const right = h('div.rail.rail-right',
+      h('div.hud-count', this.countRing, h('div.hud-count-text', this.leftEl, h('span.label', { text: 'to tidy' }))),
+      h('div.tray.card', this.tray),
+      h('div.grow'),
+      this.flashBtn,
+    );
+    this.corners = ['tl', 'tr', 'bl', 'br'].map((k) => h(`div.photo-corner.${k}`));
+    this.el = h('div.play.passthrough', ...this.corners, left, right, this.tab, this.callout, this.shaky, this.coach, this.finger, this.viewfinder, this.flashOverlay, this.zoomReset);
     this.renderTray();
   }
 
@@ -81,6 +87,8 @@ export class PlayScreen {
     if (this.play.condition === 'dusk') amb.push('crickets');
     if (this.play.condition === 'storm') amb.push('drips', 'breeze');
     app.audio.startAmbience(this.play.condition === 'mist' ? amb.filter((a) => a !== 'birds') : amb);
+    // the caption tab slides up out of the way once you've read it
+    setTimeout(() => this.tab.classList.add('tucked'), this.tutorial ? 2500 : 3200);
     if (this.tutorial) setTimeout(() => this.tutorialStep(), 900);
   }
 
@@ -91,22 +99,32 @@ export class PlayScreen {
 
   resize() { this.layout(); }
 
+  /** The print sits between the two rails and uses the full height. */
   layout() {
     const r = this.app.root.getBoundingClientRect();
-    const top = this.el.querySelector('.hud-progress')?.getBoundingClientRect();
-    const bottom = this.el.querySelector('.hud-bottom')?.getBoundingClientRect();
-    const y0 = top ? top.bottom + 6 : 110;
-    const y1 = bottom ? bottom.top - 8 : r.height - 110;
+    const lr = this.el.querySelector('.rail-left')?.getBoundingClientRect();
+    const rr = this.el.querySelector('.rail-right')?.getBoundingClientRect();
+    const safeT = this.app.safe.t, safeB = this.app.safe.b;
+    const x0 = lr ? lr.right + 6 : 110;
+    const x1 = rr ? rr.left - 6 : r.width - 110;
+    const y0 = safeT + 8, y1 = r.height - safeB - 8;
     const view = this.app.view;
-    view.setView(8, y0, r.width - 16, Math.max(200, y1 - y0));
-    if (view.ready) {
-      // little black photo corners hold the print on the page
-      const s = view.fit;
-      const w = view.W * s, hgt = view.H * s;
-      const x0 = view.view.x + (view.view.w - w) / 2, yy0 = view.view.y + (view.view.h - hgt) / 2;
-      const pos = { tl: [x0 - 6, yy0 - 6], tr: [x0 + w - 20, yy0 - 6], bl: [x0 - 6, yy0 + hgt - 20], br: [x0 + w - 20, yy0 + hgt - 20] };
-      for (const c of this.corners) { const k = c.classList[1]; c.style.left = `${pos[k][0]}px`; c.style.top = `${pos[k][1]}px`; }
-    }
+    view.setView(x0, y0, Math.max(200, x1 - x0), Math.max(160, y1 - y0));
+    if (!view.ready) return;
+    const s = view.fit;
+    const w = view.W * s, hgt = view.H * s;
+    const px = view.view.x + (view.view.w - w) / 2, py = view.view.y + (view.view.h - hgt) / 2;
+    this.print = { x: px, y: py, w, h: hgt };
+    // little black photo corners hold the print on the page
+    const pos = { tl: [px - 6, py - 6], tr: [px + w - 20, py - 6], bl: [px - 6, py + hgt - 20], br: [px + w - 20, py + hgt - 20] };
+    for (const c of this.corners) { const k = c.classList[1]; c.style.left = `${pos[k][0]}px`; c.style.top = `${pos[k][1]}px`; }
+    const place = (el, css) => Object.assign(el.style, css);
+    place(this.tab, { left: `${px + w / 2}px`, top: `${py}px` });
+    place(this.viewfinder, { left: `${px + 14}px`, top: `${py + 14}px`, width: `${w - 28}px`, height: `${hgt - 28}px` });
+    place(this.zoomReset, { left: `${px + w / 2}px`, top: `${py + hgt - 52}px` });
+    place(this.callout, { left: `${px}px`, width: `${w}px`, top: `${py + hgt * 0.3}px` });
+    place(this.coach, { left: `${px + 16}px`, width: `${w - 32}px`, top: `${py + 12}px` });
+    place(this.shaky, { left: `${px}px`, top: `${py}px`, width: `${w}px`, height: `${hgt}px` });
   }
 
   // --------------------------------------------------------------- tray ---
@@ -239,8 +257,8 @@ export class PlayScreen {
     this.scoreBump();
     const total = this.session.total;
     const done = total - ev.left;
-    this.fill.style.width = `${(done / total) * 100}%`;
-    this.bee.style.left = `calc(${(done / total) * 100}% - 14px)`;
+    this.countRing.style.setProperty('--k', done / total);
+    this.countRing.classList.remove('bump'); void this.countRing.offsetWidth; this.countRing.classList.add('bump');
     this.leftEl.textContent = String(ev.left);
     if (ev.chain > 1) {
       this.comboEl.classList.remove('hidden');
@@ -266,7 +284,8 @@ export class PlayScreen {
     c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
     this.app.sfx('callout');
     this.app.haptic('medium');
-    const [x, y] = this.app.view.screenToWorld(this.app.root.clientWidth / 2, this.app.root.clientHeight * 0.35);
+    const v = this.app.view;
+    const [x, y] = v.screenToWorld(v.view.x + v.view.w / 2, v.view.y + v.view.h * 0.3);
     this.app.view.particles.burst('confetti', x, y, { n: 26 });
   }
 
@@ -302,8 +321,11 @@ export class PlayScreen {
     if (this.finishing) return;
     this.paused = true;
     const app = this.app;
+    const cond = this.content.conditions[this.play.condition];
     const sheet = app.sheet(h('div.pause.col',
       h('div.display.sheet-title', { text: 'Paused' }),
+      h('div.pause-scene', h('div.script', { text: this.scene.name }), h('div.label.muted', { text: `${cond.name} · ${this.play.daily ? 'Daily Postcard' : this.content.tier(this.play.tier).name}` })),
+      h('p.pause-blurb', { text: cond.blurb }),
       h('p.hand.pause-note', { text: `${this.session.left} things still spoil the picture.` }),
       h('button.btn.teal', { text: 'Carry on', onclick: () => sheet.close() }),
       h('button.btn.ink.small', { text: 'Leave (no postcard)', onclick: () => { sheet.close('leave'); } }),
@@ -352,7 +374,7 @@ export class PlayScreen {
       const crooked = faults.find((f) => f.type === 'crooked');
       this.setCoach(crooked ? 'Some things just need a nudge. Tap the crooked one.' : 'Lovely! Keep going.', crooked && { world: [crooked.cx, crooked.cy] });
     } else if (t.step === 2) {
-      this.setCoach('Now find the rest! The tray at the bottom shows what still needs fixing.', { el: this.tray });
+      this.setCoach('Now find the rest! The list on the right shows what still needs fixing.', { el: this.tray });
       setTimeout(() => { if (this.tutorial.step === 2) this.setCoach(null); }, 4500);
     }
   }
@@ -378,7 +400,7 @@ export class PlayScreen {
     if (tg) {
       let x, y;
       if (tg.world) [x, y] = this.app.view.worldToScreen(...tg.world);
-      else { const r = tg.el.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + 8; }
+      else { const r = tg.el.getBoundingClientRect(); x = r.left - 30; y = r.top + r.height / 2 - 30; }
       this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + Math.sin(performance.now() / 180) * 6}px)`;
     }
   }

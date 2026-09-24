@@ -20,7 +20,16 @@ export class App {
     this.screen = null;
     this.layers = h('div.layers');
     this.toasts = h('div.toasts');
-    this.ui.append(this.layers, this.toasts);
+    // measures the device's safe-area insets (notch, home bar) in px
+    this.safeProbe = h('div.safe-probe');
+    this.ui.append(this.layers, this.toasts, this.safeProbe);
+    this.safe = { t: 0, r: 0, b: 0, l: 0 };
+    // the game is landscape-only; a phone held upright is asked to turn
+    this.rotate = h('div.rotate-prompt',
+      h('div.rotate-phone', h('i')),
+      h('div.display', { text: 'Turn your phone sideways' }),
+      h('div.hand', { text: 'Postcard Perfect is played in landscape.' }));
+    document.body.append(this.rotate);
     this.audio = audio;
     this.haptics = haptics;
     this.last = performance.now();
@@ -88,6 +97,8 @@ export class App {
   // ----------------------------------------------------------- screens ---
   async show(screen, { transition = 'fade', instant = false } = {}) {
     const old = this.screen;
+    // toasts belong to the screen that raised them
+    for (const t of this.toasts.children) { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }
     if (!instant && transition === 'iris') await this.iris(true);
     this.screen = screen;
     screen.el.classList.add('screen');
@@ -122,7 +133,14 @@ export class App {
   }
 
   resize() {
+    const cs = getComputedStyle(this.safeProbe);
+    this.safe = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
     const w = this.root.clientWidth, h2 = this.root.clientHeight;
+    // side rails in play take whatever width the 3:2 scene doesn't need
+    const sceneH = h2 - this.safe.t - this.safe.b - 16;
+    const spare = w - this.safe.l - this.safe.r - sceneH * 1.5 - 24;
+    const rail = Math.max(90, Math.min(170, spare / 2));
+    this.root.style.setProperty('--rail', `${Math.round(rail)}px`);
     this.canvas.width = Math.round(w * this.dpr);
     this.canvas.height = Math.round(h2 * this.dpr);
     this.screen?.resize?.(w, h2);

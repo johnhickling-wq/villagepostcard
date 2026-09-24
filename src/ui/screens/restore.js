@@ -22,7 +22,7 @@ export class RestoreScreen {
     this.bloomEl = h('div.restore-bloom.card.paper.hidden', h('span.label', { text: 'Village Bloom' }), h('div.bloom-bar', h('i')), h('span.display.bloom-num'));
     this.btn = h('button.btn.big.teal.hidden', { text: 'Lovely!', onclick: () => this.done() });
     this.cover = this.unlock ? h('div.tear-cover', h('div.tear.left.paper'), h('div.tear.right.paper'), h('div.tear-text.display', { text: 'Clearing the way…' })) : null;
-    this.el = h('div.restore.passthrough', this.cover, this.banner, this.bloomEl, h('div.restore-foot', this.btn));
+    this.el = h('div.restore.passthrough', this.cover, h('div.restore-side', this.banner, this.bloomEl, h('div.restore-foot', this.btn)));
   }
 
   async enter() {
@@ -38,9 +38,14 @@ export class RestoreScreen {
 
   exit() { this.app.audio.stopAmbience(); }
   resize() { this.layout(); }
+  /** The scene on the left, the villager's thanks on the right. */
   layout() {
     const r = this.app.root.getBoundingClientRect();
-    this.app.view.setView(10, 120, r.width - 20, r.height - 230);
+    const sf = this.app.safe;
+    const side = Math.min(320, Math.max(220, r.width * 0.3));
+    const x0 = sf.l + 12, y0 = sf.t + 12;
+    this.app.view.setView(x0, y0, r.width - sf.r - side - 24 - x0, r.height - sf.b - 12 - y0);
+    this.el.style.setProperty('--side', `${side}px`);
   }
 
   async run() {

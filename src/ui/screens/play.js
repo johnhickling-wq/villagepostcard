@@ -54,7 +54,7 @@ export class PlayScreen {
         h('div.hud-sub.row',
           h('span.hud-cond', icon(CONDITION_ICONS[this.play.condition]), h('span', { text: cond.name })),
           h('span.dot', { text: '·' }),
-          h('span', { text: this.play.daily ? 'Daily Postcard' : tier.name }),
+          h('span', { text: this.play.daily ? 'Daily' : tier.name }),
         ),
       ),
       h('div.hud-score.chip', icon('camera'), this.scoreEl),

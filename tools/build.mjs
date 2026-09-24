@@ -32,6 +32,22 @@ let html = await readFile(path.join(ROOT, 'index.html'), 'utf8');
 html = html.replace('<script type="module" src="src/main.js"></script>', '<script type="module" src="game.js"></script>');
 await writeFile(path.join(out, 'index.html'), html);
 
+// A variant page for hosts that wrap the page in their own <html>/<head>
+// (e.g. a claude.ai Artifact preview): no document skeleton, fonts also from
+// Google Fonts in case the host only allows that font source.
+const fonts = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Jost:wght@400..800&family=Special+Elite&family=Yellowtail&display=swap';
+await writeFile(path.join(out, 'postcard-perfect.html'), `<title>Postcard Perfect</title>
+<meta name="theme-color" content="#22302c">
+<link rel="stylesheet" href="${fonts}">
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/screens.css">
+<div id="app">
+  <canvas id="scene"></canvas>
+  <div id="ui"></div>
+</div>
+<script type="module" src="game.js"></script>
+`);
+
 async function size(dir) {
   let total = 0, files = 0;
   for (const e of await readdir(dir, { withFileTypes: true })) {

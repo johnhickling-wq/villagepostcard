@@ -2,6 +2,7 @@
  "map": {
   "src": "honeycombe/map.webp",
   "out": "map.webp",
-  "quality": 80
+  "quality": 80,
+  "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). An illustrated pictorial village map, seen from a high bird's-eye three-quarter view like a 1950s tourist map, of the little Cotswold village of Honeycombe-on-the-Wold nestled in a green valley. From bottom to top: a tiny railway halt with a platform and a steam train on a line curving along the bottom edge; a lane leading up into a high street of honey-stone shops; a triangular village green with a duck pond and a stone market cross in the middle of the village; a row of steep-roofed weavers' cottages along a winding river on the left; an old watermill with a waterwheel on the river further up; a thatched pub with a garden on the right; a parish church with a square tower and churchyard near the top; and an isolated thatched cottage with a garden and beehives on the hillside at the top right. Patchwork fields, dry-stone walls, hedgerows, sheep, trees and rolling hills all around, the river winding through. Each landmark is clearly separated with space around it. No text, no labels, no compass, no border. Full-bleed."
  }
 }

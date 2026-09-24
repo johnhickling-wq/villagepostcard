@@ -18,7 +18,8 @@ export class ResultsScreen {
     const scene = app.content.scene(play.village, play.scene);
     this.pc = postcardEl(app, { photo: data.stills.after, sceneName: scene.name, condition: play.condition });
     this.pc.classList.add('printing');
-    this.stampsRow = h('div.results-stamps');
+    this.stampSlots = [1, 2, 3].map((n) => h('div.stamp-slot', h('span.label', { text: STAMP_WORDS[n - 1] })));
+    this.stampsRow = h('div.results-stamps', this.stampSlots);
     this.panel = h('div.results-panel.card.paper.hidden');
     this.buttons = h('div.results-buttons.hidden',
       h('button.btn.teal.big', { text: 'Continue', onclick: () => this.done() }),
@@ -26,7 +27,8 @@ export class ResultsScreen {
     );
     this.el = h('div.results',
       h('div.results-flash'),
-      h('div.results-slot', this.pc, this.stampsRow),
+      h('div.results-slot', this.pc),
+      this.stampsRow,
       this.panel,
       this.buttons,
     );
@@ -52,10 +54,14 @@ export class ResultsScreen {
     app.sfx('page');
     await ba.play();
     // stamps
+    this.stampsRow.classList.add('show');
+    await W(250);
     for (let i = 1; i <= r.stamps; i++) {
       const st = gradeStamp(i, STAMP_WORDS[i - 1]);
-      st.style.setProperty('--r', `${[-14, 8, -6][i - 1]}deg`);
-      this.stampsRow.append(st);
+      st.style.setProperty('--r', `${[-10, 6, -4][i - 1]}deg`);
+      this.stampSlots[i - 1].innerHTML = '';
+      this.stampSlots[i - 1].append(st);
+      this.stampSlots[i - 1].classList.add('filled');
       app.sfx('stamp');
       app.haptic(i === 3 ? 'heavy' : 'medium');
       await W(380);

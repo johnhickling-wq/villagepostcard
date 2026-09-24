@@ -2,11 +2,11 @@
 
 Simulated 5 playthroughs by an **average** player (25s of menus per play, 6 plays a day, Daily Postcard each day).
 
-- Plays to Best-Kept Village judging: **67**
-- Time to judging: **1.9 hours**
-- Longest wait between restoration projects: **5 plays** (worst: 5 before church-clock, 5 before open-rose-cottage, 6 before cottage-fete, 5 before church-clock, 5 before open-rose-cottage)
+- Plays to Best-Kept Village judging: **68**
+- Time to judging: **2.0 hours**
+- Longest wait between restoration projects: **5 plays** (worst: 5 before church-clock, 6 before church-flowers, 6 before church-flowers, 5 before pub-lights, 5 before open-rose-cottage)
 - Photographer level at judging: 12
-- Keepsakes found: 23 of 30
+- Keepsakes found: 22 of 30
 - Rosettes at judging: 40
 
 ## Run 1 purchase timeline
@@ -29,10 +29,10 @@ Simulated 5 playthroughs by an **average** player (25s of menus per play, 6 play
 | 33 | open-bee-and-bramble | 162 |
 | 36 | mill-garden | 6 |
 | 39 | pub-lights | 19 |
-| 43 | open-st-aldhelms | 413 |
-| 46 | pub-door | 7 |
-| 50 | open-rose-cottage | 284 |
-| 55 | church-clock | 152 |
-| 59 | church-flowers | 223 |
-| 62 | cottage-hives | 120 |
-| 66 | cottage-fete | 89 |
+| 43 | open-st-aldhelms | 377 |
+| 47 | pub-door | 111 |
+| 50 | open-rose-cottage | 272 |
+| 55 | church-clock | 140 |
+| 59 | church-flowers | 187 |
+| 62 | cottage-hives | 84 |
+| 66 | cottage-fete | 53 |

@@ -2,16 +2,19 @@
  "poster/cornwall": {
   "src": "common/poster-cornwall.webp",
   "out": "posters/cornwall.webp",
-  "width": 800
+  "width": 800,
+  "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). A vintage railway travel poster illustration (without any text) of a Cornish fishing village: whitewashed and granite cottages tumbling down a steep hillside to a small harbour with colourful fishing boats, lobster pots, a harbour wall with a little lighthouse, gulls, turquoise sea and sunshine, cliffs and sea pinks. Leave a plain band of sky at the top. No text, no letters. Full-bleed."
  },
  "poster/highlands": {
   "src": "common/poster-highlands.webp",
   "out": "posters/highlands.webp",
-  "width": 800
+  "width": 800,
+  "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). A vintage railway travel poster illustration (without any text) of a Scottish Highland village: a whitewashed village by a loch with a little stone bridge, heather-covered mountains, a castle ruin on an island, a red deer stag, pine trees, soft purple and blue hills. Leave a plain band of sky at the top. No text, no letters. Full-bleed."
  },
  "poster/provence": {
   "src": "common/poster-provence.webp",
   "out": "posters/provence.webp",
-  "width": 800
+  "width": 800,
+  "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). A vintage railway travel poster illustration (without any text) of a hilltop village in Provence, France: ochre and pastel houses with blue shutters and terracotta roofs, a bell tower, cypress trees, rows of purple lavender fields and olive trees in the foreground, bright Mediterranean sky. Leave a plain band of sky at the top. No text, no letters. Full-bleed."
  }
 }

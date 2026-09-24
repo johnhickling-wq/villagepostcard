@@ -1,0 +1,156 @@
+{
+ "common": {
+  "litter": {
+   "maxSide": 240,
+   "width": 1400,
+   "items": [
+    "litter-a/crisp-packet",
+    "litter-a/milk-bottle",
+    "litter-a/banana-peel",
+    "litter-a/apple-core",
+    "litter-a/newspaper",
+    "litter-a/ice-cream",
+    "litter-a/sweet-wrapper",
+    "litter-a/tin-can",
+    "litter-a/cardboard-box",
+    "litter-a/umbrella",
+    "litter-a/old-boot",
+    "litter-b/ginger-beer-bottle",
+    "litter-b/paper-bag",
+    "litter-b/orange-peel",
+    "litter-b/matchbox",
+    "litter-b/flat-cap",
+    "litter-b/paper-plate",
+    "litter-b/balloon",
+    "litter-b/bunting-scrap",
+    "litter-b/twigs",
+    "litter-b/branch",
+    "litter-b/leaf-clump",
+    "litter-b/roof-slate"
+   ]
+  },
+  "critters": {
+   "maxSide": 260,
+   "width": 1200,
+   "items": [
+    "critters/dandelion",
+    "critters/thistle",
+    "critters/nettle",
+    "critters/dock",
+    "critters/pigeon-a",
+    "critters/pigeon-b",
+    "critters/pigeon-fly",
+    "critters/cat-sit",
+    "critters/cat-loaf",
+    "critters/cat-lie",
+    "critters/cat-walk"
+   ]
+  },
+  "props": {
+   "maxSide": 300,
+   "width": 2048,
+   "items": [
+    "props-a/sign-hanging",
+    "props-a/sign-pub",
+    "props-a/sign-teashop",
+    "props-a/a-board",
+    "props-a/geranium-pot",
+    "props-a/window-box",
+    "props-a/hanging-basket",
+    "props-a/flower-tub",
+    "props-a/litter-bin",
+    "props-a/milk-churn",
+    "props-a/watering-can",
+    "props-a/wheelbarrow",
+    "props-b/bicycle",
+    "props-b/bird-bath",
+    "props-b/nameboard",
+    "props-b/enamel-sign",
+    "props-b/station-clock",
+    "props-b/weathervane",
+    "props-b/bench",
+    "props-b/deckchair",
+    "props-b/bird-feeder",
+    "props-b/scarecrow",
+    "props-b/bee-skep",
+    "props-b/gnome",
+    "props-c/barrel",
+    "props-c/stone-trough",
+    "props-c/duck-house",
+    "props-c/luggage-trolley",
+    "props-c/lavender-pot",
+    "props-c/beehive",
+    "props-c/cartwheel",
+    "props-c/flour-sack",
+    "props-c/trug",
+    "props-c/hamper",
+    "props-c/milk-crate",
+    "props-c/noticeboard"
+   ]
+  },
+  "ui": {
+   "maxSide": 200,
+   "width": 1024,
+   "items": [
+    "collect-c/postcard-stamp",
+    "collect-c/film-roll",
+    "collect-c/magnifier",
+    "collect-c/flashbulb",
+    "collect-c/camera-badge"
+   ]
+  }
+ },
+ "villages/honeycombe": {
+  "collectibles": {
+   "maxSide": 220,
+   "width": 1600,
+   "items": [
+    "collect-a/cowslip",
+    "collect-a/dog-rose",
+    "collect-a/harebell",
+    "collect-a/cranesbill",
+    "collect-a/oxeye-daisy",
+    "collect-a/platform-ticket",
+    "collect-a/luggage-label",
+    "collect-a/porter-badge",
+    "collect-a/guard-whistle",
+    "collect-a/railway-lamp",
+    "collect-a/rosette",
+    "collect-a/jam-jar",
+    "collect-b/raffle-ticket",
+    "collect-b/coconut",
+    "collect-b/victoria-sponge",
+    "collect-b/tombola-drum",
+    "collect-b/card-hedgehog",
+    "collect-b/card-hare",
+    "collect-b/card-kingfisher",
+    "collect-b/card-owl",
+    "collect-b/card-dormouse",
+    "collect-b/honey-jar",
+    "collect-b/bee-brooch",
+    "collect-b/beeswax-candle",
+    "collect-c/honey-dipper",
+    "collect-c/toy-skep",
+    "collect-c/brass-key",
+    "collect-c/thimble",
+    "collect-c/pocket-watch",
+    "collect-c/teacup",
+    "collect-c/tin-soldier"
+   ]
+  },
+  "portraits": {
+   "maxSide": 300,
+   "width": 1300,
+   "items": [
+    "villagers/colonel",
+    "villagers/postmistress",
+    "villagers/stationmaster",
+    "villagers/landlady",
+    "villagers/vicar",
+    "villagers/beekeeper",
+    "villagers/postman",
+    "villagers/editor"
+   ]
+  }
+ }
+}

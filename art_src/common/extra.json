@@ -1,0 +1,17 @@
+{
+ "poster/cornwall": {
+  "src": "common/poster-cornwall.webp",
+  "out": "posters/cornwall.webp",
+  "width": 800
+ },
+ "poster/highlands": {
+  "src": "common/poster-highlands.webp",
+  "out": "posters/highlands.webp",
+  "width": 800
+ },
+ "poster/provence": {
+  "src": "common/poster-provence.webp",
+  "out": "posters/provence.webp",
+  "width": 800
+ }
+}

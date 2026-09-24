@@ -1,0 +1,575 @@
+{
+ "id": "st-aldhelms",
+ "name": "St Aldhelm's",
+ "blurb": "Eight hundred years of bell-ringing, harvest festivals and the vicar's bicycle.",
+ "villager": "vicar",
+ "plate": "plate/st-aldhelms",
+ "size": [
+  1000,
+  1500
+ ],
+ "depth": {
+  "farY": 900,
+  "farScale": 0.6,
+  "nearY": 1500,
+  "nearScale": 1.2
+ },
+ "difficultyOffset": 0.6,
+ "ambience": [
+  "birds",
+  "bells"
+ ],
+ "sets": [
+  "flowers",
+  "fete",
+  "wildlife"
+ ],
+ "mess": {
+  "themes": {
+   "general": 1,
+   "garden": 1,
+   "fete": 0.8,
+   "picnic": 0.6
+  }
+ },
+ "zones": [
+  {
+   "id": "path",
+   "poly": [
+    [
+     222,
+     930
+    ],
+    [
+     300,
+     925
+    ],
+    [
+     330,
+     1000
+    ],
+    [
+     370,
+     1090
+    ],
+    [
+     420,
+     1140
+    ],
+    [
+     440,
+     1180
+    ],
+    [
+     520,
+     1210
+    ],
+    [
+     600,
+     1250
+    ],
+    [
+     700,
+     1285
+    ],
+    [
+     820,
+     1320
+    ],
+    [
+     995,
+     1345
+    ],
+    [
+     995,
+     1488
+    ],
+    [
+     340,
+     1488
+    ],
+    [
+     300,
+     1400
+    ],
+    [
+     270,
+     1320
+    ],
+    [
+     240,
+     1240
+    ],
+    [
+     215,
+     1170
+    ],
+    [
+     210,
+     1050
+    ]
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "id": "path-left",
+   "line": [
+    [
+     205,
+     1150
+    ],
+    [
+     222,
+     1250
+    ],
+    [
+     256,
+     1330
+    ]
+   ]
+  },
+  {
+   "id": "lych-base",
+   "line": [
+    [
+     405,
+     1150
+    ],
+    [
+     445,
+     1178
+    ]
+   ]
+  },
+  {
+   "id": "wall-right",
+   "line": [
+    [
+     580,
+     1232
+    ],
+    [
+     700,
+     1228
+    ],
+    [
+     850,
+     1222
+    ]
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "id": "church-door",
+   "tags": [
+    "paintable",
+    "door"
+   ],
+   "poly": [
+    [
+     658,
+     790
+    ],
+    [
+     668,
+     762
+    ],
+    [
+     688,
+     750
+    ],
+    [
+     708,
+     762
+    ],
+    [
+     718,
+     790
+    ],
+    [
+     718,
+     890
+    ],
+    [
+     658,
+     890
+    ]
+   ]
+  },
+  {
+   "id": "gate",
+   "tags": [
+    "paintable"
+   ],
+   "poly": [
+    [
+     442,
+     1000
+    ],
+    [
+     505,
+     955
+    ],
+    [
+     515,
+     960
+    ],
+    [
+     515,
+     1200
+    ],
+    [
+     445,
+     1170
+    ]
+   ]
+  },
+  {
+   "id": "clock",
+   "tags": [
+    "grime"
+   ],
+   "poly": [
+    [
+     760,
+     360
+    ],
+    [
+     756,
+     375
+    ],
+    [
+     745,
+     386
+    ],
+    [
+     730,
+     390
+    ],
+    [
+     715,
+     386
+    ],
+    [
+     704,
+     375
+    ],
+    [
+     700,
+     360
+    ],
+    [
+     704,
+     345
+    ],
+    [
+     715,
+     334
+    ],
+    [
+     730,
+     330
+    ],
+    [
+     745,
+     334
+    ],
+    [
+     756,
+     345
+    ]
+   ]
+  },
+  {
+   "id": "win-church",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     866,
+     650
+    ],
+    [
+     875,
+     625
+    ],
+    [
+     897,
+     610
+    ],
+    [
+     920,
+     625
+    ],
+    [
+     930,
+     650
+    ],
+    [
+     930,
+     770
+    ],
+    [
+     866,
+     770
+    ]
+   ]
+  },
+  {
+   "id": "win-belfry",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     706,
+     235
+    ],
+    [
+     715,
+     212
+    ],
+    [
+     728,
+     205
+    ],
+    [
+     741,
+     212
+    ],
+    [
+     750,
+     235
+    ],
+    [
+     750,
+     295
+    ],
+    [
+     706,
+     295
+    ]
+   ]
+  },
+  {
+   "id": "win-tower",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     598,
+     232
+    ],
+    [
+     608,
+     220
+    ],
+    [
+     618,
+     232
+    ],
+    [
+     618,
+     300
+    ],
+    [
+     598,
+     300
+    ]
+   ]
+  },
+  {
+   "id": "noticeboard",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     866,
+     912
+    ],
+    [
+     966,
+     912
+    ],
+    [
+     966,
+     1030
+    ],
+    [
+     866,
+     1030
+    ]
+   ]
+  }
+ ],
+ "lamps": [
+  {
+   "id": "lamp",
+   "x": 113,
+   "y": 392,
+   "r": 44
+  }
+ ],
+ "props": [
+  {
+   "id": "feeder",
+   "sprite": "props/bird-feeder",
+   "x": 232,
+   "y": 300,
+   "h": 74,
+   "pivot": "top",
+   "tags": [
+    "tiltable"
+   ]
+  },
+  {
+   "id": "tub",
+   "sprite": "props/flower-tub",
+   "x": 262,
+   "y": 1188,
+   "h": 72,
+   "tags": [
+    "flowers",
+    "standing"
+   ]
+  },
+  {
+   "id": "barrow",
+   "sprite": "props/wheelbarrow",
+   "x": 600,
+   "y": 1320,
+   "h": 84,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "can",
+   "sprite": "props/watering-can",
+   "x": 470,
+   "y": 1214,
+   "h": 46,
+   "tags": [
+    "standing"
+   ]
+  }
+ ],
+ "perches": [
+  {
+   "x": 360,
+   "y": 456,
+   "s": 0.9
+  },
+  {
+   "x": 600,
+   "y": 100,
+   "s": 0.6
+  },
+  {
+   "x": 113,
+   "y": 286,
+   "s": 0.9
+  },
+  {
+   "x": 80,
+   "y": 906,
+   "s": 0.9
+  },
+  {
+   "x": 915,
+   "y": 842,
+   "s": 0.8
+  },
+  {
+   "x": 620,
+   "y": 880,
+   "s": 0.7
+  }
+ ],
+ "cats": [
+  {
+   "x": 60,
+   "y": 926,
+   "pose": "cat-loaf",
+   "s": 0.9
+  },
+  {
+   "x": 420,
+   "y": 1352,
+   "pose": "cat-walk",
+   "s": 1.1
+  },
+  {
+   "x": 700,
+   "y": 1002,
+   "pose": "cat-lie",
+   "s": 0.8
+  },
+  {
+   "x": 300,
+   "y": 1100,
+   "pose": "cat-sit",
+   "s": 0.95
+  }
+ ],
+ "chimneys": [],
+ "neglect": [
+  {
+   "target": "clock",
+   "type": "grimy",
+   "amount": 0.6,
+   "project": "church-clock"
+  },
+  {
+   "target": "church-door",
+   "type": "faded",
+   "amount": 0.5,
+   "project": "church-clock"
+  }
+ ],
+ "restoration": [
+  {
+   "project": "church-clock",
+   "props": []
+  },
+  {
+   "project": "church-flowers",
+   "props": [
+    {
+     "id": "bench",
+     "sprite": "props/bench",
+     "x": 820,
+     "y": 1318,
+     "h": 118,
+     "tags": []
+    },
+    {
+     "id": "trough",
+     "sprite": "props/stone-trough",
+     "x": 672,
+     "y": 1262,
+     "h": 58,
+     "tags": [
+      "flowers"
+     ]
+    },
+    {
+     "id": "lavender",
+     "sprite": "props/lavender-pot",
+     "x": 440,
+     "y": 1190,
+     "h": 56,
+     "tags": [
+      "flowers",
+      "standing"
+     ]
+    }
+   ]
+  }
+ ]
+}

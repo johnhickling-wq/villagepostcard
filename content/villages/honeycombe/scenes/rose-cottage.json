@@ -1,0 +1,560 @@
+{
+ "id": "rose-cottage",
+ "name": "Rose Cottage",
+ "blurb": "Nan Honeysett's garden: roses, runner beans and three hives of very contented bees.",
+ "villager": "beekeeper",
+ "plate": "plate/rose-cottage",
+ "size": [
+  1000,
+  1500
+ ],
+ "depth": {
+  "farY": 900,
+  "farScale": 0.6,
+  "nearY": 1500,
+  "nearScale": 1.2
+ },
+ "difficultyOffset": 0.7,
+ "ambience": [
+  "birds",
+  "bees"
+ ],
+ "sets": [
+  "honey",
+  "flowers",
+  "wildlife"
+ ],
+ "mess": {
+  "themes": {
+   "garden": 2,
+   "picnic": 0.8,
+   "general": 0.8
+  }
+ },
+ "zones": [
+  {
+   "id": "garden",
+   "poly": [
+    [
+     245,
+     1005
+    ],
+    [
+     330,
+     1000
+    ],
+    [
+     430,
+     1010
+    ],
+    [
+     520,
+     1000
+    ],
+    [
+     600,
+     1000
+    ],
+    [
+     640,
+     1060
+    ],
+    [
+     650,
+     1130
+    ],
+    [
+     690,
+     1200
+    ],
+    [
+     740,
+     1300
+    ],
+    [
+     790,
+     1400
+    ],
+    [
+     830,
+     1488
+    ],
+    [
+     330,
+     1488
+    ],
+    [
+     280,
+     1400
+    ],
+    [
+     250,
+     1300
+    ],
+    [
+     230,
+     1200
+    ],
+    [
+     220,
+     1120
+    ],
+    [
+     240,
+     1050
+    ]
+   ]
+  },
+  {
+   "id": "veg",
+   "weight": 0.3,
+   "poly": [
+    [
+     20,
+     745
+    ],
+    [
+     380,
+     745
+    ],
+    [
+     380,
+     798
+    ],
+    [
+     20,
+     798
+    ]
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "id": "fence-base",
+   "line": [
+    [
+     4,
+     900
+    ],
+    [
+     215,
+     910
+    ]
+   ]
+  },
+  {
+   "id": "step",
+   "line": [
+    [
+     600,
+     952
+    ],
+    [
+     700,
+     962
+    ]
+   ]
+  },
+  {
+   "id": "path-left",
+   "line": [
+    [
+     245,
+     1010
+    ],
+    [
+     240,
+     1100
+    ],
+    [
+     250,
+     1200
+    ]
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "id": "door",
+   "tags": [
+    "paintable",
+    "door"
+   ],
+   "poly": [
+    [
+     652,
+     610
+    ],
+    [
+     665,
+     592
+    ],
+    [
+     720,
+     590
+    ],
+    [
+     735,
+     605
+    ],
+    [
+     735,
+     885
+    ],
+    [
+     652,
+     885
+    ]
+   ]
+  },
+  {
+   "id": "gate",
+   "tags": [
+    "paintable"
+   ],
+   "poly": [
+    [
+     218,
+     815
+    ],
+    [
+     330,
+     800
+    ],
+    [
+     335,
+     995
+    ],
+    [
+     222,
+     1000
+    ]
+   ]
+  },
+  {
+   "id": "hive",
+   "tags": [
+    "paintable"
+   ],
+   "poly": [
+    [
+     222,
+     668
+    ],
+    [
+     250,
+     655
+    ],
+    [
+     286,
+     668
+    ],
+    [
+     288,
+     745
+    ],
+    [
+     224,
+     746
+    ]
+   ]
+  },
+  {
+   "id": "greenhouse",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     168,
+     615
+    ],
+    [
+     210,
+     562
+    ],
+    [
+     300,
+     556
+    ],
+    [
+     340,
+     600
+    ],
+    [
+     340,
+     648
+    ],
+    [
+     168,
+     648
+    ]
+   ]
+  },
+  {
+   "id": "win-upper",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     842,
+     282
+    ],
+    [
+     935,
+     278
+    ],
+    [
+     935,
+     365
+    ],
+    [
+     842,
+     368
+    ]
+   ]
+  },
+  {
+   "id": "win-lower",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     866,
+     575
+    ],
+    [
+     945,
+     570
+    ],
+    [
+     945,
+     720
+    ],
+    [
+     866,
+     722
+    ]
+   ]
+  }
+ ],
+ "lamps": [
+  {
+   "id": "door-lantern",
+   "x": 613,
+   "y": 640,
+   "r": 18
+  }
+ ],
+ "props": [
+  {
+   "id": "scarecrow",
+   "sprite": "props/scarecrow",
+   "x": 120,
+   "y": 762,
+   "h": 132,
+   "tags": [
+    "tiltable"
+   ]
+  },
+  {
+   "id": "skep",
+   "sprite": "props/bee-skep",
+   "x": 390,
+   "y": 762,
+   "h": 56,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "can",
+   "sprite": "props/watering-can",
+   "x": 566,
+   "y": 1012,
+   "h": 52,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "trug",
+   "sprite": "props/trug",
+   "x": 330,
+   "y": 1052,
+   "h": 56,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "gnome",
+   "sprite": "props/gnome",
+   "x": 184,
+   "y": 1080,
+   "h": 74,
+   "tags": [
+    "standing"
+   ]
+  }
+ ],
+ "perches": [
+  {
+   "x": 690,
+   "y": 30,
+   "s": 0.7
+  },
+  {
+   "x": 410,
+   "y": 420,
+   "s": 0.7
+  },
+  {
+   "x": 330,
+   "y": 800,
+   "s": 0.8
+  },
+  {
+   "x": 780,
+   "y": 470,
+   "s": 0.8
+  },
+  {
+   "x": 250,
+   "y": 556,
+   "s": 0.6
+  },
+  {
+   "x": 950,
+   "y": 926,
+   "s": 0.9
+  }
+ ],
+ "cats": [
+  {
+   "x": 870,
+   "y": 1062,
+   "pose": "cat-loaf",
+   "s": 1.1
+  },
+  {
+   "x": 690,
+   "y": 908,
+   "pose": "cat-sit",
+   "s": 0.9
+  },
+  {
+   "x": 560,
+   "y": 1300,
+   "pose": "cat-walk",
+   "s": 1.1
+  },
+  {
+   "x": 100,
+   "y": 832,
+   "pose": "cat-lie",
+   "s": 0.7
+  }
+ ],
+ "chimneys": [
+  [
+   670,
+   30
+  ],
+  [
+   700,
+   35
+  ]
+ ],
+ "neglect": [
+  {
+   "target": "hive",
+   "type": "faded",
+   "amount": 0.6,
+   "project": "cottage-hives"
+  },
+  {
+   "target": "greenhouse",
+   "type": "grimy",
+   "amount": 0.6,
+   "project": "cottage-hives"
+  }
+ ],
+ "restoration": [
+  {
+   "project": "cottage-hives",
+   "props": [
+    {
+     "id": "basket",
+     "sprite": "props/hanging-basket",
+     "x": 770,
+     "y": 560,
+     "h": 80,
+     "pivot": "top",
+     "tags": [
+      "flowers",
+      "tiltable"
+     ]
+    }
+   ]
+  },
+  {
+   "project": "cottage-fete",
+   "props": [
+    {
+     "id": "bird-bath",
+     "sprite": "props/bird-bath",
+     "x": 250,
+     "y": 1190,
+     "h": 104,
+     "tags": [
+      "standing"
+     ]
+    },
+    {
+     "id": "lavender",
+     "sprite": "props/lavender-pot",
+     "x": 620,
+     "y": 1010,
+     "h": 60,
+     "tags": [
+      "flowers",
+      "standing"
+     ]
+    },
+    {
+     "id": "hamper",
+     "sprite": "props/hamper",
+     "x": 900,
+     "y": 1250,
+     "h": 60,
+     "tags": [
+      "standing"
+     ]
+    }
+   ],
+   "decor": [
+    {
+     "kind": "bunting",
+     "points": [
+      [
+       410,
+       430
+      ],
+      [
+       640,
+       520
+      ],
+      [
+       830,
+       470
+      ]
+     ],
+     "sag": 40
+    }
+   ]
+  }
+ ]
+}

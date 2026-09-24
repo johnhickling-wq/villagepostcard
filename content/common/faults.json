@@ -1,0 +1,223 @@
+{
+ "litter": {
+  "name": "Litter",
+  "label": "Litter",
+  "verb": "Tidy away the litter",
+  "icon": "litter/crisp-packet",
+  "points": 100,
+  "weight": 3.0,
+  "minTier": 1,
+  "salience": 1.0,
+  "strategy": "spawn",
+  "slot": "zones",
+  "pool": "litter",
+  "sizeMul": [
+   1.25,
+   0.72
+  ],
+  "camouflage": [
+   0.0,
+   0.85
+  ],
+  "spacing": 60,
+  "fix": "pop",
+  "sfx": "fix.pop",
+  "haptic": "light",
+  "particles": "sparkle",
+  "phrase": "bits of litter"
+ },
+ "weeds": {
+  "name": "Weeds",
+  "label": "Weeds",
+  "verb": "Pull up the weeds",
+  "icon": "critters/dandelion",
+  "points": 110,
+  "weight": 1.0,
+  "minTier": 1,
+  "salience": 0.85,
+  "strategy": "spawn",
+  "slot": "edges",
+  "pool": "weeds",
+  "sizeMul": [
+   1.15,
+   0.75
+  ],
+  "camouflage": [
+   0.0,
+   0.5
+  ],
+  "spacing": 70,
+  "fix": "pluck",
+  "sfx": "fix.pluck",
+  "haptic": "light",
+  "particles": "dirt",
+  "phrase": "weeds"
+ },
+ "crooked": {
+  "name": "Crooked",
+  "label": "Crooked",
+  "verb": "Straighten things up",
+  "icon": "props/sign-hanging",
+  "points": 120,
+  "weight": 1.6,
+  "minTier": 1,
+  "salience": 1.0,
+  "strategy": "prop",
+  "tag": "tiltable",
+  "angle": [
+   22,
+   6
+  ],
+  "fix": "swing",
+  "sfx": "fix.swing",
+  "haptic": "medium",
+  "particles": "dust",
+  "phrase": "crooked things"
+ },
+ "toppled": {
+  "name": "Knocked over",
+  "label": "Toppled",
+  "verb": "Stand things back up",
+  "icon": "props/milk-churn",
+  "points": 120,
+  "weight": 0.9,
+  "minTier": 2,
+  "salience": 1.1,
+  "strategy": "prop",
+  "tag": "standing",
+  "angle": [
+   86,
+   72
+  ],
+  "fix": "hop",
+  "sfx": "fix.thunk",
+  "haptic": "medium",
+  "particles": "dust",
+  "phrase": "knocked-over things"
+ },
+ "faded": {
+  "name": "Faded paint",
+  "label": "Faded",
+  "verb": "Freshen up the paint",
+  "icon": "ui/paint",
+  "points": 140,
+  "weight": 1.2,
+  "minTier": 1,
+  "salience": 0.9,
+  "strategy": "region",
+  "tag": "paintable",
+  "amount": [
+   0.95,
+   0.5
+  ],
+  "fix": "paint",
+  "sfx": "fix.paint",
+  "haptic": "light",
+  "particles": "paint",
+  "phrase": "patches of faded paint"
+ },
+ "grimy": {
+  "name": "Grime",
+  "label": "Grimy",
+  "verb": "Polish off the grime",
+  "icon": "ui/window",
+  "points": 140,
+  "weight": 1.4,
+  "minTier": 1,
+  "salience": 0.9,
+  "strategy": "region",
+  "tag": [
+   "window",
+   "grime"
+  ],
+  "amount": [
+   1.0,
+   0.55
+  ],
+  "fix": "wipe",
+  "sfx": "fix.squeak",
+  "haptic": "light",
+  "particles": "glint",
+  "phrase": "grimy windows"
+ },
+ "wilted": {
+  "name": "Wilted flowers",
+  "label": "Wilted",
+  "verb": "Perk up the flowers",
+  "icon": "props/geranium-pot",
+  "points": 130,
+  "weight": 1.1,
+  "minTier": 1,
+  "salience": 0.95,
+  "strategy": "prop",
+  "tag": "flowers",
+  "amount": [
+   1.0,
+   0.6
+  ],
+  "fix": "bloom",
+  "sfx": "fix.bloom",
+  "haptic": "light",
+  "particles": "petals",
+  "phrase": "wilted planters"
+ },
+ "unlit": {
+  "name": "Unlit lamps",
+  "label": "Unlit",
+  "verb": "Light the lamps",
+  "icon": "ui/lamp",
+  "points": 150,
+  "weight": 2.0,
+  "minTier": 1,
+  "salience": 1.2,
+  "requires": "dark",
+  "strategy": "lamp",
+  "fix": "light",
+  "sfx": "fix.lamp",
+  "haptic": "medium",
+  "particles": "embers",
+  "phrase": "unlit lamps"
+ },
+ "cobweb": {
+  "name": "Cobwebs",
+  "label": "Cobwebs",
+  "verb": "Sweep away the cobwebs",
+  "icon": "ui/cobweb",
+  "points": 130,
+  "weight": 0.8,
+  "minTier": 3,
+  "salience": 0.7,
+  "strategy": "corner",
+  "tag": "window",
+  "size": [
+   80,
+   50
+  ],
+  "fix": "sweep",
+  "sfx": "fix.sweep",
+  "haptic": "light",
+  "particles": "dust",
+  "phrase": "cobwebs"
+ },
+ "pigeon": {
+  "name": "Pigeons",
+  "label": "Pigeons",
+  "verb": "Shoo the pigeons",
+  "icon": "critters/pigeon-a",
+  "points": 120,
+  "weight": 0.8,
+  "minTier": 3,
+  "salience": 1.0,
+  "strategy": "perch",
+  "pool": "pigeons",
+  "sizeMul": [
+   1.1,
+   0.8
+  ],
+  "fix": "flap",
+  "sfx": "fix.flap",
+  "haptic": "light",
+  "particles": "feathers",
+  "phrase": "pigeons"
+ }
+}

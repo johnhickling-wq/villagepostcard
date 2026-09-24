@@ -1,0 +1,7 @@
+{
+ "map": {
+  "src": "honeycombe/map.webp",
+  "out": "map.webp",
+  "quality": 80
+ }
+}

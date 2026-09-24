@@ -1,0 +1,23 @@
+{
+  "frames": {
+    "frame-classic":   {"name": "Deckle Edge", "desc": "The classic white deckle-edged print.", "default": true},
+    "frame-scalloped": {"name": "Scalloped", "desc": "Pinking-shear scallops, very fête."},
+    "frame-airmail":   {"name": "Par Avion", "desc": "Red and blue airmail stripes."},
+    "frame-kraft":     {"name": "Brown Paper", "desc": "Parcel paper and string."},
+    "frame-pressed":   {"name": "Pressed Flowers", "desc": "Flowers pressed into the border."},
+    "frame-gilt":      {"name": "Gilt", "desc": "Gold edging for the finest work."}
+  },
+  "films": {
+    "film-natural":    {"name": "Natural", "desc": "True to life.", "default": true},
+    "film-sepia":      {"name": "Sepia", "desc": "Warm brown tones, like grandad's albums.", "css": "sepia(0.85) saturate(0.9) contrast(1.05)"},
+    "film-handtinted": {"name": "Hand-Tinted", "desc": "Soft washed colours painted over monochrome.", "css": "grayscale(0.55) saturate(1.3) contrast(0.95) brightness(1.05)"},
+    "film-kodachrome": {"name": "Kodachrome", "desc": "Punchy reds and deep blues.", "css": "saturate(1.45) contrast(1.12)"},
+    "film-cyanotype":  {"name": "Cyanotype", "desc": "Prussian blue sun-prints.", "css": "grayscale(1) sepia(1) hue-rotate(170deg) saturate(2.2) brightness(0.95)"}
+  },
+  "postmarks": {
+    "postmark-wold":  {"name": "Wold & Vale", "desc": "The company postmark.", "default": true},
+    "postmark-rail":  {"name": "Travelling Post Office", "desc": "Sorted on the move."},
+    "postmark-bee":   {"name": "Busy Bee", "desc": "A bee in the circle."},
+    "postmark-crown": {"name": "Royal Mail", "desc": "A crown postmark."}
+  }
+}

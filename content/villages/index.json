@@ -1,0 +1,23 @@
+{
+  "villages": [
+    {"id": "honeycombe", "playable": true, "free": true,
+     "name": "Honeycombe-on-the-Wold", "region": "The Cotswolds", "poster": "plate/high-street", "posterPack": "honeycombe",
+     "tagline": "Honey-stone cottages, a duck pond and a very particular Colonel."},
+    {"id": "porthkennack", "playable": false, "free": false, "price": "£1.99", "productId": "village.porthkennack",
+     "name": "Porthkennack Cove", "region": "Cornwall", "poster": "poster/cornwall", "posterPack": "common",
+     "tagline": "Harbour walls, lobster pots and gulls with opinions.",
+     "features": ["8 new scenes", "Harbour storms & sea mist", "Fishermen, a lighthouse keeper and a very old cat", "New scrapbook sets"],
+     "status": "Ready to travel"},
+    {"id": "glenbrae", "playable": false, "free": false, "price": "£1.99", "productId": "village.glenbrae",
+     "name": "Glenbrae", "region": "The Scottish Highlands", "poster": "poster/highlands", "posterPack": "common",
+     "tagline": "A loch, a castle ruin and a stag who poses for nobody.",
+     "features": ["8 new scenes", "Highland rain & midge season", "Pipers, ghillies and a castle ghost"],
+     "status": "Coming soon"},
+    {"id": "saint-amour", "playable": false, "free": false, "price": "£1.99", "productId": "village.saint-amour",
+     "name": "Saint-Amour-en-Provence", "region": "Provence, France", "poster": "poster/provence", "posterPack": "common",
+     "tagline": "Lavender, market days and pétanque under the plane trees.",
+     "features": ["8 new scenes", "Mistral winds & market mornings", "Your first trip abroad"],
+     "status": "Coming soon"}
+  ],
+  "bundle": {"id": "grand-tour", "name": "The Grand Tour", "price": "£4.99", "productId": "bundle.grand-tour", "villages": ["porthkennack", "glenbrae", "saint-amour"], "note": "All three villages, save 16%"}
+}

@@ -1,0 +1,55 @@
+{
+ "recipients": [
+  "Aunt Vera",
+  "Mum & Dad",
+  "Dearest Hilda",
+  "Uncle Bernard",
+  "Cousin Dot",
+  "Mrs Arbuthnot",
+  "Granny",
+  "Dear Reg",
+  "Miss Pringle",
+  "The Fotheringtons"
+ ],
+ "openers": {
+  "clear": [
+   "What a day! Blue sky all the way over {scene}.",
+   "Sunshine at last! {scene} looked an absolute picture.",
+   "Fine and bright here, and {scene} scrubbed up beautifully."
+  ],
+  "golden": [
+   "Caught {scene} at golden hour. Everything went the colour of honey.",
+   "The evening light on {scene} was something else. Warm as toast."
+  ],
+  "mist": [
+   "Up early for this one. Mist in the valley and {scene} floating in it.",
+   "A proper pea-souper at dawn, but {scene} came out of it like a dream."
+  ],
+  "dusk": [
+   "Lamps lit and {scene} all aglow. I could have stayed all night.",
+   "Took this at dusk. You can almost smell the woodsmoke from {scene}."
+  ],
+  "storm": [
+   "What a storm last night! We tidied {scene} this morning and it gleams.",
+   "After the rain, {scene} sparkled. Took ages to find all the twigs!"
+  ]
+ },
+ "middles": [
+  "{villager} sends warmest regards.",
+  "{villager} says hello and asks when you're visiting.",
+  "Had tea with {villager}. Three scones!",
+  "The ginger cat followed me all morning.",
+  "The judges come in the spring. Fingers crossed!",
+  "Found a {collectible} today. Guess who's starting a scrapbook?",
+  "The ducks are very well."
+ ],
+ "closers": [
+  "Wish you were here!",
+  "Love to all.",
+  "More soon.",
+  "Don't forget to water the tomatoes!",
+  "Yours ever,",
+  "Toodle-pip!"
+ ],
+ "signature": "P. x"
+}

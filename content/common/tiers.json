@@ -1,0 +1,20 @@
+[
+  {"tier": 1, "name": "Snapshot",        "faults": [7, 8],   "subtlety": [0.0, 0.25], "minSize": 72,
+   "types": {"litter": 1.2, "crooked": 1.2, "grimy": 1.0, "faded": 0.8, "wilted": 0.8, "weeds": 0.7},
+   "conditions": {"clear": 1}, "nudge": 9, "loupe": 20, "combo": 3.0, "pennies": 60, "xp": 1.0},
+  {"tier": 2, "name": "Holiday Snap",    "faults": [9, 10],  "subtlety": [0.1, 0.4],  "minSize": 62,
+   "types": {"litter": 1.0, "crooked": 1.0, "grimy": 1.0, "faded": 1.0, "wilted": 1.0, "weeds": 1.0, "toppled": 0.8},
+   "conditions": {"clear": 1, "golden": 1}, "nudge": 16, "loupe": 25, "combo": 2.8, "pennies": 75, "xp": 1.1},
+  {"tier": 3, "name": "Portrait",        "faults": [11, 12], "subtlety": [0.25, 0.55], "minSize": 54,
+   "types": {"litter": 1.0, "crooked": 1.0, "grimy": 1.0, "faded": 1.0, "wilted": 1.0, "weeds": 1.0, "toppled": 1.0, "cobweb": 0.9, "pigeon": 0.9},
+   "conditions": {"golden": 1, "mist": 1}, "nudge": 0, "loupe": 30, "combo": 2.6, "pennies": 95, "xp": 1.2},
+  {"tier": 4, "name": "Exhibition",      "faults": [13, 14], "subtlety": [0.4, 0.75], "minSize": 46,
+   "types": {"litter": 1.0, "crooked": 1.0, "grimy": 1.0, "faded": 1.0, "wilted": 1.0, "weeds": 1.0, "toppled": 1.0, "cobweb": 1.0, "pigeon": 1.0, "unlit": 1.0},
+   "conditions": {"dusk": 1, "storm": 1}, "nudge": 0, "loupe": 35, "combo": 2.4, "pennies": 115, "xp": 1.35},
+  {"tier": 5, "name": "Picture Perfect", "faults": [15, 16], "subtlety": [0.55, 0.9], "minSize": 40,
+   "types": {"litter": 1.0, "crooked": 1.0, "grimy": 1.0, "faded": 1.0, "wilted": 1.0, "weeds": 1.0, "toppled": 1.0, "cobweb": 1.0, "pigeon": 1.0, "unlit": 1.0},
+   "conditions": {"golden": 1, "mist": 1, "dusk": 1, "storm": 1}, "nudge": 0, "loupe": 40, "combo": 2.2, "pennies": 140, "xp": 1.5},
+  {"tier": 6, "name": "Free Play",       "faults": [12, 16], "subtlety": [0.4, 0.85], "minSize": 44, "free": true,
+   "types": {"litter": 1.0, "crooked": 1.0, "grimy": 1.0, "faded": 1.0, "wilted": 1.0, "weeds": 1.0, "toppled": 1.0, "cobweb": 1.0, "pigeon": 1.0, "unlit": 1.0},
+   "conditions": {"clear": 1, "golden": 1, "mist": 1, "dusk": 1, "storm": 1}, "nudge": 0, "loupe": 35, "combo": 2.4, "pennies": 120, "xp": 1.3}
+]

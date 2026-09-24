@@ -1,0 +1,46 @@
+{
+  "litter": {
+    "crisp-packet":       {"sprite": "litter/crisp-packet",       "size": 70, "themes": {"picnic": 1, "general": 1}},
+    "milk-bottle":        {"sprite": "litter/milk-bottle",        "size": 78, "themes": {"general": 1, "doorstep": 2}, "lie": true},
+    "banana-peel":        {"sprite": "litter/banana-peel",        "size": 62, "themes": {"picnic": 1}},
+    "apple-core":         {"sprite": "litter/apple-core",         "size": 58, "themes": {"picnic": 1, "general": 0.6}},
+    "newspaper":          {"sprite": "litter/newspaper",          "size": 70, "themes": {"general": 1, "railway": 1.5}},
+    "ice-cream":          {"sprite": "litter/ice-cream",          "size": 66, "themes": {"picnic": 1, "fete": 1}},
+    "sweet-wrapper":      {"sprite": "litter/sweet-wrapper",      "size": 46, "themes": {"general": 1, "fete": 1}},
+    "tin-can":            {"sprite": "litter/tin-can",            "size": 62, "themes": {"general": 1}},
+    "cardboard-box":      {"sprite": "litter/cardboard-box",      "size": 80, "themes": {"general": 0.6, "market": 1.5}},
+    "umbrella":           {"sprite": "litter/umbrella",           "size": 95, "themes": {"storm": 1.2, "railway": 0.6}},
+    "old-boot":           {"sprite": "litter/old-boot",           "size": 72, "themes": {"general": 0.6, "river": 1.5, "storm": 0.5}},
+    "ginger-beer-bottle": {"sprite": "litter/ginger-beer-bottle", "size": 56, "themes": {"picnic": 1, "pub": 2}},
+    "paper-bag":          {"sprite": "litter/paper-bag",          "size": 66, "themes": {"general": 1, "picnic": 1}},
+    "orange-peel":        {"sprite": "litter/orange-peel",        "size": 54, "themes": {"picnic": 1, "railway": 0.8}},
+    "matchbox":           {"sprite": "litter/matchbox",           "size": 44, "themes": {"general": 0.8, "pub": 1}},
+    "flat-cap":           {"sprite": "litter/flat-cap",           "size": 66, "themes": {"storm": 1.5, "pub": 0.8, "general": 0.4}},
+    "paper-plate":        {"sprite": "litter/paper-plate",        "size": 64, "themes": {"fete": 2, "picnic": 1}},
+    "balloon":            {"sprite": "litter/balloon",            "size": 62, "themes": {"fete": 2}},
+    "bunting-scrap":      {"sprite": "litter/bunting-scrap",      "size": 84, "themes": {"fete": 1.5, "storm": 0.8}},
+    "twigs":              {"sprite": "litter/twigs",              "size": 70, "themes": {"storm": 2.5, "garden": 0.5}},
+    "branch":             {"sprite": "litter/branch",             "size": 88, "themes": {"storm": 2.5}},
+    "leaf-clump":         {"sprite": "litter/leaf-clump",         "size": 62, "themes": {"storm": 2.5, "garden": 1}},
+    "roof-slate":         {"sprite": "litter/roof-slate",         "size": 62, "themes": {"storm": 1.8}}
+  },
+  "weeds": {
+    "dandelion": {"sprite": "critters/dandelion", "size": 86, "themes": {"general": 1}},
+    "thistle":   {"sprite": "critters/thistle",   "size": 92, "themes": {"general": 1}},
+    "nettle":    {"sprite": "critters/nettle",    "size": 86, "themes": {"general": 1}},
+    "dock":      {"sprite": "critters/dock",      "size": 80, "themes": {"general": 1}}
+  },
+  "pigeons": {
+    "pigeon-a": {"sprite": "critters/pigeon-a", "size": 62, "fly": "critters/pigeon-fly"},
+    "pigeon-b": {"sprite": "critters/pigeon-b", "size": 62, "fly": "critters/pigeon-fly"}
+  },
+  "cat": {
+    "name": "Marmalade",
+    "poses": {
+      "cat-sit":  {"sprite": "critters/cat-sit",  "size": 100},
+      "cat-loaf": {"sprite": "critters/cat-loaf", "size": 62},
+      "cat-lie":  {"sprite": "critters/cat-lie",  "size": 70},
+      "cat-walk": {"sprite": "critters/cat-walk", "size": 84}
+    }
+  }
+}

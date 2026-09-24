@@ -1,0 +1,67 @@
+{
+  "id": "bee-and-bramble",
+  "name": "The Bee & Bramble",
+  "blurb": "Thatch, roses and the best ploughman's in the Wolds. Mabel pulls a fine pint.",
+  "villager": "landlady",
+  "plate": "plate/bee-and-bramble",
+  "size": [1000, 1500],
+  "depth": {"farY": 960, "farScale": 0.75, "nearY": 1500, "nearScale": 1.2},
+  "difficultyOffset": 0.5,
+  "ambience": ["birds", "pub"],
+  "sets": ["fete", "honey", "curios"],
+  "mess": {"themes": {"pub": 2, "picnic": 1.2, "general": 1}},
+  "zones": [
+    {"id": "forecourt", "poly": [[4,1002],[240,988],[300,1000],[330,1058],[420,1062],[470,1022],[560,1060],[700,1045],[725,1100],[720,1170],[760,1210],[860,1245],[995,1255],[995,1310],[700,1305],[500,1272],[300,1242],[160,1185],[4,1152]]},
+    {"id": "lawn", "weight": 0.8, "poly": [[250,1290],[500,1290],[700,1320],[800,1332],[700,1400],[550,1440],[450,1480],[300,1480],[270,1380]]}
+  ],
+  "edges": [
+    {"id": "wall-base", "line": [[4,975],[118,986],[220,986]]},
+    {"id": "pub-base", "line": [[560,1056],[690,1036]]}
+  ],
+  "regions": [
+    {"id": "door", "tags": ["paintable", "door"], "poly": [[692,745],[700,725],[722,712],[745,722],[755,745],[755,1030],[692,1030]]},
+    {"id": "gate", "tags": ["paintable"], "poly": [[120,840],[213,836],[213,983],[120,983]]},
+    {"id": "table-left", "tags": ["paintable"], "poly": [[322,926],[528,938],[526,958],[322,948]]},
+    {"id": "table-right", "tags": ["paintable"], "poly": [[800,1000],[996,1010],[996,1060],[795,1045]]},
+    {"id": "win-upper", "tags": ["window"], "poly": [[540,410],[632,405],[632,520],[540,522]]},
+    {"id": "win-upper-right", "tags": ["window"], "poly": [[848,275],[958,268],[958,440],[848,442]]},
+    {"id": "win-lower", "tags": ["window"], "poly": [[460,702],[530,700],[530,860],[460,860]]},
+    {"id": "win-lower-right", "tags": ["window"], "poly": [[965,716],[998,714],[998,850],[965,850]]}
+  ],
+  "lamps": [
+    {"id": "porch-left", "x": 578, "y": 770, "r": 22},
+    {"id": "porch-right", "x": 858, "y": 760, "r": 24}
+  ],
+  "props": [
+    {"id": "sign", "sprite": "props/sign-pub", "x": 345, "y": 466, "h": 172, "pivot": "top", "tags": ["tiltable"]},
+    {"id": "a-board", "sprite": "props/a-board", "x": 560, "y": 1084, "h": 108, "tags": ["standing", "tiltable"], "label": "ALES\nTEAS", "labelBox": [0.2, 0.1, 0.8, 0.62], "labelColor": "#f4f0e6", "labelFont": "hand"},
+    {"id": "barrel", "sprite": "props/barrel", "x": 632, "y": 1062, "h": 72, "tags": ["standing"]},
+    {"id": "deckchair", "sprite": "props/deckchair", "x": 400, "y": 1306, "h": 116, "tags": ["standing"]},
+    {"id": "bicycle", "sprite": "props/bicycle", "x": 64, "y": 1004, "h": 118, "tags": ["standing"]}
+  ],
+  "perches": [
+    {"x": 440, "y": 452, "s": 0.8}, {"x": 900, "y": 40, "s": 0.7}, {"x": 690, "y": 500, "s": 0.8},
+    {"x": 170, "y": 826, "s": 0.8}, {"x": 212, "y": 836, "s": 0.8}
+  ],
+  "cats": [
+    {"x": 700, "y": 1042, "pose": "cat-sit", "s": 0.9},
+    {"x": 430, "y": 932, "pose": "cat-loaf", "s": 0.85},
+    {"x": 60, "y": 848, "pose": "cat-lie", "s": 0.8},
+    {"x": 450, "y": 1352, "pose": "cat-walk", "s": 1.1}
+  ],
+  "chimneys": [],
+  "neglect": [
+    {"target": "door", "type": "faded", "amount": 0.55, "project": "pub-door"},
+    {"target": "gate", "type": "faded", "amount": 0.5, "project": "pub-door"}
+  ],
+  "restoration": [
+    {"project": "pub-door", "props": [
+      {"id": "box-upper", "sprite": "props/window-box", "x": 586, "y": 534, "h": 42, "tags": ["flowers"]}
+    ]},
+    {"project": "pub-lights", "props": [
+      {"id": "basket-a", "sprite": "props/hanging-basket", "x": 520, "y": 395, "h": 90, "pivot": "top", "tags": ["flowers", "tiltable"]},
+      {"id": "basket-b", "sprite": "props/hanging-basket", "x": 978, "y": 458, "h": 80, "pivot": "top", "tags": ["flowers", "tiltable"]},
+      {"id": "bird-bath", "sprite": "props/bird-bath", "x": 610, "y": 1316, "h": 100, "tags": ["standing"]}
+    ], "decor": [{"kind": "lights", "points": [[430,412],[700,470],[995,430]], "sag": 40}]}
+  ]
+}

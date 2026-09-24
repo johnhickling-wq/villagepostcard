@@ -1,0 +1,182 @@
+{
+  "colonel": {
+    "name": "Colonel Rupert Whitby", "short": "The Colonel", "role": "Chair, Best-Kept Village Committee",
+    "portrait": "portraits/colonel", "home": "village-green", "color": "#5f7340",
+    "likes": ["crooked", "litter", "toppled", "faded"],
+    "lines": {
+      "fix": ["{count} {thing} at {scene}. Deal with them and I'll sleep soundly!", "Some rotter has left {thing} all over {scene}. {count} of them, I counted. Sort it out, would you?", "Standards, my dear photographer! {count} {thing} at {scene}, if you please."],
+      "fixAny": ["Sweep through the village and deal with {count} {thing}. Carry on!", "The judges notice {thing}, you know. Deal with {count} of 'em anywhere you like."],
+      "cat": ["That ginger cat has been sitting on my newspaper again. Find the creature {count} times, would you?"],
+      "stamps": ["I want a three-stamp postcard of {scene}. Nothing less will do for the Committee."],
+      "condition": ["Take me a postcard in {condition}. The Committee likes to see the village in all weathers."],
+      "combo": ["Chop chop! Fix {count} things in one smart run. A ×{count} combo, as the young people say."],
+      "nohint": ["Finish a scene without your magnifying glass. Show some grit!"],
+      "quick": ["Could you tidy a scene in under {seconds} seconds? We may need to be quick when the judges come."],
+      "plays": ["Pop over to {scene} and take {count} more postcards. For the Committee's scrapbook."],
+      "collect": ["Find {count} keepsakes for the village scrapbook. The judges adore a bit of history."]
+    },
+    "thanks": ["Splendid! Absolutely first rate.", "Jolly good show. The Committee thanks you.", "Capital! I'll mention you in the minutes."],
+    "letters": [
+      "My dear photographer, I've been chair of the Committee for eleven years and we have never placed higher than 'Commended'. With you here, I rather think this is our year.",
+      "I was in the Royal Engineers, you know. Bridges, mostly. Now I spend my days worrying about bunting. I find I don't mind a bit.",
+      "Mrs Whitby, God rest her, planted the daffodils on the Green. Every spring I count them. Four hundred and twelve this year.",
+      "Between ourselves, I've no idea what the judges look for. I simply imagine Mrs Whitby walking round with me and try not to disappoint her.",
+      "You've become part of the village, you know. Whatever the judges say, Honeycombe is prouder of itself than it has been in years. That's your doing."
+    ]
+  },
+  "postmistress": {
+    "name": "Mrs Edna Pemberton", "short": "Mrs Pemberton", "role": "Postmistress",
+    "portrait": "portraits/postmistress", "home": "high-street", "color": "#a24b3c",
+    "likes": ["grimy", "faded", "litter", "wilted"],
+    "lines": {
+      "fix": ["Between you and me, {scene} is a disgrace. {count} {thing}! Could you see to it, dear?", "I've had three complaints this morning about {thing} at {scene}. {count} of them, apparently.", "Your postcards sell ever so well, dear, but not with {thing} in them. {count} at {scene}, please."],
+      "fixAny": ["Could you deal with {count} {thing}, dear? Anywhere at all. I'll put the kettle on."],
+      "cat": ["Have you seen Marmalade? She's meant to be minding the stamps. Find her {count} times for me, dear."],
+      "stamps": ["The Post Office stocks only the finest postcards. Three stamps of {scene}, please, dear."],
+      "condition": ["A postcard in {condition} would sell beautifully this week. Could you manage one?"],
+      "combo": ["Quick hands, dear! Fix {count} in a row. A ×{count} combo, is it? My nephew explained it."],
+      "nohint": ["No peeping with that glass, dear! One scene without a hint, just to show them."],
+      "quick": ["Could you tidy a whole scene in {seconds} seconds? The 11:40 goes at 11:41."],
+      "plays": ["We've sold out of {scene} postcards! {count} more, if you can, dear."],
+      "collect": ["If you find any little treasures, bring {count} to the Post Office. I'll put them in the window."]
+    },
+    "thanks": ["Oh, you are a dear. Thank you!", "Lovely! I'll tell everyone it was you.", "Marvellous. That'll give them something to talk about."],
+    "letters": [
+      "Dear, I've run this Post Office for thirty-one years. I know everybody's business, but I keep it to myself. Mostly.",
+      "Your postcards go all over the country now. I had one returned from Dundee marked 'Too lovely to deliver'. Framed it, I did.",
+      "Mr Pemberton proposed to me at the kiosk, you know. He dropped the ring down the drain. We found it on the Tuesday.",
+      "Between ourselves, the Colonel is soft as butter. He brings me a bunch of the Green's daffodils every Easter and pretends they're from the Committee.",
+      "You're one of us now, dear. I've put your name on the parish Christmas card list. There's no going back."
+    ]
+  },
+  "stationmaster": {
+    "name": "Albert Figg", "short": "Mr Figg", "role": "Stationmaster, Honeycombe Halt",
+    "portrait": "portraits/stationmaster", "home": "railway-halt", "color": "#3f5b6b",
+    "likes": ["litter", "crooked", "toppled", "unlit"],
+    "lines": {
+      "fix": ["Beg pardon, but there's {thing} at {scene}. {count} of them. The Great Western would be appalled.", "Mr Figg reporting: {count} {thing} at {scene}. Not on my watch, if you'd be so kind.", "Passengers deserve better than {thing}, I always say. {count} at {scene}, please."],
+      "fixAny": ["Keep the line tidy! {count} {thing}, wherever you spot them."],
+      "cat": ["That cat rides the milk train, you know. Find her {count} times and I'll give her a ticket."],
+      "stamps": ["Punctual, tidy and three stamps. That's the railway way. A three-stamp postcard of {scene}, please."],
+      "condition": ["I do like the Halt in {condition}. Would you take one for the waiting room?"],
+      "combo": ["Like clockwork! Fix {count} in a row without stopping. A ×{count} combo."],
+      "nohint": ["A good railwayman needs no spyglass. One scene, no hints."],
+      "quick": ["Could you tidy a scene in under {seconds} seconds? The branch line waits for no one. Well, it does. But it shouldn't."],
+      "plays": ["{count} more postcards of {scene}, please. For the timetable board."],
+      "collect": ["Keep an eye out for railway keepsakes. {count} of anything will do."]
+    },
+    "thanks": ["Right on time. Thank you kindly!", "Shipshape and Bristol fashion!", "Much obliged. The Great Western thanks you."],
+    "letters": [
+      "Thirty-two years on the railway, and the Halt has won 'Best-Kept Station' four times. Five, if you count the year the judge fell asleep.",
+      "The milk train comes through at 6:12. I've never once seen it on time, and I've never once complained.",
+      "My late brother Harold drove the Cheltenham express. I still wave at every engine, just in case.",
+      "They say the branch line might close one day. I say: not while there's a flower bed on my platform.",
+      "I've put your photograph of the Halt up in the waiting room. Passengers ask who took it. I say, 'A friend of the line.'"
+    ]
+  },
+  "landlady": {
+    "name": "Mabel Tuck", "short": "Mabel", "role": "Landlady, The Bee & Bramble",
+    "portrait": "portraits/landlady", "home": "bee-and-bramble", "color": "#b5652b",
+    "likes": ["litter", "wilted", "toppled", "unlit"],
+    "lines": {
+      "fix": ["Ooh, {scene} is in a state, love! {count} {thing}. Sort them and there's a pie in it for you.", "My regulars have left {thing} all over {scene}. {count} of them. Honestly!", "Be a treasure and deal with {count} {thing} at {scene}?"],
+      "fixAny": ["Round the village, love! {count} {thing}, wherever you find them."],
+      "cat": ["Marmalade's been at my kippers again. Track her down {count} times, would you?"],
+      "stamps": ["I want a postcard of {scene} for over the bar. Three stamps, mind!"],
+      "condition": ["The garden looks lovely in {condition}. Take one for the pub wall?"],
+      "combo": ["Quick as a pint on a Saturday! A ×{count} combo, love."],
+      "nohint": ["Go on, no hints this time. I've got a shilling on you."],
+      "quick": ["Could you tidy a scene in {seconds} seconds? Last orders!"],
+      "plays": ["{count} postcards of {scene}, love. The tourists buy them by the dozen."],
+      "collect": ["Find {count} bits and bobs for the pub's curiosity shelf?"]
+    },
+    "thanks": ["You little treasure! Thanks, love.", "Lovely! First half's on me.", "Ha! Wait till I tell the regulars!"],
+    "letters": [
+      "The Bee & Bramble has been in my family since 1790. We've had highwaymen, a Prime Minister, and a very rude goose.",
+      "The secret to a good ploughman's is the pickle. The secret to the pickle is that I'll never tell you.",
+      "My Stan proposed to me in the snug. Mind you, he'd proposed to three others first. I was the only one who said yes.",
+      "The Reverend comes in every Thursday for 'parish business'. Parish business is my steak and kidney pie.",
+      "You've got a stool with your name on it now, love. Stan carved it himself. Don't look too closely at the spelling."
+    ]
+  },
+  "vicar": {
+    "name": "The Reverend Hollis", "short": "The Reverend", "role": "Vicar of St Aldhelm's",
+    "portrait": "portraits/vicar", "home": "st-aldhelms", "color": "#4d4a6b",
+    "likes": ["cobweb", "grimy", "weeds", "pigeon"],
+    "lines": {
+      "fix": ["Forgive me, but {scene} has {count} {thing}. Cleanliness is next to godliness, after all.", "I've been praying about the {thing} at {scene}. {count} of them. Perhaps you are the answer?", "Might I ask a small kindness? {count} {thing} at {scene}."],
+      "fixAny": ["Would you tend to {count} {thing}, wherever you find them? Bless you."],
+      "cat": ["The cat slept through my sermon again. Would you find her {count} times for me?"],
+      "stamps": ["A postcard of {scene} for the parish magazine, three stamps if you can manage it."],
+      "condition": ["There's something heavenly about {condition}. Would you capture it for me?"],
+      "combo": ["Swift as a bell-ringer! A ×{count} combo, if you please."],
+      "nohint": ["Have faith! Finish one scene without a hint."],
+      "quick": ["Could you tidy a scene in under {seconds} seconds? My sermons could learn from you."],
+      "plays": ["{count} postcards of {scene} for the church bazaar, please."],
+      "collect": ["Keepsakes for the church bazaar! {count} would be wonderful."]
+    },
+    "thanks": ["Bless you! Truly.", "Wonderful, simply wonderful. Thank you.", "The bells shall ring for you! Well, at six o'clock anyway."],
+    "letters": [
+      "I arrived in Honeycombe two years ago with a bicycle and a box of books. I'm told I'm still 'the new vicar'. I expect I will be for thirty years.",
+      "St Aldhelm's has eight bells and six bell-ringers. We make up the difference with enthusiasm.",
+      "Mabel's steak and kidney pie is the closest I have come to a religious experience outside the church. Please don't tell the Bishop.",
+      "I bicycle to the outlying farms every Wednesday. The hills are steep, but the views are a sermon in themselves.",
+      "Thank you for everything you've done. You've reminded us that caring for a place is a way of loving it."
+    ]
+  },
+  "beekeeper": {
+    "name": "Nan Honeysett", "short": "Nan Honeysett", "role": "Beekeeper, Rose Cottage",
+    "portrait": "portraits/beekeeper", "home": "rose-cottage", "color": "#c28a1e",
+    "likes": ["wilted", "weeds", "faded", "litter"],
+    "lines": {
+      "fix": ["My bees are fretting about the {thing} at {scene}, dearie. {count} of them.", "The bees told me there's {count} {thing} at {scene}. They're never wrong, bless them.", "Would you fix {count} {thing} at {scene}? I'd do it myself, but my knees won't."],
+      "fixAny": ["{count} {thing}, wherever they're hiding. The bees will be ever so grateful."],
+      "cat": ["That ginger cat keeps sleeping on my hives. Find her {count} times, dearie?"],
+      "stamps": ["A three-stamp postcard of {scene}, please. I'll show it to the bees."],
+      "condition": ["The bees go quiet in {condition}. Would you take a postcard of it?"],
+      "combo": ["Busy as a bee! A ×{count} combo, dearie."],
+      "nohint": ["No magnifying glass this time. Trust your eyes, like a bee."],
+      "quick": ["Tidy a scene in {seconds} seconds? Faster than a swarm!"],
+      "plays": ["{count} more postcards of {scene}. My grandson collects them."],
+      "collect": ["Find {count} little treasures for my mantelpiece?"]
+    },
+    "thanks": ["Oh, you are a honey. Thank you!", "The bees are humming with joy!", "Bless your heart. Have a jar of honey."],
+    "letters": [
+      "I've kept bees at Rose Cottage for fifty-nine years. You must tell the bees everything, you know: births, marriages, and the cricket scores.",
+      "When my Walter died I told the bees first. They hummed all night. I like to think they were singing to him.",
+      "The secret to good honey is good neighbours. Clover in the fields, roses in the gardens, lime trees by the church.",
+      "I told the bees about you. They were very interested. They think you should settle down here.",
+      "When you go travelling, take a jar of my honey. A spoonful of Honeycombe, wherever you are."
+    ]
+  },
+  "postman": {
+    "name": "Percy Budd", "short": "Percy", "role": "Postman",
+    "portrait": "portraits/postman", "home": "weavers-row", "color": "#2f4f86",
+    "likes": ["litter", "crooked", "pigeon", "grimy"],
+    "lines": {
+      "fix": ["Oi! Well, sorry. {count} {thing} at {scene}. Nearly came off my bike!", "Delivered the post at {scene} and counted {count} {thing}. Can you sort 'em?", "Quick one, as I'm late again: {count} {thing} at {scene}."],
+      "fixAny": ["{count} {thing} all over my round. Would you clear them?"],
+      "cat": ["That cat follows me on my round. Spot her {count} times, go on!"],
+      "stamps": ["Three stamps on a postcard of {scene}. Makes my job look good!"],
+      "condition": ["I'd love a postcard of anywhere in {condition}. For the sorting office wall."],
+      "combo": ["Fast as the Royal Mail! Well, faster. A ×{count} combo!"],
+      "nohint": ["Bet you can't do a whole scene without a hint!"],
+      "quick": ["Tidy a scene in under {seconds} seconds? Faster than my round!"],
+      "plays": ["{count} postcards of {scene} for the sorting office, please!"],
+      "collect": ["Found {count} old bits in the lanes? The Post Office pays a penny for curios!"]
+    },
+    "thanks": ["Cheers! You're a star.", "Brilliant! Right, I'm late.", "Smashing. Tell Mrs Pemberton I was on time."],
+    "letters": [
+      "I've been the postman here since I was seventeen. That's four years! I know every dog, gate and puddle in the parish.",
+      "I'm saving up for a motorbike. Mrs Pemberton says over her dead body. I think she's joking.",
+      "I'm sweet on Dot from the tea room. I've delivered her a card every day for a month. Haven't signed any of them yet.",
+      "I signed the card! She said yes to the pictures on Saturday! Don't tell Mrs Pemberton. She knows already, doesn't she.",
+      "When you go off to your next village, I'll deliver your letters myself. Even if it's Cornwall. Especially if it's Cornwall."
+    ]
+  },
+  "editor": {
+    "name": "Miss Clementine Ashby", "short": "Miss Ashby", "role": "Editor, Wold & Vale Postcard Co.",
+    "portrait": "portraits/editor", "home": null, "color": "#8a3b4f", "letterOnly": true,
+    "likes": [], "lines": {}, "thanks": [], "letters": []
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+scratch_art/
+dist/
+tools/art/.spend.log
+*.log
+.DS_Store
+art_src/cut/

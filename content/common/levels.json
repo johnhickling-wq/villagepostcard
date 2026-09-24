@@ -1,0 +1,28 @@
+{
+  "xpBase": 80,
+  "xpStep": 45,
+  "titles": [[1, "Hobbyist"], [3, "Keen Amateur"], [6, "Weekend Snapper"], [10, "Village Photographer"], [14, "Postcard Maker"], [19, "County Correspondent"], [25, "Society Photographer"], [32, "By Royal Appointment"]],
+  "rewards": {
+    "2":  {"flashbulbs": 2, "pennies": 40},
+    "3":  {"perk": "loupe-1", "pennies": 50},
+    "4":  {"flashbulbs": 1, "secondClass": 1, "pennies": 50},
+    "5":  {"cosmetic": "film-sepia", "pennies": 60},
+    "6":  {"flashbulbs": 2, "pennies": 60},
+    "7":  {"perk": "loupe-2", "pennies": 70},
+    "8":  {"cosmetic": "frame-kraft", "flashbulbs": 1, "pennies": 70},
+    "9":  {"secondClass": 1, "pennies": 80},
+    "10": {"cosmetic": "postmark-crown", "flashbulbs": 2, "pennies": 100},
+    "11": {"cosmetic": "film-kodachrome", "pennies": 80},
+    "12": {"perk": "loupe-3", "flashbulbs": 1, "pennies": 80},
+    "13": {"flashbulbs": 2, "pennies": 90},
+    "14": {"secondClass": 1, "cosmetic": "frame-gilt", "pennies": 100},
+    "15": {"cosmetic": "film-cyanotype", "pennies": 100}
+  },
+  "defaultReward": {"flashbulbs": 1, "pennies": 100},
+  "perks": {
+    "loupe-1": {"name": "Steady Hands", "text": "The loupe recharges 10% faster.", "loupe": 0.9},
+    "loupe-2": {"name": "Sharp Eyes", "text": "The loupe recharges 20% faster.", "loupe": 0.8},
+    "loupe-3": {"name": "Eagle Eye", "text": "The loupe recharges 30% faster.", "loupe": 0.7}
+  },
+  "xpPerPlay": {"base": 30, "perFault": 4, "perStamp": 15}
+}

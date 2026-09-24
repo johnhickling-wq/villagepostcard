@@ -1,0 +1,179 @@
+{
+ "style": "A whimsical hand-made collage illustration style: cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm vintage palette.",
+ "sheetRules": "A sprite sheet of exactly 12 separate objects arranged in a neat grid of 4 columns and 3 rows, each object isolated with generous empty space around it and not touching any other object, all drawn at a consistent scale, lit from the upper left, seen from a slight three-quarter eye-level view. The background must be one perfectly flat, solid, uniform pure magenta colour (#FF00FF) with no texture, no shadows, no gradients and no ground. No text, letters or numbers anywhere.",
+ "sheets": {
+  "litter-b": {
+   "model": "openai/gpt-5.4-image-2",
+   "items": [
+    "ginger-beer-bottle",
+    "paper-bag",
+    "orange-peel",
+    "matchbox",
+    "flat-cap",
+    "paper-plate",
+    "balloon",
+    "bunting-scrap",
+    "twigs",
+    "branch",
+    "leaf-clump",
+    "roof-slate"
+   ],
+   "prompt": "Objects, in reading order: a brown and cream stone ginger beer bottle lying on its side, a crumpled brown paper sweet bag, a curl of orange peel, an empty open matchbox, a lost tweed flat cap, a paper plate with cake crumbs, a deflated red party balloon on a string, a torn scrap of triangular bunting flags on a string, a small bundle of fallen twigs, a broken leafy branch, a clump of wet fallen leaves, a fallen grey Cotswold stone roof slate."
+  },
+  "critters": {
+   "model": "openai/gpt-5.4-image-2",
+   "items": [
+    "dandelion",
+    "thistle",
+    "nettle",
+    "dock",
+    "pigeon-a",
+    "pigeon-b",
+    "pigeon-fly",
+    "cat-sit",
+    "cat-loaf",
+    "cat-lie",
+    "cat-walk"
+   ],
+   "prompt": "Objects, in reading order: a scruffy dandelion weed clump with yellow flowers and seed clocks, a spiky purple thistle weed, a clump of stinging nettles, a big dock leaf weed, a tangle of white-flowered bindweed. Then a plump grey wood pigeon sitting facing left, a plump grey pigeon sitting facing right and looking over its shoulder, a grey pigeon flying with wings raised. Then a fluffy marmalade ginger tabby cat sitting upright facing the viewer, the same ginger cat curled up asleep in a loaf, the same ginger cat lying stretched out along a ledge with its tail dangling, the same ginger cat walking side-on."
+  },
+  "props-a": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "sign-hanging",
+    "sign-pub",
+    "sign-teashop",
+    "a-board",
+    "geranium-pot",
+    "window-box",
+    "hanging-basket",
+    "flower-tub",
+    "litter-bin",
+    "milk-churn",
+    "watering-can",
+    "wheelbarrow"
+   ],
+   "prompt": "Objects (1950s English village props), in reading order: a blank oval cream wooden hanging shop signboard with a painted border and two short chains rising from its top edge (no bracket), a hanging wooden pub signboard with two short chains at the top edge painted with a picture of a bumblebee on a bramble branch, a hanging wooden tea shop signboard with two short chains at the top edge painted with a picture of a teapot, a wooden sandwich-board A-frame sign with a blank blackboard, a terracotta pot of red geraniums, a wooden window box overflowing with flowers, a hanging flower basket on three chains, a half-barrel wooden tub of flowers, a green 1950s metal litter bin, a metal milk churn, a galvanised watering can, a wooden wheelbarrow."
+  },
+  "props-b": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "bicycle",
+    "bird-bath",
+    "nameboard",
+    "enamel-sign",
+    "station-clock",
+    "weathervane",
+    "bench",
+    "deckchair",
+    "bird-feeder",
+    "scarecrow",
+    "bee-skep",
+    "gnome"
+   ],
+   "prompt": "Objects (1950s English village props), in reading order: a black bicycle with a wicker basket of flowers leaning on its stand, a stone bird bath, a long blank cream railway station nameboard with a dark border mounted on two short posts, a small blank blue enamel wall sign with rounded corners and a white border, a round railway station clock on a hanging bracket, a cockerel weathervane on a short pole with a compass cross, a slatted wooden park bench, a red and white striped deckchair, a wooden hanging bird feeder, a friendly scarecrow in a straw hat on a pole, a traditional woven straw bee skep, a cheerful garden gnome with a red hat."
+  },
+  "props-c": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "barrel",
+    "stone-trough",
+    "duck-house",
+    "luggage-trolley",
+    "lavender-pot",
+    "beehive",
+    "cartwheel",
+    "flour-sack",
+    "trug",
+    "hamper",
+    "milk-crate",
+    "noticeboard"
+   ],
+   "prompt": "Objects (1950s English village props), in reading order: an old oak barrel standing upright, a long carved stone trough planted with flowers, a little wooden duck house on a floating raft, a wooden railway luggage trolley loaded with a trunk and a hat box, a blue glazed pot of lavender, a white wooden beehive, an old wooden cartwheel, a tied cloth sack of flour, a wooden garden trug full of vegetables, a wicker picnic hamper, a wire milk crate of glass milk bottles, a small wooden parish noticeboard on two legs with a little pitched roof."
+  },
+  "collect-a": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "cowslip",
+    "dog-rose",
+    "harebell",
+    "cranesbill",
+    "oxeye-daisy",
+    "platform-ticket",
+    "luggage-label",
+    "porter-badge",
+    "guard-whistle",
+    "railway-lamp",
+    "rosette",
+    "jam-jar"
+   ],
+   "prompt": "Small collectible keepsakes, in reading order: a pressed cowslip flower specimen, a pressed pink dog rose specimen, a pressed blue harebell specimen, a pressed violet meadow cranesbill specimen, a pressed ox-eye daisy specimen, a small pink card railway platform ticket, a brown paper luggage label with a string, a polished brass railway porter's cap badge, a brass guard's whistle on a chain, a railwayman's red and silver paraffin hand lamp, a red first-prize show rosette with ribbons, a jar of strawberry jam with a gingham cloth lid."
+  },
+  "collect-b": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "raffle-ticket",
+    "coconut",
+    "victoria-sponge",
+    "tombola-drum",
+    "card-hedgehog",
+    "card-hare",
+    "card-kingfisher",
+    "card-owl",
+    "card-dormouse",
+    "honey-jar",
+    "bee-brooch",
+    "beeswax-candle"
+   ],
+   "prompt": "Small collectible keepsakes, in reading order: a pink cloakroom raffle ticket, a hairy coconut from a coconut shy, a slice of Victoria sponge cake on a doily, a little wooden tombola drum, then five vintage cigarette-card style illustrated cards with cream borders showing respectively a hedgehog, a brown hare, a kingfisher, a barn owl and a sleepy dormouse, then a jar of golden honey, a gold bee brooch, a beeswax candle."
+  },
+  "collect-c": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "honey-dipper",
+    "toy-skep",
+    "brass-key",
+    "thimble",
+    "pocket-watch",
+    "teacup",
+    "tin-soldier",
+    "postcard-stamp",
+    "camera-badge",
+    "film-roll",
+    "magnifier",
+    "flashbulb"
+   ],
+   "prompt": "Small collectible keepsakes and photographer's items, in reading order: a wooden honey dipper, a tiny toy straw bee skep, an ornate brass key, a silver thimble, a gold pocket watch on a chain, a floral china teacup on a saucer, a painted tin toy soldier, a vintage postage stamp with perforated edges showing a bee, an enamel camera club lapel badge, a roll of camera film, a brass magnifying glass, a vintage camera flashbulb."
+  },
+  "villagers": {
+   "model": "google/gemini-3.1-flash-image",
+   "items": [
+    "colonel",
+    "postmistress",
+    "stationmaster",
+    "landlady",
+    "vicar",
+    "beekeeper",
+    "postman",
+    "editor"
+   ],
+   "prompt": "OVERRIDE: exactly 8 head-and-shoulders character portraits arranged in a grid of 4 columns and 2 rows, each portrait cut out as its own oval of painted paper with a torn cream paper edge, generous magenta space between them. Friendly, whimsical 1950s English villagers in a charming picture-book style, gentle expressions. In reading order: Colonel Rupert Whitby, an elderly retired army colonel with a magnificent white moustache, tweed jacket and regimental tie; Mrs Edna Pemberton, a plump postmistress in her sixties with spectacles on a chain and a cardigan; Albert Figg, a stationmaster with grey sideburns in a peaked railway cap and waistcoat; Mabel Tuck, a jolly red-cheeked pub landlady with curly auburn hair and an apron; the Reverend Hollis, a lanky young vicar with a dog collar, round glasses and untidy hair; Nan Honeysett, a tiny twinkly old beekeeper lady with a straw hat and a veil pushed back; Percy Budd, a young freckled postman in a blue uniform cap; Miss Clementine Ashby, a smart editor of a postcard company with a neat bob, red lipstick and a pencil behind her ear."
+  }
+ },
+ "manual": {
+  "litter-a": [
+   "crisp-packet",
+   "milk-bottle",
+   "_coffee-cup",
+   "banana-peel",
+   "apple-core",
+   "newspaper",
+   "ice-cream",
+   "sweet-wrapper",
+   "tin-can",
+   "cardboard-box",
+   "umbrella",
+   "old-boot"
+  ]
+ }
+}

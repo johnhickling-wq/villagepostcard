@@ -1,0 +1,621 @@
+{
+ "sprites": {
+  "litter/crisp-packet": {
+   "atlas": "litter.webp",
+   "x": 0,
+   "y": 0,
+   "w": 183,
+   "h": 240,
+   "color": "#a97c63"
+  },
+  "litter/milk-bottle": {
+   "atlas": "litter.webp",
+   "x": 186,
+   "y": 0,
+   "w": 99,
+   "h": 240,
+   "color": "#cec6ad"
+  },
+  "litter/banana-peel": {
+   "atlas": "litter.webp",
+   "x": 288,
+   "y": 0,
+   "w": 227,
+   "h": 240,
+   "color": "#cda146"
+  },
+  "litter/apple-core": {
+   "atlas": "litter.webp",
+   "x": 518,
+   "y": 0,
+   "w": 158,
+   "h": 240,
+   "color": "#c27d64"
+  },
+  "litter/tin-can": {
+   "atlas": "litter.webp",
+   "x": 679,
+   "y": 0,
+   "w": 126,
+   "h": 240,
+   "color": "#888175"
+  },
+  "litter/umbrella": {
+   "atlas": "litter.webp",
+   "x": 808,
+   "y": 0,
+   "w": 152,
+   "h": 240,
+   "color": "#456058"
+  },
+  "litter/old-boot": {
+   "atlas": "litter.webp",
+   "x": 963,
+   "y": 0,
+   "w": 220,
+   "h": 240,
+   "color": "#54493d"
+  },
+  "litter/paper-bag": {
+   "atlas": "litter.webp",
+   "x": 1186,
+   "y": 0,
+   "w": 186,
+   "h": 240,
+   "color": "#a57e61"
+  },
+  "litter/balloon": {
+   "atlas": "litter.webp",
+   "x": 0,
+   "y": 243,
+   "w": 187,
+   "h": 240,
+   "color": "#aa4043"
+  },
+  "litter/cardboard-box": {
+   "atlas": "litter.webp",
+   "x": 386,
+   "y": 243,
+   "w": 240,
+   "h": 237,
+   "color": "#a98355"
+  },
+  "litter/ice-cream": {
+   "atlas": "litter.webp",
+   "x": 629,
+   "y": 243,
+   "w": 159,
+   "h": 232,
+   "color": "#c89c7d"
+  },
+  "litter/newspaper": {
+   "atlas": "litter.webp",
+   "x": 791,
+   "y": 243,
+   "w": 235,
+   "h": 225,
+   "color": "#a0907a"
+  },
+  "litter/bunting-scrap": {
+   "atlas": "litter.webp",
+   "x": 1029,
+   "y": 243,
+   "w": 240,
+   "h": 208,
+   "color": "#a88175"
+  },
+  "litter/branch": {
+   "atlas": "litter.webp",
+   "x": 190,
+   "y": 243,
+   "w": 193,
+   "h": 240,
+   "color": "#86714f"
+  },
+  "litter/leaf-clump": {
+   "atlas": "litter.webp",
+   "x": 243,
+   "y": 486,
+   "w": 240,
+   "h": 198,
+   "color": "#855942"
+  },
+  "litter/flat-cap": {
+   "atlas": "litter.webp",
+   "x": 729,
+   "y": 486,
+   "w": 240,
+   "h": 187,
+   "color": "#786557"
+  },
+  "litter/paper-plate": {
+   "atlas": "litter.webp",
+   "x": 972,
+   "y": 486,
+   "w": 229,
+   "h": 185,
+   "color": "#decab5"
+  },
+  "litter/sweet-wrapper": {
+   "atlas": "litter.webp",
+   "x": 0,
+   "y": 689,
+   "w": 240,
+   "h": 183,
+   "color": "#5f8683"
+  },
+  "litter/orange-peel": {
+   "atlas": "litter.webp",
+   "x": 243,
+   "y": 689,
+   "w": 208,
+   "h": 183,
+   "color": "#e49151"
+  },
+  "litter/matchbox": {
+   "atlas": "litter.webp",
+   "x": 454,
+   "y": 689,
+   "w": 228,
+   "h": 180,
+   "color": "#b8987e"
+  },
+  "litter/ginger-beer-bottle": {
+   "atlas": "litter.webp",
+   "x": 685,
+   "y": 689,
+   "w": 240,
+   "h": 152,
+   "color": "#926f59"
+  },
+  "litter/twigs": {
+   "atlas": "litter.webp",
+   "x": 0,
+   "y": 486,
+   "w": 240,
+   "h": 200,
+   "color": "#805f5a"
+  },
+  "critters/dandelion": {
+   "atlas": "critters.webp",
+   "x": 0,
+   "y": 0,
+   "w": 195,
+   "h": 260,
+   "color": "#9f8b68"
+  },
+  "critters/thistle": {
+   "atlas": "critters.webp",
+   "x": 198,
+   "y": 0,
+   "w": 176,
+   "h": 260,
+   "color": "#71645c"
+  },
+  "critters/nettle": {
+   "atlas": "critters.webp",
+   "x": 377,
+   "y": 0,
+   "w": 169,
+   "h": 260,
+   "color": "#817855"
+  },
+  "critters/dock": {
+   "atlas": "critters.webp",
+   "x": 549,
+   "y": 0,
+   "w": 199,
+   "h": 260,
+   "color": "#908251"
+  },
+  "critters/cat-sit": {
+   "atlas": "critters.webp",
+   "x": 751,
+   "y": 0,
+   "w": 157,
+   "h": 260,
+   "color": "#b98955"
+  },
+  "critters/pigeon-b": {
+   "atlas": "critters.webp",
+   "x": 911,
+   "y": 0,
+   "w": 229,
+   "h": 256,
+   "color": "#878082"
+  },
+  "critters/pigeon-fly": {
+   "atlas": "critters.webp",
+   "x": 0,
+   "y": 263,
+   "w": 260,
+   "h": 253,
+   "color": "#8e8482"
+  },
+  "critters/cat-walk": {
+   "atlas": "critters.webp",
+   "x": 263,
+   "y": 263,
+   "w": 225,
+   "h": 241,
+   "color": "#bb844c"
+  },
+  "critters/pigeon-a": {
+   "atlas": "critters.webp",
+   "x": 491,
+   "y": 263,
+   "w": 260,
+   "h": 235,
+   "color": "#81797e"
+  },
+  "critters/cat-lie": {
+   "atlas": "critters.webp",
+   "x": 754,
+   "y": 263,
+   "w": 247,
+   "h": 224,
+   "color": "#ad8152"
+  },
+  "critters/cat-loaf": {
+   "atlas": "critters.webp",
+   "x": 0,
+   "y": 519,
+   "w": 211,
+   "h": 170,
+   "color": "#b0783e"
+  },
+  "props/bicycle": {
+   "atlas": "props.webp",
+   "x": 0,
+   "y": 0,
+   "w": 295,
+   "h": 296,
+   "color": "#745d5a"
+  },
+  "props/deckchair": {
+   "atlas": "props.webp",
+   "x": 1642,
+   "y": 299,
+   "w": 208,
+   "h": 247,
+   "color": "#b07e69"
+  },
+  "props/bird-feeder": {
+   "atlas": "props.webp",
+   "x": 298,
+   "y": 0,
+   "w": 191,
+   "h": 290,
+   "color": "#876954"
+  },
+  "props/bee-skep": {
+   "atlas": "props.webp",
+   "x": 238,
+   "y": 817,
+   "w": 186,
+   "h": 203,
+   "color": "#9c7745"
+  },
+  "props/sign-pub": {
+   "atlas": "props.webp",
+   "x": 887,
+   "y": 0,
+   "w": 168,
+   "h": 281,
+   "color": "#978971"
+  },
+  "props/trug": {
+   "atlas": "props.webp",
+   "x": 1468,
+   "y": 817,
+   "w": 251,
+   "h": 190,
+   "color": "#84704d"
+  },
+  "props/a-board": {
+   "atlas": "props.webp",
+   "x": 1253,
+   "y": 0,
+   "w": 221,
+   "h": 274,
+   "color": "#5f4d3c"
+  },
+  "props/hanging-basket": {
+   "atlas": "props.webp",
+   "x": 1477,
+   "y": 0,
+   "w": 198,
+   "h": 272,
+   "color": "#7e694a"
+  },
+  "props/barrel": {
+   "atlas": "props.webp",
+   "x": 1678,
+   "y": 0,
+   "w": 182,
+   "h": 270,
+   "color": "#77644f"
+  },
+  "props/luggage-trolley": {
+   "atlas": "props.webp",
+   "x": 226,
+   "y": 568,
+   "w": 246,
+   "h": 243,
+   "color": "#805e4b"
+  },
+  "props/bird-bath": {
+   "atlas": "props.webp",
+   "x": 189,
+   "y": 299,
+   "w": 183,
+   "h": 265,
+   "color": "#9a8a76"
+  },
+  "props/geranium-pot": {
+   "atlas": "props.webp",
+   "x": 375,
+   "y": 299,
+   "w": 200,
+   "h": 264,
+   "color": "#93603b"
+  },
+  "props/sign-teashop": {
+   "atlas": "props.webp",
+   "x": 578,
+   "y": 299,
+   "w": 168,
+   "h": 263,
+   "color": "#ad9472"
+  },
+  "props/litter-bin": {
+   "atlas": "props.webp",
+   "x": 749,
+   "y": 299,
+   "w": 169,
+   "h": 262,
+   "color": "#5b704b"
+  },
+  "props/weathervane": {
+   "atlas": "props.webp",
+   "x": 921,
+   "y": 299,
+   "w": 186,
+   "h": 257,
+   "color": "#9c6a59"
+  },
+  "props/milk-churn": {
+   "atlas": "props.webp",
+   "x": 1110,
+   "y": 299,
+   "w": 126,
+   "h": 250,
+   "color": "#989187"
+  },
+  "props/lavender-pot": {
+   "atlas": "props.webp",
+   "x": 0,
+   "y": 299,
+   "w": 186,
+   "h": 266,
+   "color": "#70758e"
+  },
+  "props/cartwheel": {
+   "atlas": "props.webp",
+   "x": 0,
+   "y": 568,
+   "w": 223,
+   "h": 246,
+   "color": "#7f685a"
+  },
+  "props/beehive": {
+   "atlas": "props.webp",
+   "x": 1239,
+   "y": 299,
+   "w": 219,
+   "h": 248,
+   "color": "#c4baac"
+  },
+  "props/flower-tub": {
+   "atlas": "props.webp",
+   "x": 475,
+   "y": 568,
+   "w": 225,
+   "h": 242,
+   "color": "#726047"
+  },
+  "props/station-clock": {
+   "atlas": "props.webp",
+   "x": 703,
+   "y": 568,
+   "w": 208,
+   "h": 228,
+   "color": "#ab8d77"
+  },
+  "props/window-box": {
+   "atlas": "props.webp",
+   "x": 914,
+   "y": 568,
+   "w": 253,
+   "h": 226,
+   "color": "#8a704d"
+  },
+  "props/sign-hanging": {
+   "atlas": "props.webp",
+   "x": 1670,
+   "y": 568,
+   "w": 233,
+   "h": 220,
+   "color": "#ddcfb4"
+  },
+  "props/scarecrow": {
+   "atlas": "props.webp",
+   "x": 492,
+   "y": 0,
+   "w": 267,
+   "h": 285,
+   "color": "#978163"
+  },
+  "props/nameboard": {
+   "atlas": "props.webp",
+   "x": 669,
+   "y": 817,
+   "w": 270,
+   "h": 199,
+   "color": "#b1a28d"
+  },
+  "props/stone-trough": {
+   "atlas": "props.webp",
+   "x": 942,
+   "y": 817,
+   "w": 239,
+   "h": 198,
+   "color": "#94876f"
+  },
+  "props/bench": {
+   "atlas": "props.webp",
+   "x": 1403,
+   "y": 568,
+   "w": 264,
+   "h": 221,
+   "color": "#826a5c"
+  },
+  "props/duck-house": {
+   "atlas": "props.webp",
+   "x": 427,
+   "y": 817,
+   "w": 239,
+   "h": 201,
+   "color": "#8e765f"
+  },
+  "props/watering-can": {
+   "atlas": "props.webp",
+   "x": 0,
+   "y": 817,
+   "w": 235,
+   "h": 206,
+   "color": "#8a8983"
+  },
+  "props/enamel-sign": {
+   "atlas": "props.webp",
+   "x": 0,
+   "y": 1026,
+   "w": 154,
+   "h": 120,
+   "color": "#496597"
+  },
+  "props/flour-sack": {
+   "atlas": "props.webp",
+   "x": 1461,
+   "y": 299,
+   "w": 178,
+   "h": 248,
+   "color": "#b7a48b"
+  },
+  "ui/postcard-stamp": {
+   "atlas": "ui.webp",
+   "x": 0,
+   "y": 0,
+   "w": 166,
+   "h": 200,
+   "color": "#cbb184"
+  },
+  "ui/film-roll": {
+   "atlas": "ui.webp",
+   "x": 169,
+   "y": 0,
+   "w": 166,
+   "h": 200,
+   "color": "#7c6036"
+  },
+  "ui/magnifier": {
+   "atlas": "ui.webp",
+   "x": 338,
+   "y": 0,
+   "w": 151,
+   "h": 200,
+   "color": "#b1998c"
+  },
+  "ui/flashbulb": {
+   "atlas": "ui.webp",
+   "x": 492,
+   "y": 0,
+   "w": 136,
+   "h": 200,
+   "color": "#a5aba3"
+  },
+  "ui/camera-badge": {
+   "atlas": "ui.webp",
+   "x": 631,
+   "y": 0,
+   "w": 196,
+   "h": 195,
+   "color": "#78706b"
+  },
+  "litter/roof-slate": {
+   "atlas": "litter.webp",
+   "x": 486,
+   "y": 486,
+   "w": 240,
+   "h": 195,
+   "color": "#827d79"
+  },
+  "props/gnome": {
+   "atlas": "props.webp",
+   "x": 762,
+   "y": 0,
+   "w": 122,
+   "h": 285,
+   "color": "#8d7265"
+  },
+  "props/noticeboard": {
+   "atlas": "props.webp",
+   "x": 1058,
+   "y": 0,
+   "w": 192,
+   "h": 275,
+   "color": "#a4815c"
+  },
+  "props/milk-crate": {
+   "atlas": "props.webp",
+   "x": 1170,
+   "y": 568,
+   "w": 230,
+   "h": 226,
+   "color": "#ab9f91"
+  },
+  "props/wheelbarrow": {
+   "atlas": "props.webp",
+   "x": 1184,
+   "y": 817,
+   "w": 281,
+   "h": 192,
+   "color": "#846445"
+  },
+  "props/hamper": {
+   "atlas": "props.webp",
+   "x": 1722,
+   "y": 817,
+   "w": 227,
+   "h": 189,
+   "color": "#946e49"
+  }
+ },
+ "images": {
+  "poster/cornwall": {
+   "src": "posters/cornwall.webp",
+   "w": 800,
+   "h": 1200
+  },
+  "poster/highlands": {
+   "src": "posters/highlands.webp",
+   "w": 800,
+   "h": 1192
+  },
+  "poster/provence": {
+   "src": "posters/provence.webp",
+   "w": 800,
+   "h": 1192
+  }
+ }
+}

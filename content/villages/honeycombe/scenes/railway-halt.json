@@ -1,0 +1,587 @@
+{
+ "id": "railway-halt",
+ "name": "Honeycombe Halt",
+ "blurb": "Where the branch line stops, eventually. Mr Figg keeps the platform like a parlour.",
+ "villager": "stationmaster",
+ "plate": "plate/railway-halt",
+ "size": [
+  1000,
+  1500
+ ],
+ "depth": {
+  "farY": 850,
+  "farScale": 0.62,
+  "nearY": 1500,
+  "nearScale": 1.2
+ },
+ "difficultyOffset": 0,
+ "ambience": [
+  "birds",
+  "breeze"
+ ],
+ "sets": [
+  "railway",
+  "flowers",
+  "curios"
+ ],
+ "mess": {
+  "themes": {
+   "railway": 1.6,
+   "general": 1,
+   "picnic": 0.6
+  }
+ },
+ "zones": [
+  {
+   "id": "platform",
+   "poly": [
+    [
+     410,
+     1092
+    ],
+    [
+     398,
+     968
+    ],
+    [
+     520,
+     942
+    ],
+    [
+     640,
+     916
+    ],
+    [
+     720,
+     900
+    ],
+    [
+     790,
+     882
+    ],
+    [
+     852,
+     870
+    ],
+    [
+     880,
+     930
+    ],
+    [
+     915,
+     1040
+    ],
+    [
+     950,
+     1170
+    ],
+    [
+     982,
+     1320
+    ],
+    [
+     986,
+     1478
+    ],
+    [
+     520,
+     1478
+    ],
+    [
+     452,
+     1400
+    ],
+    [
+     400,
+     1310
+    ],
+    [
+     348,
+     1215
+    ],
+    [
+     338,
+     1120
+    ]
+   ]
+  },
+  {
+   "id": "track",
+   "weight": 0.35,
+   "poly": [
+    [
+     890,
+     862
+    ],
+    [
+     925,
+     852
+    ],
+    [
+     960,
+     866
+    ],
+    [
+     992,
+     905
+    ],
+    [
+     992,
+     1240
+    ],
+    [
+     972,
+     1170
+    ],
+    [
+     942,
+     1052
+    ],
+    [
+     904,
+     944
+    ]
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "id": "shelter-base",
+   "line": [
+    [
+     430,
+     958
+    ],
+    [
+     560,
+     936
+    ],
+    [
+     650,
+     918
+    ]
+   ]
+  },
+  {
+   "id": "fence-base",
+   "line": [
+    [
+     665,
+     906
+    ],
+    [
+     760,
+     886
+    ],
+    [
+     848,
+     870
+    ]
+   ]
+  },
+  {
+   "id": "platform-edge",
+   "line": [
+    [
+     872,
+     906
+    ],
+    [
+     905,
+     1010
+    ],
+    [
+     938,
+     1128
+    ]
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "id": "door",
+   "tags": [
+    "paintable",
+    "door"
+   ],
+   "poly": [
+    [
+     281,
+     672
+    ],
+    [
+     288,
+     659
+    ],
+    [
+     300,
+     652
+    ],
+    [
+     318,
+     649
+    ],
+    [
+     336,
+     652
+    ],
+    [
+     347,
+     660
+    ],
+    [
+     352,
+     674
+    ],
+    [
+     352,
+     902
+    ],
+    [
+     296,
+     902
+    ],
+    [
+     294,
+     868
+    ],
+    [
+     281,
+     868
+    ]
+   ]
+  },
+  {
+   "id": "valance",
+   "tags": [
+    "paintable"
+   ],
+   "poly": [
+    [
+     390,
+     652
+    ],
+    [
+     698,
+     652
+    ],
+    [
+     698,
+     677
+    ],
+    [
+     390,
+     677
+    ]
+   ]
+  },
+  {
+   "id": "win-left",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     170,
+     642
+    ],
+    [
+     221,
+     642
+    ],
+    [
+     221,
+     806
+    ],
+    [
+     170,
+     806
+    ]
+   ]
+  },
+  {
+   "id": "win-gable",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     417,
+     460
+    ],
+    [
+     443,
+     460
+    ],
+    [
+     443,
+     561
+    ],
+    [
+     417,
+     561
+    ]
+   ]
+  },
+  {
+   "id": "win-side",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     386,
+     722
+    ],
+    [
+     408,
+     722
+    ],
+    [
+     408,
+     796
+    ],
+    [
+     386,
+     796
+    ]
+   ]
+  }
+ ],
+ "lamps": [
+  {
+   "id": "lamp-left",
+   "x": 155,
+   "y": 392,
+   "r": 58
+  },
+  {
+   "id": "lamp-right",
+   "x": 730,
+   "y": 560,
+   "r": 32
+  }
+ ],
+ "props": [
+  {
+   "id": "nameboard",
+   "sprite": "props/nameboard",
+   "x": 790,
+   "y": 872,
+   "h": 120,
+   "tags": [
+    "tiltable"
+   ],
+   "label": "HONEYCOMBE",
+   "labelBox": [
+    0.12,
+    0.12,
+    0.88,
+    0.47
+   ]
+  },
+  {
+   "id": "clock",
+   "sprite": "props/station-clock",
+   "x": 470,
+   "y": 690,
+   "h": 80,
+   "pivot": "top",
+   "tags": [
+    "tiltable"
+   ]
+  },
+  {
+   "id": "enamel",
+   "sprite": "props/enamel-sign",
+   "x": 251,
+   "y": 712,
+   "h": 42,
+   "tags": [
+    "tiltable"
+   ],
+   "label": "TICKETS",
+   "labelBox": [
+    0.15,
+    0.2,
+    0.85,
+    0.8
+   ],
+   "labelColor": "#f4ecd8"
+  },
+  {
+   "id": "basket",
+   "sprite": "props/hanging-basket",
+   "x": 640,
+   "y": 690,
+   "h": 110,
+   "pivot": "top",
+   "tags": [
+    "flowers",
+    "tiltable"
+   ]
+  },
+  {
+   "id": "churn-a",
+   "sprite": "props/milk-churn",
+   "x": 560,
+   "y": 1010,
+   "h": 165,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "churn-b",
+   "sprite": "props/milk-churn",
+   "x": 612,
+   "y": 992,
+   "h": 150,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "bin",
+   "sprite": "props/litter-bin",
+   "x": 708,
+   "y": 958,
+   "h": 138,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "geraniums",
+   "sprite": "props/geranium-pot",
+   "x": 442,
+   "y": 1112,
+   "h": 115,
+   "tags": [
+    "flowers",
+    "standing"
+   ]
+  }
+ ],
+ "perches": [
+  {
+   "x": 560,
+   "y": 622,
+   "s": 1.0
+  },
+  {
+   "x": 732,
+   "y": 512,
+   "s": 0.9
+  },
+  {
+   "x": 622,
+   "y": 796,
+   "s": 0.95
+  },
+  {
+   "x": 882,
+   "y": 636,
+   "s": 0.85
+  },
+  {
+   "x": 470,
+   "y": 642,
+   "s": 1.0
+  }
+ ],
+ "cats": [
+  {
+   "x": 300,
+   "y": 1000,
+   "pose": "cat-loaf",
+   "s": 1.2
+  },
+  {
+   "x": 622,
+   "y": 1130,
+   "pose": "cat-sit",
+   "s": 1.0
+  },
+  {
+   "x": 236,
+   "y": 846,
+   "pose": "cat-lie",
+   "s": 1.0
+  },
+  {
+   "x": 720,
+   "y": 1280,
+   "pose": "cat-walk",
+   "s": 1.1,
+   "flip": true
+  }
+ ],
+ "chimneys": [
+  [
+   366,
+   128
+  ],
+  [
+   384,
+   128
+  ]
+ ],
+ "neglect": [
+  {
+   "target": "valance",
+   "type": "faded",
+   "amount": 0.6,
+   "project": "halt-paint"
+  },
+  {
+   "target": "win-left",
+   "type": "grimy",
+   "amount": 0.55,
+   "project": "halt-paint"
+  }
+ ],
+ "restoration": [
+  {
+   "project": "halt-paint",
+   "props": []
+  },
+  {
+   "project": "halt-flowers",
+   "props": [
+    {
+     "id": "basket-2",
+     "sprite": "props/hanging-basket",
+     "x": 520,
+     "y": 690,
+     "h": 105,
+     "pivot": "top",
+     "tags": [
+      "flowers",
+      "tiltable"
+     ]
+    },
+    {
+     "id": "tub",
+     "sprite": "props/flower-tub",
+     "x": 846,
+     "y": 1010,
+     "h": 120,
+     "tags": [
+      "flowers"
+     ]
+    },
+    {
+     "id": "trolley",
+     "sprite": "props/luggage-trolley",
+     "x": 478,
+     "y": 1030,
+     "h": 150,
+     "tags": [
+      "standing"
+     ]
+    }
+   ]
+  }
+ ]
+}

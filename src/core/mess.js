@@ -200,6 +200,11 @@ function makeFault(ctx, type, subtlety) {
   return null;
 }
 
+/** Does a box sit mostly on top of (or under) an existing fault? */
+function overlapsFaults(ctx, box) {
+  return ctx.faults.some((f) => G.boundsOverlap(box, G.shapeBounds(f.shape)) > 0.3);
+}
+
 function clearOfOthers(ctx, shape, spacing) {
   const b = G.shapeBounds(shape);
   const [cx, cy] = G.shapeCenter(shape);
@@ -291,7 +296,9 @@ function spawnItem(ctx, type, f, subtlety) {
 
 function propFault(ctx, type, f, subtlety) {
   const { content, scene, rng } = ctx;
-  const candidates = ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id));
+  let candidates = ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id));
+  const free = candidates.filter((p) => { const g = propGeom(content, scene, p); return !overlapsFaults(ctx, { x: g.cx - g.w / 2, y: g.cy - g.h / 2, w: g.w, h: g.h }); });
+  if (free.length) candidates = free;
   if (!candidates.length) return null;
   const p = rng.pick(candidates);
   ctx.used.add(p.id);
@@ -323,7 +330,9 @@ function propFault(ctx, type, f, subtlety) {
 
 function regionFault(ctx, type, f, subtlety) {
   const { scene, rng } = ctx;
-  const candidates = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r));
+  let candidates = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r));
+  const free = candidates.filter((r) => !overlapsFaults(ctx, G.bbox(r.poly)));
+  if (free.length) candidates = free;
   if (!candidates.length) return null;
   const r = rng.pick(candidates);
   ctx.used.add(r.id);
@@ -391,14 +400,19 @@ function placeCat(ctx) {
   const { content, scene, rng } = ctx;
   const spots = scene.cats || [];
   if (!spots.length) return null;
-  const spot = rng.fork('cat').pick(spots);
-  const pose = content.items.cat.poses[spot.pose];
-  const meta = content.spriteMeta(pose.sprite, scene.village);
-  const h = pose.size * (spot.s ?? depthScale(scene, spot.y));
-  const w = (h * meta.w) / meta.h;
-  const cx = spot.x, cy = spot.y - h / 2;
-  return { sprite: pose.sprite, pose: spot.pose, x: spot.x, y: spot.y, cx, cy, w, h, flip: !!spot.flip, z: spot.z ?? spot.y,
-    shape: { kind: 'poly', pts: G.rectPoly(cx, cy, w, h, 0) } };
+  // Marmalade never sits on top of something that needs fixing
+  for (const spot of rng.fork('cat').shuffle(spots)) {
+    const pose = content.items.cat.poses[spot.pose];
+    const meta = content.spriteMeta(pose.sprite, scene.village);
+    const h = pose.size * (spot.s ?? depthScale(scene, spot.y));
+    const w = (h * meta.w) / meta.h;
+    const cx = spot.x, cy = spot.y - h / 2;
+    const shape = { kind: 'poly', pts: G.rectPoly(cx, cy, w, h, 0) };
+    const b = G.shapeBounds(shape);
+    if (ctx.faults.some((f) => G.boundsOverlap(b, G.shapeBounds(f.shape)) > 0.02)) continue;
+    return { sprite: pose.sprite, pose: spot.pose, x: spot.x, y: spot.y, cx, cy, w, h, flip: !!spot.flip, z: spot.z ?? spot.y, shape };
+  }
+  return null;
 }
 
 function placeCollectible(ctx, item) {

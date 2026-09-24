@@ -2,13 +2,14 @@ import { h } from '../dom.js';
 import { logo } from '../components/logo.js';
 import { startGame } from '../flows.js';
 
+/** Title: the fully restored High Street at golden hour, drifting gently. */
 export class TitleScreen {
   constructor(app) {
     this.app = app;
+    this.usesCanvas = true;
+    this.t = 0;
     const v = app.v;
-    const bg = h('div.title-bg', { style: { backgroundImage: `url(${app.assets.imageUrl('plate/high-street', app.village)})` } });
     this.el = h('div.title',
-      bg,
       h('div.title-shade'),
       h('div.title-top', logo(1)),
       h('div.title-sub',
@@ -21,6 +22,32 @@ export class TitleScreen {
       ),
     );
     this.el.addEventListener('click', () => this.go(), { once: true });
+  }
+
+  async enter() {
+    const app = this.app;
+    const scene = app.content.scene(app.village, 'high-street');
+    const all = (scene.restoration || []).map((r) => r.project).concat(['open-high-street']);
+    await app.view.load({ village: app.village, scene: 'high-street', mess: null, projects: all, condition: 'golden' });
+    this.resize();
+  }
+
+  resize() {
+    const r = this.app.root.getBoundingClientRect();
+    this.app.view.setView(0, 0, r.width, r.height, { cover: true });
+    this.app.view.cam.zoom = 1.08;
+    this.app.view.clampCam();
+  }
+
+  update(dt) {
+    this.t += dt;
+    const view = this.app.view;
+    if (!view.ready) return;
+    // slow Ken Burns drift up the street
+    view.cam.zoom = 1.08 + 0.06 * Math.sin(this.t * 0.05);
+    view.cam.x = view.W / 2 + Math.sin(this.t * 0.07) * 60;
+    view.cam.y = view.H * 0.52 + Math.sin(this.t * 0.04) * 90;
+    view.clampCam();
   }
 
   go() {

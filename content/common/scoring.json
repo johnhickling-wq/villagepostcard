@@ -1,14 +1,43 @@
 {
-  "comboStep": 0.2,
-  "comboMax": 3.0,
-  "subtletyBonus": 0.6,
-  "missPenalty": 20,
-  "shaky": {"misses": 3, "window": 1.5, "duration": 2.0},
-  "timeBonusPerSec": 8,
-  "catBonus": 250,
-  "collectibleBonus": 150,
-  "noHintBonus": 0.1,
-  "stamps": [0, 0.55, 0.8],
-  "callouts": [[3, "Lovely!"], [5, "Splendid!"], [7, "Smashing!"], [10, "Marvellous!"], [13, "Picture Perfect!"]],
-  "tapTolerancePx": 14
+ "comboStep": 0.2,
+ "comboMax": 3,
+ "subtletyBonus": 0.6,
+ "missPenalty": 20,
+ "shaky": {
+  "misses": 3,
+  "window": 1.5,
+  "duration": 2
+ },
+ "timeBonusPerSec": 8,
+ "catBonus": 250,
+ "collectibleBonus": 150,
+ "noHintBonus": 0.1,
+ "stamps": [
+  0,
+  0.887,
+  0.975
+ ],
+ "callouts": [
+  [
+   3,
+   "Lovely!"
+  ],
+  [
+   5,
+   "Splendid!"
+  ],
+  [
+   7,
+   "Smashing!"
+  ],
+  [
+   10,
+   "Marvellous!"
+  ],
+  [
+   13,
+   "Picture Perfect!"
+  ]
+ ],
+ "tapTolerancePx": 14
 }

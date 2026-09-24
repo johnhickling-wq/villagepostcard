@@ -1,0 +1,2201 @@
+{
+ "summary": [
+  {
+   "tier": 1,
+   "target": 40,
+   "average": 42,
+   "novice": 51,
+   "skilled": 37,
+   "stamps3": 31,
+   "stamps2": 39
+  },
+  {
+   "tier": 2,
+   "target": 55,
+   "average": 58,
+   "novice": 71,
+   "skilled": 48,
+   "stamps3": 23,
+   "stamps2": 45
+  },
+  {
+   "tier": 3,
+   "target": 70,
+   "average": 78,
+   "novice": 94,
+   "skilled": 67,
+   "stamps3": 31,
+   "stamps2": 50
+  },
+  {
+   "tier": 4,
+   "target": 85,
+   "average": 85,
+   "novice": 109,
+   "skilled": 76,
+   "stamps3": 31,
+   "stamps2": 49
+  },
+  {
+   "tier": 5,
+   "target": 100,
+   "average": 121,
+   "novice": 140,
+   "skilled": 97,
+   "stamps3": 27,
+   "stamps2": 57
+  },
+  {
+   "tier": 6,
+   "target": 90,
+   "average": 91,
+   "novice": 113,
+   "skilled": 76,
+   "stamps3": 30,
+   "stamps2": 47
+  }
+ ],
+ "rows": [
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 1,
+   "n": 80,
+   "faults": 6.5,
+   "salience": 0.7,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 1,
+   "novice": 47,
+   "average": 38,
+   "averageP90": 53,
+   "skilled": 35,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     56,
+     35,
+     9
+    ],
+    "average": [
+     25,
+     40,
+     35
+    ],
+    "skilled": [
+     18,
+     23,
+     60
+    ]
+   },
+   "types": {
+    "crooked": 102,
+    "weeds": 47,
+    "grimy": 75,
+    "litter": 171,
+    "wilted": 64,
+    "faded": 61
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 2,
+   "n": 80,
+   "faults": 9.5,
+   "salience": 0.65,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 1,
+   "overlaps": 6,
+   "novice": 63,
+   "average": 55,
+   "averageP90": 83,
+   "skilled": 45,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     59,
+     33,
+     9
+    ],
+    "average": [
+     34,
+     44,
+     23
+    ],
+    "skilled": [
+     14,
+     33,
+     54
+    ]
+   },
+   "types": {
+    "weeds": 80,
+    "crooked": 103,
+    "grimy": 109,
+    "litter": 225,
+    "toppled": 73,
+    "wilted": 92,
+    "faded": 80
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 3,
+   "n": 80,
+   "faults": 10.6,
+   "salience": 0.49,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 22,
+   "novice": 87,
+   "average": 71,
+   "averageP90": 105,
+   "skilled": 64,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     40,
+     51,
+     9
+    ],
+    "average": [
+     20,
+     40,
+     40
+    ],
+    "skilled": [
+     9,
+     31,
+     60
+    ]
+   },
+   "types": {
+    "toppled": 71,
+    "grimy": 86,
+    "weeds": 82,
+    "litter": 213,
+    "cobweb": 69,
+    "wilted": 78,
+    "crooked": 111,
+    "pigeon": 57,
+    "faded": 81
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 4,
+   "n": 80,
+   "faults": 12.4,
+   "salience": 0.55,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 33,
+   "novice": 101,
+   "average": 76,
+   "averageP90": 106,
+   "skilled": 71,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     54,
+     38,
+     9
+    ],
+    "average": [
+     19,
+     48,
+     34
+    ],
+    "skilled": [
+     4,
+     31,
+     65
+    ]
+   },
+   "types": {
+    "unlit": 86,
+    "weeds": 85,
+    "wilted": 82,
+    "litter": 250,
+    "crooked": 131,
+    "toppled": 103,
+    "faded": 74,
+    "grimy": 96,
+    "pigeon": 31,
+    "cobweb": 58
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 5,
+   "n": 80,
+   "faults": 15.6,
+   "salience": 0.43,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 3,
+   "overlaps": 41,
+   "novice": 128,
+   "average": 109,
+   "averageP90": 151,
+   "skilled": 90,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     48,
+     46,
+     6
+    ],
+    "average": [
+     23,
+     50,
+     28
+    ],
+    "skilled": [
+     4,
+     43,
+     54
+    ]
+   },
+   "types": {
+    "toppled": 95,
+    "crooked": 176,
+    "grimy": 136,
+    "litter": 336,
+    "faded": 92,
+    "weeds": 110,
+    "wilted": 113,
+    "pigeon": 71,
+    "cobweb": 79,
+    "unlit": 36
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "railway-halt",
+   "tier": 6,
+   "n": 80,
+   "faults": 14.1,
+   "salience": 0.52,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 47,
+   "novice": 106,
+   "average": 90,
+   "averageP90": 131,
+   "skilled": 73,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     50,
+     46,
+     4
+    ],
+    "average": [
+     33,
+     40,
+     28
+    ],
+    "skilled": [
+     13,
+     31,
+     56
+    ]
+   },
+   "types": {
+    "weeds": 93,
+    "crooked": 140,
+    "toppled": 97,
+    "litter": 337,
+    "cobweb": 77,
+    "faded": 80,
+    "pigeon": 47,
+    "grimy": 125,
+    "wilted": 100,
+    "unlit": 34
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 1,
+   "n": 80,
+   "faults": 6.5,
+   "salience": 0.73,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 5,
+   "novice": 49,
+   "average": 41,
+   "averageP90": 54,
+   "skilled": 34,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     56,
+     33,
+     11
+    ],
+    "average": [
+     33,
+     36,
+     31
+    ],
+    "skilled": [
+     15,
+     24,
+     61
+    ]
+   },
+   "types": {
+    "litter": 166,
+    "grimy": 97,
+    "faded": 69,
+    "crooked": 108,
+    "weeds": 45,
+    "wilted": 33
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 2,
+   "n": 80,
+   "faults": 9.4,
+   "salience": 0.64,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 13,
+   "novice": 68,
+   "average": 57,
+   "averageP90": 87,
+   "skilled": 48,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     57,
+     38,
+     5
+    ],
+    "average": [
+     33,
+     49,
+     19
+    ],
+    "skilled": [
+     16,
+     29,
+     55
+    ]
+   },
+   "types": {
+    "grimy": 112,
+    "weeds": 62,
+    "litter": 232,
+    "crooked": 125,
+    "faded": 112,
+    "toppled": 69,
+    "wilted": 43
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 3,
+   "n": 80,
+   "faults": 10.6,
+   "salience": 0.45,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 9,
+   "novice": 93,
+   "average": 75,
+   "averageP90": 115,
+   "skilled": 68,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     43,
+     49,
+     9
+    ],
+    "average": [
+     24,
+     39,
+     38
+    ],
+    "skilled": [
+     4,
+     46,
+     50
+    ]
+   },
+   "types": {
+    "weeds": 72,
+    "grimy": 108,
+    "toppled": 64,
+    "litter": 233,
+    "crooked": 114,
+    "cobweb": 69,
+    "wilted": 34,
+    "pigeon": 54,
+    "faded": 101
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 4,
+   "n": 80,
+   "faults": 12.5,
+   "salience": 0.48,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 19,
+   "novice": 108,
+   "average": 83,
+   "averageP90": 120,
+   "skilled": 76,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     48,
+     46,
+     6
+    ],
+    "average": [
+     15,
+     57,
+     28
+    ],
+    "skilled": [
+     10,
+     35,
+     55
+    ]
+   },
+   "types": {
+    "crooked": 135,
+    "litter": 249,
+    "faded": 98,
+    "grimy": 112,
+    "weeds": 80,
+    "toppled": 109,
+    "cobweb": 66,
+    "wilted": 43,
+    "unlit": 86,
+    "pigeon": 22
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 5,
+   "n": 80,
+   "faults": 15.5,
+   "salience": 0.37,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 12,
+   "novice": 131,
+   "average": 117,
+   "averageP90": 162,
+   "skilled": 95,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     30,
+     60,
+     10
+    ],
+    "average": [
+     13,
+     63,
+     25
+    ],
+    "skilled": [
+     4,
+     33,
+     64
+    ]
+   },
+   "types": {
+    "faded": 133,
+    "grimy": 150,
+    "litter": 330,
+    "crooked": 138,
+    "unlit": 51,
+    "toppled": 106,
+    "weeds": 103,
+    "cobweb": 100,
+    "wilted": 46,
+    "pigeon": 80
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "high-street",
+   "tier": 6,
+   "n": 80,
+   "faults": 13.9,
+   "salience": 0.48,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 17,
+   "novice": 106,
+   "average": 84,
+   "averageP90": 121,
+   "skilled": 72,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     50,
+     41,
+     9
+    ],
+    "average": [
+     25,
+     38,
+     38
+    ],
+    "skilled": [
+     6,
+     34,
+     60
+    ]
+   },
+   "types": {
+    "faded": 130,
+    "litter": 271,
+    "crooked": 142,
+    "toppled": 104,
+    "pigeon": 63,
+    "grimy": 123,
+    "weeds": 110,
+    "wilted": 42,
+    "cobweb": 98,
+    "unlit": 33
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 1,
+   "n": 80,
+   "faults": 6.5,
+   "salience": 0.69,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 8,
+   "novice": 46,
+   "average": 38,
+   "averageP90": 52,
+   "skilled": 33,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     64,
+     24,
+     13
+    ],
+    "average": [
+     33,
+     35,
+     33
+    ],
+    "skilled": [
+     14,
+     24,
+     63
+    ]
+   },
+   "types": {
+    "litter": 299,
+    "wilted": 74,
+    "crooked": 77,
+    "grimy": 36,
+    "faded": 32,
+    "weeds": 2
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 2,
+   "n": 80,
+   "faults": 9.5,
+   "salience": 0.56,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 51,
+   "novice": 70,
+   "average": 58,
+   "averageP90": 80,
+   "skilled": 46,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     57,
+     36,
+     6
+    ],
+    "average": [
+     29,
+     46,
+     25
+    ],
+    "skilled": [
+     11,
+     31,
+     57
+    ]
+   },
+   "types": {
+    "faded": 93,
+    "litter": 309,
+    "wilted": 82,
+    "weeds": 78,
+    "crooked": 74,
+    "grimy": 38,
+    "toppled": 84
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 3,
+   "n": 80,
+   "faults": 10.5,
+   "salience": 0.38,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 40,
+   "novice": 97,
+   "average": 80,
+   "averageP90": 121,
+   "skilled": 73,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     25,
+     64,
+     11
+    ],
+    "average": [
+     14,
+     59,
+     28
+    ],
+    "skilled": [
+     3,
+     35,
+     63
+    ]
+   },
+   "types": {
+    "litter": 229,
+    "crooked": 70,
+    "pigeon": 62,
+    "wilted": 67,
+    "toppled": 85,
+    "grimy": 76,
+    "cobweb": 75,
+    "weeds": 92,
+    "faded": 83
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 4,
+   "n": 80,
+   "faults": 12.6,
+   "salience": 0.38,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 68,
+   "novice": 112,
+   "average": 95,
+   "averageP90": 122,
+   "skilled": 82,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     38,
+     53,
+     10
+    ],
+    "average": [
+     11,
+     65,
+     24
+    ],
+    "skilled": [
+     10,
+     30,
+     60
+    ]
+   },
+   "types": {
+    "toppled": 119,
+    "wilted": 83,
+    "litter": 326,
+    "pigeon": 32,
+    "weeds": 107,
+    "crooked": 76,
+    "cobweb": 81,
+    "faded": 87,
+    "grimy": 96
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 5,
+   "n": 80,
+   "faults": 15.5,
+   "salience": 0.29,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 41,
+   "novice": 150,
+   "average": 129,
+   "averageP90": 172,
+   "skilled": 111,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     21,
+     66,
+     13
+    ],
+    "average": [
+     16,
+     51,
+     33
+    ],
+    "skilled": [
+     0,
+     36,
+     64
+    ]
+   },
+   "types": {
+    "litter": 339,
+    "crooked": 78,
+    "faded": 134,
+    "toppled": 112,
+    "cobweb": 114,
+    "wilted": 97,
+    "weeds": 121,
+    "grimy": 165,
+    "pigeon": 78
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "village-green",
+   "tier": 6,
+   "n": 80,
+   "faults": 13.7,
+   "salience": 0.37,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 49,
+   "novice": 119,
+   "average": 99,
+   "averageP90": 150,
+   "skilled": 87,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     29,
+     64,
+     8
+    ],
+    "average": [
+     23,
+     51,
+     26
+    ],
+    "skilled": [
+     5,
+     26,
+     69
+    ]
+   },
+   "types": {
+    "faded": 126,
+    "wilted": 81,
+    "crooked": 80,
+    "litter": 308,
+    "grimy": 124,
+    "weeds": 110,
+    "pigeon": 65,
+    "toppled": 114,
+    "cobweb": 91
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 1,
+   "n": 80,
+   "faults": 6.5,
+   "salience": 0.55,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 0,
+   "novice": 54,
+   "average": 42,
+   "averageP90": 58,
+   "skilled": 36,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     49,
+     38,
+     14
+    ],
+    "average": [
+     25,
+     46,
+     29
+    ],
+    "skilled": [
+     11,
+     23,
+     66
+    ]
+   },
+   "types": {
+    "crooked": 70,
+    "grimy": 70,
+    "litter": 177,
+    "faded": 69,
+    "wilted": 79,
+    "weeds": 54
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 2,
+   "n": 80,
+   "faults": 9.5,
+   "salience": 0.47,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 1,
+   "novice": 78,
+   "average": 58,
+   "averageP90": 86,
+   "skilled": 49,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     64,
+     33,
+     4
+    ],
+    "average": [
+     29,
+     49,
+     23
+    ],
+    "skilled": [
+     9,
+     31,
+     60
+    ]
+   },
+   "types": {
+    "grimy": 116,
+    "crooked": 72,
+    "litter": 226,
+    "weeds": 81,
+    "wilted": 89,
+    "toppled": 62,
+    "faded": 114
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 3,
+   "n": 80,
+   "faults": 10.6,
+   "salience": 0.34,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 0,
+   "novice": 97,
+   "average": 79,
+   "averageP90": 116,
+   "skilled": 69,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     35,
+     54,
+     11
+    ],
+    "average": [
+     15,
+     53,
+     33
+    ],
+    "skilled": [
+     6,
+     31,
+     63
+    ]
+   },
+   "types": {
+    "wilted": 87,
+    "crooked": 71,
+    "pigeon": 69,
+    "grimy": 102,
+    "weeds": 73,
+    "litter": 214,
+    "toppled": 69,
+    "cobweb": 75,
+    "faded": 86
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 4,
+   "n": 80,
+   "faults": 12.5,
+   "salience": 0.35,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 4,
+   "novice": 113,
+   "average": 90,
+   "averageP90": 119,
+   "skilled": 77,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     26,
+     60,
+     14
+    ],
+    "average": [
+     14,
+     48,
+     39
+    ],
+    "skilled": [
+     1,
+     35,
+     64
+    ]
+   },
+   "types": {
+    "litter": 256,
+    "toppled": 116,
+    "weeds": 90,
+    "wilted": 90,
+    "unlit": 46,
+    "crooked": 73,
+    "grimy": 120,
+    "cobweb": 76,
+    "faded": 104,
+    "pigeon": 30
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 5,
+   "n": 80,
+   "faults": 15.5,
+   "salience": 0.29,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 10,
+   "novice": 147,
+   "average": 130,
+   "averageP90": 171,
+   "skilled": 96,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     25,
+     69,
+     6
+    ],
+    "average": [
+     16,
+     50,
+     34
+    ],
+    "skilled": [
+     0,
+     33,
+     68
+    ]
+   },
+   "types": {
+    "litter": 355,
+    "faded": 128,
+    "wilted": 115,
+    "crooked": 76,
+    "grimy": 150,
+    "cobweb": 99,
+    "weeds": 119,
+    "pigeon": 57,
+    "toppled": 118,
+    "unlit": 22
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "weavers-row",
+   "tier": 6,
+   "n": 80,
+   "faults": 14,
+   "salience": 0.36,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 7,
+   "novice": 114,
+   "average": 91,
+   "averageP90": 136,
+   "skilled": 76,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     49,
+     44,
+     8
+    ],
+    "average": [
+     15,
+     61,
+     24
+    ],
+    "skilled": [
+     3,
+     30,
+     68
+    ]
+   },
+   "types": {
+    "faded": 132,
+    "litter": 305,
+    "pigeon": 68,
+    "weeds": 108,
+    "crooked": 71,
+    "toppled": 102,
+    "cobweb": 76,
+    "grimy": 115,
+    "wilted": 119,
+    "unlit": 21
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 1,
+   "n": 80,
+   "faults": 7.5,
+   "salience": 0.6,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 41,
+   "novice": 57,
+   "average": 45,
+   "averageP90": 64,
+   "skilled": 42,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     48,
+     39,
+     14
+    ],
+    "average": [
+     20,
+     45,
+     35
+    ],
+    "skilled": [
+     10,
+     34,
+     56
+    ]
+   },
+   "types": {
+    "crooked": 129,
+    "litter": 248,
+    "weeds": 96,
+    "wilted": 85,
+    "faded": 43
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 2,
+   "n": 80,
+   "faults": 10.5,
+   "salience": 0.48,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 48,
+   "novice": 80,
+   "average": 64,
+   "averageP90": 81,
+   "skilled": 52,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     57,
+     36,
+     6
+    ],
+    "average": [
+     26,
+     48,
+     26
+    ],
+    "skilled": [
+     9,
+     26,
+     65
+    ]
+   },
+   "types": {
+    "litter": 269,
+    "grimy": 130,
+    "wilted": 92,
+    "crooked": 131,
+    "toppled": 72,
+    "faded": 46,
+    "weeds": 103
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 3,
+   "n": 80,
+   "faults": 11.4,
+   "salience": 0.35,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 33,
+   "novice": 102,
+   "average": 87,
+   "averageP90": 128,
+   "skilled": 76,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     33,
+     56,
+     11
+    ],
+    "average": [
+     16,
+     59,
+     25
+    ],
+    "skilled": [
+     4,
+     36,
+     60
+    ]
+   },
+   "types": {
+    "wilted": 57,
+    "grimy": 131,
+    "litter": 241,
+    "pigeon": 62,
+    "toppled": 79,
+    "crooked": 114,
+    "weeds": 99,
+    "cobweb": 85,
+    "faded": 47
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 4,
+   "n": 80,
+   "faults": 13.5,
+   "salience": 0.36,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 47,
+   "novice": 112,
+   "average": 91,
+   "averageP90": 125,
+   "skilled": 85,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     43,
+     45,
+     13
+    ],
+    "average": [
+     21,
+     50,
+     29
+    ],
+    "skilled": [
+     4,
+     40,
+     56
+    ]
+   },
+   "types": {
+    "crooked": 132,
+    "litter": 300,
+    "toppled": 125,
+    "cobweb": 85,
+    "grimy": 124,
+    "wilted": 73,
+    "unlit": 73,
+    "weeds": 92,
+    "faded": 43,
+    "pigeon": 30
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 5,
+   "n": 80,
+   "faults": 16.6,
+   "salience": 0.29,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 1,
+   "overlaps": 69,
+   "novice": 154,
+   "average": 128,
+   "averageP90": 172,
+   "skilled": 106,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     33,
+     57,
+     10
+    ],
+    "average": [
+     15,
+     60,
+     25
+    ],
+    "skilled": [
+     4,
+     41,
+     55
+    ]
+   },
+   "types": {
+    "unlit": 46,
+    "weeds": 126,
+    "litter": 375,
+    "crooked": 145,
+    "cobweb": 120,
+    "toppled": 124,
+    "grimy": 167,
+    "wilted": 96,
+    "faded": 58,
+    "pigeon": 72
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "old-mill",
+   "tier": 6,
+   "n": 80,
+   "faults": 14.8,
+   "salience": 0.36,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 6,
+   "overlaps": 69,
+   "novice": 127,
+   "average": 107,
+   "averageP90": 144,
+   "skilled": 84,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     46,
+     46,
+     8
+    ],
+    "average": [
+     19,
+     54,
+     28
+    ],
+    "skilled": [
+     6,
+     33,
+     61
+    ]
+   },
+   "types": {
+    "wilted": 99,
+    "litter": 314,
+    "grimy": 139,
+    "weeds": 115,
+    "toppled": 111,
+    "cobweb": 118,
+    "crooked": 135,
+    "unlit": 32,
+    "pigeon": 74,
+    "faded": 48
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 1,
+   "n": 80,
+   "faults": 7.4,
+   "salience": 0.73,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 3,
+   "novice": 50,
+   "average": 41,
+   "averageP90": 55,
+   "skilled": 37,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     63,
+     30,
+     8
+    ],
+    "average": [
+     41,
+     33,
+     26
+    ],
+    "skilled": [
+     19,
+     28,
+     54
+    ]
+   },
+   "types": {
+    "faded": 81,
+    "grimy": 100,
+    "litter": 207,
+    "weeds": 55,
+    "crooked": 113,
+    "wilted": 39
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 2,
+   "n": 80,
+   "faults": 10.4,
+   "salience": 0.66,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 28,
+   "novice": 64,
+   "average": 55,
+   "averageP90": 80,
+   "skilled": 43,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     68,
+     21,
+     11
+    ],
+    "average": [
+     41,
+     33,
+     26
+    ],
+    "skilled": [
+     13,
+     33,
+     55
+    ]
+   },
+   "types": {
+    "litter": 260,
+    "toppled": 78,
+    "faded": 117,
+    "weeds": 88,
+    "grimy": 111,
+    "crooked": 125,
+    "wilted": 51
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 3,
+   "n": 80,
+   "faults": 11.6,
+   "salience": 0.48,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 6,
+   "overlaps": 23,
+   "novice": 89,
+   "average": 74,
+   "averageP90": 105,
+   "skilled": 57,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     51,
+     43,
+     6
+    ],
+    "average": [
+     29,
+     43,
+     29
+    ],
+    "skilled": [
+     6,
+     33,
+     61
+    ]
+   },
+   "types": {
+    "litter": 244,
+    "pigeon": 74,
+    "weeds": 80,
+    "toppled": 69,
+    "crooked": 108,
+    "cobweb": 78,
+    "grimy": 121,
+    "faded": 113,
+    "wilted": 37
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 4,
+   "n": 80,
+   "faults": 13.5,
+   "salience": 0.49,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 30,
+   "novice": 106,
+   "average": 79,
+   "averageP90": 109,
+   "skilled": 72,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     63,
+     33,
+     5
+    ],
+    "average": [
+     33,
+     36,
+     31
+    ],
+    "skilled": [
+     13,
+     29,
+     59
+    ]
+   },
+   "types": {
+    "grimy": 119,
+    "unlit": 85,
+    "weeds": 72,
+    "toppled": 115,
+    "faded": 105,
+    "cobweb": 79,
+    "crooked": 129,
+    "litter": 306,
+    "pigeon": 24,
+    "wilted": 45
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 5,
+   "n": 80,
+   "faults": 16.5,
+   "salience": 0.4,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 3,
+   "overlaps": 59,
+   "novice": 135,
+   "average": 105,
+   "averageP90": 169,
+   "skilled": 84,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     53,
+     38,
+     10
+    ],
+    "average": [
+     19,
+     55,
+     26
+    ],
+    "skilled": [
+     5,
+     39,
+     56
+    ]
+   },
+   "types": {
+    "cobweb": 105,
+    "toppled": 123,
+    "pigeon": 82,
+    "crooked": 148,
+    "weeds": 106,
+    "litter": 399,
+    "grimy": 146,
+    "wilted": 60,
+    "faded": 107,
+    "unlit": 47
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "bee-and-bramble",
+   "tier": 6,
+   "n": 80,
+   "faults": 15,
+   "salience": 0.49,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 4,
+   "overlaps": 42,
+   "novice": 111,
+   "average": 83,
+   "averageP90": 128,
+   "skilled": 73,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     70,
+     25,
+     5
+    ],
+    "average": [
+     33,
+     35,
+     33
+    ],
+    "skilled": [
+     9,
+     39,
+     53
+    ]
+   },
+   "types": {
+    "cobweb": 88,
+    "faded": 124,
+    "litter": 355,
+    "grimy": 134,
+    "weeds": 103,
+    "toppled": 104,
+    "crooked": 143,
+    "wilted": 47,
+    "pigeon": 68,
+    "unlit": 33
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 1,
+   "n": 80,
+   "faults": 7.4,
+   "salience": 0.61,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 2,
+   "novice": 52,
+   "average": 47,
+   "averageP90": 63,
+   "skilled": 38,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     61,
+     25,
+     14
+    ],
+    "average": [
+     34,
+     44,
+     23
+    ],
+    "skilled": [
+     23,
+     19,
+     59
+    ]
+   },
+   "types": {
+    "crooked": 75,
+    "grimy": 110,
+    "wilted": 56,
+    "litter": 222,
+    "faded": 63,
+    "weeds": 68
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 2,
+   "n": 80,
+   "faults": 10.5,
+   "salience": 0.54,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 23,
+   "novice": 76,
+   "average": 59,
+   "averageP90": 90,
+   "skilled": 50,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     68,
+     30,
+     3
+    ],
+    "average": [
+     39,
+     38,
+     24
+    ],
+    "skilled": [
+     11,
+     28,
+     61
+    ]
+   },
+   "types": {
+    "grimy": 125,
+    "crooked": 78,
+    "litter": 280,
+    "wilted": 87,
+    "toppled": 71,
+    "faded": 89,
+    "weeds": 112
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 3,
+   "n": 80,
+   "faults": 11.6,
+   "salience": 0.42,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 1,
+   "overlaps": 35,
+   "novice": 97,
+   "average": 82,
+   "averageP90": 116,
+   "skilled": 65,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     41,
+     49,
+     10
+    ],
+    "average": [
+     23,
+     55,
+     23
+    ],
+    "skilled": [
+     5,
+     44,
+     51
+    ]
+   },
+   "types": {
+    "litter": 256,
+    "faded": 92,
+    "cobweb": 85,
+    "pigeon": 60,
+    "crooked": 72,
+    "wilted": 76,
+    "grimy": 116,
+    "toppled": 83,
+    "weeds": 89
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 4,
+   "n": 80,
+   "faults": 13.5,
+   "salience": 0.43,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 50,
+   "novice": 112,
+   "average": 82,
+   "averageP90": 118,
+   "skilled": 72,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     51,
+     41,
+     8
+    ],
+    "average": [
+     31,
+     36,
+     33
+    ],
+    "skilled": [
+     6,
+     36,
+     57
+    ]
+   },
+   "types": {
+    "faded": 95,
+    "wilted": 75,
+    "grimy": 134,
+    "crooked": 76,
+    "litter": 320,
+    "unlit": 43,
+    "cobweb": 85,
+    "toppled": 127,
+    "pigeon": 29,
+    "weeds": 97
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 5,
+   "n": 80,
+   "faults": 16.4,
+   "salience": 0.35,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 77,
+   "novice": 142,
+   "average": 126,
+   "averageP90": 165,
+   "skilled": 102,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     30,
+     61,
+     9
+    ],
+    "average": [
+     11,
+     63,
+     26
+    ],
+    "skilled": [
+     8,
+     31,
+     61
+    ]
+   },
+   "types": {
+    "toppled": 139,
+    "grimy": 159,
+    "crooked": 78,
+    "litter": 427,
+    "cobweb": 122,
+    "wilted": 86,
+    "weeds": 124,
+    "pigeon": 64,
+    "faded": 91,
+    "unlit": 26
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "st-aldhelms",
+   "tier": 6,
+   "n": 80,
+   "faults": 14.7,
+   "salience": 0.42,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 3,
+   "overlaps": 67,
+   "novice": 111,
+   "average": 89,
+   "averageP90": 132,
+   "skilled": 71,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     49,
+     44,
+     8
+    ],
+    "average": [
+     19,
+     49,
+     33
+    ],
+    "skilled": [
+     9,
+     34,
+     57
+    ]
+   },
+   "types": {
+    "litter": 347,
+    "grimy": 144,
+    "weeds": 120,
+    "wilted": 82,
+    "crooked": 77,
+    "toppled": 105,
+    "faded": 87,
+    "cobweb": 112,
+    "pigeon": 90,
+    "unlit": 13
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 1,
+   "n": 80,
+   "faults": 7.5,
+   "salience": 0.73,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 0,
+   "overlaps": 0,
+   "novice": 50,
+   "average": 44,
+   "averageP90": 62,
+   "skilled": 38,
+   "target": 40,
+   "stamps": {
+    "novice": [
+     60,
+     29,
+     11
+    ],
+    "average": [
+     39,
+     29,
+     33
+    ],
+    "skilled": [
+     16,
+     29,
+     55
+    ]
+   },
+   "types": {
+    "crooked": 91,
+    "litter": 215,
+    "weeds": 72,
+    "grimy": 110,
+    "faded": 77,
+    "wilted": 31
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 2,
+   "n": 80,
+   "faults": 10.5,
+   "salience": 0.62,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 3,
+   "overlaps": 19,
+   "novice": 70,
+   "average": 57,
+   "averageP90": 80,
+   "skilled": 49,
+   "target": 55,
+   "stamps": {
+    "novice": [
+     66,
+     31,
+     3
+    ],
+    "average": [
+     31,
+     49,
+     20
+    ],
+    "skilled": [
+     9,
+     30,
+     61
+    ]
+   },
+   "types": {
+    "litter": 285,
+    "crooked": 97,
+    "weeds": 90,
+    "toppled": 84,
+    "grimy": 128,
+    "faded": 118,
+    "wilted": 38
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 3,
+   "n": 80,
+   "faults": 11.4,
+   "salience": 0.44,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 19,
+   "novice": 91,
+   "average": 76,
+   "averageP90": 110,
+   "skilled": 65,
+   "target": 70,
+   "stamps": {
+    "novice": [
+     41,
+     49,
+     10
+    ],
+    "average": [
+     18,
+     53,
+     30
+    ],
+    "skilled": [
+     5,
+     33,
+     63
+    ]
+   },
+   "types": {
+    "litter": 251,
+    "grimy": 113,
+    "toppled": 90,
+    "crooked": 89,
+    "faded": 102,
+    "pigeon": 77,
+    "cobweb": 73,
+    "wilted": 36,
+    "weeds": 83
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 4,
+   "n": 80,
+   "faults": 13.5,
+   "salience": 0.44,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 25,
+   "novice": 107,
+   "average": 82,
+   "averageP90": 117,
+   "skilled": 73,
+   "target": 85,
+   "stamps": {
+    "novice": [
+     46,
+     45,
+     9
+    ],
+    "average": [
+     21,
+     49,
+     30
+    ],
+    "skilled": [
+     6,
+     38,
+     56
+    ]
+   },
+   "types": {
+    "faded": 120,
+    "toppled": 142,
+    "litter": 321,
+    "unlit": 44,
+    "weeds": 93,
+    "crooked": 95,
+    "grimy": 122,
+    "wilted": 37,
+    "pigeon": 30,
+    "cobweb": 75
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 5,
+   "n": 80,
+   "faults": 16.4,
+   "salience": 0.37,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 48,
+   "novice": 135,
+   "average": 121,
+   "averageP90": 159,
+   "skilled": 90,
+   "target": 100,
+   "stamps": {
+    "novice": [
+     34,
+     57,
+     9
+    ],
+    "average": [
+     15,
+     65,
+     20
+    ],
+    "skilled": [
+     5,
+     39,
+     56
+    ]
+   },
+   "types": {
+    "faded": 136,
+    "unlit": 16,
+    "litter": 439,
+    "grimy": 127,
+    "weeds": 124,
+    "cobweb": 100,
+    "crooked": 103,
+    "pigeon": 85,
+    "toppled": 142,
+    "wilted": 42
+   }
+  },
+  {
+   "village": "honeycombe",
+   "scene": "rose-cottage",
+   "tier": 6,
+   "n": 80,
+   "faults": 15.2,
+   "salience": 0.46,
+   "short": 0,
+   "unreachable": 0,
+   "ambiguous": 2,
+   "overlaps": 30,
+   "novice": 113,
+   "average": 85,
+   "averageP90": 126,
+   "skilled": 71,
+   "target": 90,
+   "stamps": {
+    "novice": [
+     59,
+     30,
+     11
+    ],
+    "average": [
+     20,
+     48,
+     33
+    ],
+    "skilled": [
+     8,
+     29,
+     64
+    ]
+   },
+   "types": {
+    "pigeon": 69,
+    "cobweb": 83,
+    "litter": 382,
+    "weeds": 124,
+    "grimy": 130,
+    "faded": 137,
+    "toppled": 126,
+    "crooked": 100,
+    "unlit": 21,
+    "wilted": 44
+   }
+  }
+ ],
+ "problems": []
+}

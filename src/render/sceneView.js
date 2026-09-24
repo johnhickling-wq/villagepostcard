@@ -2,7 +2,7 @@
 // weather + ambient life) on a canvas, handles the camera, and plays every
 // fix animation. It also renders still "before"/"after" images for postcards.
 
-import { bakePlate } from './grade.js';
+import { bakePlate, gradeSprite, gradeColor } from './grade.js';
 import { grimeTexture, drawCobweb, flakes } from './textures.js';
 import { Particles } from './particles.js';
 import { Ambient } from './ambient.js';
@@ -48,6 +48,7 @@ export class SceneView {
     this.cond = content.conditions[this.condId];
     this.dark = !!this.cond.dark;
     this.bloom = o.bloom ?? sceneBloom(scene, this.projects);
+    this.gradeCache = new Map();
     this.W = scene.size[0];
     this.H = scene.size[1];
     this.plateImg = await this.assets.image(scene.plate, o.village, !!o.thumb);
@@ -79,6 +80,20 @@ export class SceneView {
     this.resetCamera();
   }
 
+  /** Sprite by key, colour-graded to match the plate's weather and bloom. */
+  spr(key) {
+    const raw = this.assets.sprite(key, this.village);
+    return raw ? this.graded(raw) : null;
+  }
+
+  graded(raw) {
+    this.gradeCache ||= new Map();
+    const id = `${raw.key}|${this.condId}|${this.bloom.toFixed(2)}`;
+    let g = this.gradeCache.get(id);
+    if (!g) { g = gradeSprite(raw, this.cond, this.bloom); this.gradeCache.set(id, g); }
+    return g;
+  }
+
   _buildProps() {
     this.props = activeProps(this.scene, this.projects).map((p) => this._propRuntime(p));
   }
@@ -87,7 +102,7 @@ export class SceneView {
     const g = propGeom(this.content, this.scene, p);
     let spr = this.assets.sprite(p.sprite, this.village);
     if (spr && p.label) spr = this._labelled(spr, p);
-    return { ...p, geom: g, spr, appear: null };
+    return { ...p, geom: g, spr: spr ? this.graded(spr) : null, rawSpr: spr, appear: null };
   }
 
   _activeDecor() {
@@ -125,15 +140,15 @@ export class SceneView {
   }
 
   // ------------------------------------------------------------- camera ---
-  setView(x, y, w, h) {
-    this.view = { x, y, w, h };
-    this.fit = Math.min(w / this.W, h / this.H) || 1;
+  setView(x, y, w, h, { cover = false } = {}) {
+    this.view = { x, y, w, h, cover };
+    this.fit = (cover ? Math.max(w / this.W, h / this.H) : Math.min(w / this.W, h / this.H)) || 1;
     this.clampCam();
   }
 
   resetCamera() {
     this.cam = { x: this.W / 2, y: this.H / 2, zoom: 1 };
-    if (this.view) this.setView(this.view.x, this.view.y, this.view.w, this.view.h);
+    if (this.view) this.setView(this.view.x, this.view.y, this.view.w, this.view.h, { cover: this.view.cover });
   }
 
   get scale() { return this.fit * this.cam.zoom; }
@@ -322,6 +337,7 @@ export class SceneView {
     const ox = this.view.x + this.view.w / 2 - this.cam.x * s + sh[0];
     const oy = this.view.y + this.view.h / 2 - this.cam.y * s + sh[1];
     // the print sits on the desk with a soft shadow
+    if (!this.view.cover) {
     g.save();
     g.shadowColor = 'rgba(40,30,20,0.35)';
     g.shadowBlur = 18;
@@ -329,6 +345,7 @@ export class SceneView {
     g.fillStyle = '#fff';
     g.fillRect(ox, oy, this.W * s, this.H * s);
     g.restore();
+    }
     g.save();
     g.beginPath();
     g.rect(this.view.x, this.view.y, this.view.w, this.view.h);
@@ -647,10 +664,10 @@ export class SceneView {
       const amt = f.amount * (fx ? 1 - Ease.outCubic(k) : 1);
       sy = 1 - 0.1 * amt;
       if (fx) { const b = Math.sin(Math.min(1, k * 1.5) * Math.PI) * 0.12; sy += b; sx += b * 0.5; }
-      spr = amt > 0.02 ? this.assets.wilted(p.spr, amt) : p.spr;
+      spr = amt > 0.02 ? this.graded(this.assets.wilted(p.rawSpr, amt)) : p.spr;
     }
     const neg = this.neglect.find((n) => n.target === p.id);
-    if (neg && neg.type === 'wilted' && state !== 'after') spr = this.assets.wilted(p.spr, neg.amount);
+    if (neg && neg.type === 'wilted' && state !== 'after') spr = this.graded(this.assets.wilted(p.rawSpr, neg.amount));
     g.rotate(angle);
     if (appear < 1) { const b = Ease.outBack(appear, 2.5); sx *= b; sy *= b; }
     // draw so that the pivot stays fixed
@@ -665,7 +682,7 @@ export class SceneView {
 
   // ---- litter & weeds --------------------------------------------------------
   drawItem(g, f, fx) {
-    const spr = this.assets.sprite(f.sprite, this.village);
+    const spr = this.spr(f.sprite);
     if (!spr) return;
     let k = 0;
     if (fx && this.time >= fx.t0) {
@@ -734,9 +751,9 @@ export class SceneView {
       const peck = Math.max(0, Math.sin(this.time * 1.4 + f.phase * 3) - 0.85) * 3;
       g.translate(f.cx, f.cy);
       g.rotate(peck * 0.25 * dir);
-      this.assets.drawSprite(g, this.assets.sprite(f.sprite, this.village), f.w, f.h, f.flip);
+      this.assets.drawSprite(g, this.spr(f.sprite), f.w, f.h, f.flip);
     } else {
-      const spr = this.assets.sprite(f.fly, this.village);
+      const spr = this.spr(f.fly);
       const x = f.cx + dir * 420 * Ease.inQuad(k);
       const y = f.cy - 360 * Ease.outQuad(k) + Math.sin(k * 30) * 6;
       g.translate(x, y);
@@ -749,7 +766,7 @@ export class SceneView {
 
   drawCat(g, state) {
     const c = this.cat;
-    const spr = this.assets.sprite(c.sprite, this.village);
+    const spr = this.spr(c.sprite);
     if (!spr) return;
     let k = 0;
     if (c.found != null && state === 'live') { k = clamp01((this.time - c.found) / 0.9); if (k >= 1) return; }
@@ -825,7 +842,7 @@ export class SceneView {
     g.beginPath();
     pts.slice(0, n).forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
     g.stroke();
-    const cols = ['#d9483b', '#f2c14e', '#4f86c6', '#f4ecd8', '#6ea96a', '#e38fb0'];
+    const cols = ['#d9483b', '#f2c14e', '#4f86c6', '#f4ecd8', '#6ea96a', '#e38fb0'].map((c) => gradeColor(c, this.cond, this.bloom));
     pts.slice(1, n - 1).forEach(([x, y], i) => {
       if (d.kind === 'lights') {
         g.fillStyle = this.dark ? '#fff2c4' : '#f6e6b0';

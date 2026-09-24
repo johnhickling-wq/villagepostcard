@@ -67,7 +67,8 @@
 .hud-top { position: absolute; left: 0; right: 0; top: 0; padding: calc(var(--safe-top) + 8px) 10px 0; display: flex; align-items: center; gap: 10px; }
 .hud-title { flex: 1; min-width: 0; color: var(--paper); text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
 .hud-scene { font-size: 26px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hud-sub { gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.9; }
+.hud-sub { gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.9; white-space: nowrap; overflow: hidden; flex-wrap: nowrap; }
+.hud-sub > span { flex: none; }
 .hud-cond { display: inline-flex; align-items: center; gap: 4px; }
 .hud-cond svg { width: 15px; height: 15px; }
 .hud-score { min-width: 86px; justify-content: flex-start; }
@@ -104,6 +105,10 @@
 .chip-count { position: absolute; top: -2px; right: 2px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--ink); color: var(--white); font-weight: 700; font-size: 12px; display: grid; place-items: center; }
 .chip-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
 .tray-chip.bump { animation: bump 0.35s ease; }
+.tray-chips.compact .tray-chip { width: 40px; }
+.tray-chips.compact .chip-label { display: none; }
+.tray-chips.compact .chip-ico { width: 34px; height: 40px; }
+.tray-chips.compact .chip-ico img { max-width: 32px; max-height: 32px; }
 .tray-chip.done .chip-ico, .tray-chip.done .chip-label { opacity: 0.35; }
 .tray-chip.done .chip-count { background: var(--teal); }
 .tray-chip.done .chip-count { font-size: 0; }

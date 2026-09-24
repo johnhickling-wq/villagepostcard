@@ -15,7 +15,38 @@ export function bakePlate(img, cond, bloom, W = 1000, H = 1500, maxW = 1664) {
   return c;
 }
 
-export function applyGrade(g, w, h, cond, bloom = 1) {
+/** Grade a sprite the same way as its plate (minus the vignette), keeping alpha. */
+export function gradeSprite(spr, cond, bloom) {
+  const c = document.createElement('canvas');
+  c.width = spr.sw; c.height = spr.sh;
+  const g = c.getContext('2d');
+  g.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, 0, 0, c.width, c.height);
+  applyGrade(g, c.width, c.height, cond, bloom, { vignette: false });
+  g.globalCompositeOperation = 'destination-in';
+  g.drawImage(spr.img, spr.sx, spr.sy, spr.sw, spr.sh, 0, 0, c.width, c.height);
+  return { img: c, sx: 0, sy: 0, sw: c.width, sh: c.height, w: spr.w, h: spr.h, key: spr.key + '|g', color: spr.color };
+}
+
+/** Approximate the grade for a flat colour (bunting, particles). */
+export function gradeColor(hex, cond, bloom = 1) {
+  let [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const gr = cond?.grade || {};
+  const tired = Math.max(0, 1 - bloom);
+  const grey = (r + g + b) / 3;
+  const desat = 0.3 * tired + ((gr.sat ?? 1) < 1 ? 1 - gr.sat : 0);
+  [r, g, b] = [r, g, b].map((v) => v + (grey - v) * desat);
+  const br = gr.bright ?? 1;
+  [r, g, b] = [r, g, b].map((v) => v * Math.min(1.1, br));
+  if (gr.tint && gr.mode === 'multiply') {
+    const t = [1, 3, 5].map((i) => parseInt(gr.tint.slice(i, i + 2), 16) / 255);
+    const a = gr.tintAlpha ?? 0.2;
+    [r, g, b] = [r, g, b].map((v, i) => v * (1 - a + a * t[i]));
+  }
+  const to = (v) => Math.round(Math.max(0, Math.min(1, v)) * 255);
+  return `rgb(${to(r)},${to(g)},${to(b)})`;
+}
+
+export function applyGrade(g, w, h, cond, bloom = 1, opts = {}) {
   const gr = cond?.grade || {};
   const tired = Math.max(0, 1 - bloom);
   g.save();
@@ -33,7 +64,7 @@ export function applyGrade(g, w, h, cond, bloom = 1) {
   if (br < 1) fill(g, 'multiply', grey(br), 1, w, h);
   else if (br > 1) fill(g, 'screen', grey(br - 1), 1, w, h);
   if (gr.tint) fill(g, gr.mode || 'soft-light', gr.tint, gr.tintAlpha ?? 0.2, w, h);
-  if (gr.vignette) {
+  if (gr.vignette && opts.vignette !== false) {
     g.globalCompositeOperation = 'multiply';
     g.globalAlpha = 1;
     const rg = g.createRadialGradient(w / 2, h * 0.55, Math.min(w, h) * 0.35, w / 2, h * 0.55, Math.max(w, h) * 0.75);

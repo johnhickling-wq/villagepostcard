@@ -103,6 +103,7 @@ export class PlayScreen {
     const app = this.app;
     const types = this.session.remainingByType();
     this.tray.innerHTML = '';
+    this.tray.classList.toggle('compact', Object.keys(types).length > 5);
     this.chips = {};
     for (const [type, n] of Object.entries(types)) {
       const f = this.content.faults[type];

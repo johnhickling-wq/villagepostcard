@@ -23,7 +23,12 @@ export class JudgingScreen {
     );
   }
 
-  async enter() {
+  enter() {
+    // the ceremony runs on its own; show() must not wait for it
+    this.run();
+  }
+
+  async run() {
     const app = this.app, v = app.v;
     app.audio.startMusic('map');
     await wait(600);

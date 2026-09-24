@@ -45,6 +45,7 @@ export class PlayScreen {
     this.finger = h('div.finger.hidden', svg('<svg viewBox="0 0 48 48"><path d="M20 44c-4-3-9-9-11-13-1-2 1-4 3-3l4 3V8a3 3 0 0 1 6 0v14l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v9c0 5-3 9-6 11Z" fill="#fffdf7" stroke="#2c2a35" stroke-width="2.4" stroke-linejoin="round"/></svg>'));
     this.viewfinder = h('div.viewfinder.hidden', h('i.vf.tl'), h('i.vf.tr'), h('i.vf.bl'), h('i.vf.br'), h('div.vf-center'), h('div.vf-text.typed', { text: 'Hold still…' }));
     this.flashOverlay = h('div.white-flash');
+    this.zoomReset = h('button.zoom-reset.chip.hidden', { onclick: () => { this.app.sfx('ui.tap'); const v = this.app.view; v.focus(v.W / 2, v.H / 2, 1, 0.4); } }, icon('eye'), h('span', { text: 'Whole scene' }));
 
     const head = h('div.hud-top',
       h('button.iconbtn.hud-pause', { 'aria-label': 'Pause', onclick: () => this.pause() }, icon('pause')),
@@ -61,7 +62,8 @@ export class PlayScreen {
     const progress = h('div.hud-progress', h('div.hud-progress-track', this.fill), this.bee,
       h('div.hud-left.label', this.leftEl, h('span', { text: ' to tidy' })), this.timeEl);
     const bottom = h('div.hud-bottom', this.loupeBtn, h('div.tray.card', this.tray), this.flashBtn);
-    this.el = h('div.play.passthrough', head, progress, this.comboEl, this.callout, bottom, this.shaky, this.coach, this.finger, this.viewfinder, this.flashOverlay);
+    this.corners = ['tl', 'tr', 'bl', 'br'].map((c) => h(`div.photo-corner.${c}`));
+    this.el = h('div.play.passthrough', ...this.corners, head, progress, this.comboEl, this.callout, bottom, this.shaky, this.coach, this.finger, this.viewfinder, this.flashOverlay, this.zoomReset);
     this.renderTray();
   }
 
@@ -95,7 +97,16 @@ export class PlayScreen {
     const bottom = this.el.querySelector('.hud-bottom')?.getBoundingClientRect();
     const y0 = top ? top.bottom + 6 : 110;
     const y1 = bottom ? bottom.top - 8 : r.height - 110;
-    this.app.view.setView(8, y0, r.width - 16, Math.max(200, y1 - y0));
+    const view = this.app.view;
+    view.setView(8, y0, r.width - 16, Math.max(200, y1 - y0));
+    if (view.ready) {
+      // little black photo corners hold the print on the page
+      const s = view.fit;
+      const w = view.W * s, hgt = view.H * s;
+      const x0 = view.view.x + (view.view.w - w) / 2, yy0 = view.view.y + (view.view.h - hgt) / 2;
+      const pos = { tl: [x0 - 6, yy0 - 6], tr: [x0 + w - 20, yy0 - 6], bl: [x0 - 6, yy0 + hgt - 20], br: [x0 + w - 20, yy0 + hgt - 20] };
+      for (const c of this.corners) { const k = c.classList[1]; c.style.left = `${pos[k][0]}px`; c.style.top = `${pos[k][1]}px`; }
+    }
   }
 
   // --------------------------------------------------------------- tray ---
@@ -151,12 +162,24 @@ export class PlayScreen {
       this.comboEl.querySelector('b').style.width = `${rem * 100}%`;
     }
     this.shaky.classList.toggle('hidden', !s.locked);
+    this.zoomReset.classList.toggle('hidden', this.app.view.cam.zoom < 1.05 || this.finishing);
     if (this.tutorial) this.updateTutorial(dt);
   }
 
   // --------------------------------------------------------------- taps ---
   tap(sx, sy) {
     if (this.finishing || this.paused) return;
+    const now = performance.now();
+    const dbl = this.lastTap && now - this.lastTap.t < 320 && Math.hypot(sx - this.lastTap.x, sy - this.lastTap.y) < 30 && this.lastTap.miss;
+    this.lastTap = { t: now, x: sx, y: sy, miss: false };
+    if (dbl) {
+      // double-tap on empty scenery zooms in/out instead of counting as another mis-tap
+      const v = this.app.view;
+      const [wx, wy] = v.screenToWorld(sx, sy);
+      v.focus(wx, wy, v.cam.zoom > 1.3 ? 1 : 2, 0.35);
+      this.lastTap = null;
+      return;
+    }
     const app = this.app, view = app.view, s = this.session;
     const [wx, wy] = view.screenToWorld(sx, sy);
     const tol = this.content.scoring.tapTolerancePx / view.scale;
@@ -183,6 +206,7 @@ export class PlayScreen {
         return;
       }
       case 'miss':
+        if (this.lastTap) this.lastTap.miss = true;
         view.tapRipple(sx, sy, false);
         app.sfx('miss');
         app.haptic('select');

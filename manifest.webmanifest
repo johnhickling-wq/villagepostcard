@@ -1,0 +1,14 @@
+{
+  "name": "Postcard Perfect",
+  "short_name": "Postcard",
+  "description": "A cosy tap-to-tidy hidden-object game in picture-perfect villages.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#22302c",
+  "theme_color": "#22302c",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

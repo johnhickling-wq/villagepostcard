@@ -52,8 +52,8 @@ export function applyGrade(g, w, h, cond, bloom = 1, opts = {}) {
   g.save();
   // tired scenes: grey and cool
   if (tired > 0) {
-    fill(g, 'saturation', '#808080', 0.3 * tired, w, h);
-    fill(g, 'multiply', '#c9d0d6', 0.22 * tired, w, h);
+    fill(g, 'saturation', '#808080', 0.42 * tired, w, h);
+    fill(g, 'multiply', '#c3cbd2', 0.3 * tired, w, h);
   } else {
     fill(g, 'soft-light', '#ffd8a0', 0.12, w, h);
   }

@@ -208,7 +208,7 @@ export function planPlay(save, content, vid, sid, opts = {}) {
   let tier = opts.tier ?? Math.min(ss.tier + 1, 6);
   let condition = opts.condition;
   let seed = opts.seed ?? rng.int(1, 2 ** 31);
-  let script = null;
+  let script = opts.script || null;
   if (opts.tutorial) {
     tier = 1; condition = 'clear'; seed = 1957;
     script = ['litter', 'crooked', 'litter', 'grimy', 'litter', 'wilted'];

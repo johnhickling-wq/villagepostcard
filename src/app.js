@@ -129,14 +129,19 @@ export class App {
   }
 
   _loop(now) {
+    requestAnimationFrame(this._loop);
     const dt = Math.min(0.05, (now - this.last) / 1000);
     this.last = now;
-    this.screen?.update?.(dt);
-    if (this.screen?.usesCanvas && this.view?.ready) {
-      this.view.update(dt);
-      this.view.draw();
+    try {
+      this.screen?.update?.(dt);
+      if (this.screen?.usesCanvas && this.view?.ready) {
+        this.view.update(dt);
+        this.view.draw();
+      }
+    } catch (err) {
+      // never let one bad frame freeze the game
+      if (!this._loggedErr) { console.error(err); this._loggedErr = true; }
     }
-    requestAnimationFrame(this._loop);
   }
 
   // ------------------------------------------------ sheets & modals ---

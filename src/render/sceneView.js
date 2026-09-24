@@ -58,6 +58,8 @@ export class SceneView {
     this._buildProps();
     this.neglect = activeNeglect(scene, this.projects);
     this.regionCache = new Map();
+    this.restoring = null;
+    this.camTween = null;
     this.fx.clear();
     this.particles.list = [];
     this.screenFx = [];
@@ -336,15 +338,17 @@ export class SceneView {
     const sh = this.shake > 0.3 ? [(Math.random() - 0.5) * this.shake, (Math.random() - 0.5) * this.shake] : [0, 0];
     const ox = this.view.x + this.view.w / 2 - this.cam.x * s + sh[0];
     const oy = this.view.y + this.view.h / 2 - this.cam.y * s + sh[1];
-    // the print sits on the desk with a soft shadow
-    if (!this.view.cover) {
-    g.save();
-    g.shadowColor = 'rgba(40,30,20,0.35)';
-    g.shadowBlur = 18;
-    g.shadowOffsetY = 6;
-    g.fillStyle = '#fff';
-    g.fillRect(ox, oy, this.W * s, this.H * s);
-    g.restore();
+    // the print sits on the desk with a soft shadow (clamped to the view)
+    const px0 = Math.max(ox, this.view.x), py0 = Math.max(oy, this.view.y);
+    const px1 = Math.min(ox + this.W * s, this.view.x + this.view.w), py1 = Math.min(oy + this.H * s, this.view.y + this.view.h);
+    if (!this.view.cover && px1 > px0 && py1 > py0) {
+      g.save();
+      g.shadowColor = 'rgba(40,30,20,0.35)';
+      g.shadowBlur = 18;
+      g.shadowOffsetY = 6;
+      g.fillStyle = '#fff';
+      g.fillRect(px0, py0, px1 - px0, py1 - py0);
+      g.restore();
     }
     g.save();
     g.beginPath();
@@ -507,7 +511,8 @@ export class SceneView {
       g.fillRect(b.x, edge - 5, b.w, 6);
       g.restore();
       if (Math.random() < 0.5) {
-        const col = sampleColor(this.base, f.cx, edge - 6);
+        const [r0, g0, b0] = this.content.colorAt(this.scene, f.cx, edge - 6);
+        const col = `rgb(${r0},${g0},${b0})`;
         this.particles.burst('paint', b.x + Math.random() * b.w, edge, { color: col });
       }
     } else {
@@ -1007,14 +1012,4 @@ export function catenary(points, sag = 40, spacing = 30) {
     }
   }
   return out;
-}
-
-function sampleColor(canvas, x, y) {
-  try {
-    const u = canvas.unit;
-    const d = canvas.getContext('2d').getImageData(Math.max(0, Math.round(x * u)), Math.max(0, Math.round(y * u)), 1, 1).data;
-    return `rgb(${d[0]},${d[1]},${d[2]})`;
-  } catch {
-    return '#c0463a';
-  }
 }

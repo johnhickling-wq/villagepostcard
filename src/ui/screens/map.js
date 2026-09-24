@@ -55,6 +55,9 @@ export class MapScreen {
       this.top.animatePennies(app.save.player.pennies - o.out.pennies, app.save.player.pennies);
     }
     if (o.unlocked) setTimeout(() => this.celebrateUnlock(o.unlocked), 400);
+    const letter = (o.events || []).find((e) => e.kind === 'letter');
+    if (letter?.letter === 'teaser') setTimeout(() => this.teaser(), 1200);
+    if ((o.events || []).some((e) => e.kind === 'judgingReady')) setTimeout(() => app.toast([icon('rosette'), 'The judges have arrived on the Green!'], { ms: 3600 }), 900);
     // first visit after the tutorial: point at the first project
     if (!app.save.flags.seen.mapIntro) {
       app.save.flags.seen.mapIntro = true;
@@ -93,7 +96,11 @@ export class MapScreen {
     const dots = h('div.pin-rosettes', Array.from({ length: 5 }, (_, i) => h('i' + (i < st.tiersDone ? '.on' : ''))));
     const el = h('button.pin' + (st.unlocked ? '' : '.locked') + (st.mastered ? '.mastered' : ''), {
       'data-scene': sid, style: { left: `${x / 10}%`, top: `${y / 15}%`, '--rot': `${rot}deg` },
-      onclick: () => { app.sfx('ui.tap'); st.unlocked ? this.sceneSheet(sid) : this.lockedSheet(sid); },
+      onclick: () => {
+        app.sfx('ui.tap');
+        app.save.flags.seen[`pin:${sid}`] = true;
+        st.unlocked ? this.sceneSheet(sid) : this.lockedSheet(sid);
+      },
     },
       h('div.pin-card', h('img', { src: thumb, alt: '' }), st.unlocked ? null : h('div.pin-lock', icon('lock'))),
       h('div.pin-pushpin'),
@@ -108,6 +115,7 @@ export class MapScreen {
       else stickers.append(h('span.sticker-paint', icon('paint')));
     }
     el.append(stickers);
+    if (st.unlocked && st.plays === 0 && !this.app.save.flags.seen[`pin:${sid}`]) el.append(h('div.pin-new.label', { text: 'New!' }));
     // a project you can afford gets a flag
     const affordable = v.projects.some((p) => (p.scene === sid || p.unlocks === sid) && projectStatus(app.save, app.content, app.village, p.id).canBuy);
     if (affordable) el.append(h('div.pin-flag.wiggle', icon('sparkle')));
@@ -252,6 +260,23 @@ export class MapScreen {
     this.centerOn(sid, true);
     pin.classList.add('just-unlocked');
     this.app.sfx('unlock');
+  }
+
+  async teaser() {
+    const app = this.app;
+    const { showLetter } = await import('../components/letter.js');
+    await showLetter(app, { from: 'postman', ...app.v.letters.teaser, button: 'Pin it up' });
+    const poster = app.content.index.villages.find((x) => !x.playable);
+    const m = app.modal(h('div.celebrate.card.paper.deckle',
+      h('div.label.muted', { text: 'A picture postcard from' }),
+      h('div.display.celebrate-title', { text: poster.name }),
+      h('img.teaser-img', { src: app.assets.imageUrl(poster.poster, null), alt: '' }),
+      h('p.hand', { text: poster.tagline }),
+      h('div.col',
+        h('button.btn.mustard', { onclick: async () => { m.close(); const { TravelScreen } = await import('./travel.js'); app.show(new TravelScreen(app, poster.id)); } }, icon('train'), h('span', { text: 'Travel Office' })),
+        h('button.link.dark', { onclick: () => m.close() }, 'Maybe later'),
+      ),
+    ));
   }
 
   coachFirstProject() {

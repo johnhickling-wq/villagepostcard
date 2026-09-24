@@ -149,8 +149,8 @@
 @keyframes flashOut { from { opacity: 1; } to { opacity: 0; } }
 .results-slot { position: relative; width: min(84vw, 360px); }
 .results-slot::before { content: ''; position: absolute; left: -8px; right: -8px; top: -12px; height: 14px; border-radius: 7px; background: #1a1720; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7); z-index: 2; }
-.results-stamps { position: absolute; right: -8px; bottom: -34px; display: flex; flex-direction: row-reverse; align-items: flex-end; z-index: 5; pointer-events: none; }
-.results-stamps .grade-stamp { width: 84px; height: 84px; margin-left: -22px; }
+.results-stamps { position: absolute; right: -14px; bottom: 44px; display: flex; flex-direction: row-reverse; align-items: flex-end; z-index: 5; pointer-events: none; }
+.results-stamps .grade-stamp { width: 74px; height: 74px; margin-left: -24px; }
 .results-stamps .grade-stamp .gs-num { font-size: 18px; }
 .results-stamps .grade-stamp .gs-label { font-size: 8.5px; }
 
@@ -283,7 +283,7 @@
 @keyframes coachGlow { 50% { box-shadow: 0 0 0 6px rgba(242, 193, 78, 0.9), 0 5px 12px rgba(0, 0, 0, 0.45); } }
 .pin.just-unlocked .pin-card { animation: unlockPop 1s cubic-bezier(0.2, 0.9, 0.3, 1.5) both; }
 @keyframes unlockPop { 0% { transform: scale(0.4) rotate(-20deg); } 100% { transform: none; } }
-.judging-btn { position: absolute; transform: translate(-50%, 0); display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 30px; background: var(--card); box-shadow: var(--shadow); z-index: 3; }
+.judging-btn { position: absolute; translate: -50% 0; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 30px; background: var(--card); box-shadow: var(--shadow); z-index: 3; }
 .judging-btn svg { width: 36px; height: 36px; }
 .goal { position: absolute; left: 10px; right: 10px; bottom: calc(var(--safe-bottom) + 84px); display: flex; align-items: center; gap: 10px; padding: 8px 12px; text-align: left; z-index: 10; transform: rotate(-0.5deg); }
 .goal-portrait { width: 44px; height: 52px; object-fit: cover; flex: none; }
@@ -387,8 +387,8 @@
 .tear { position: absolute; top: 0; bottom: 0; width: 52%; transition: transform 0.9s cubic-bezier(0.6, 0, 0.3, 1); }
 .tear.left { left: 0; clip-path: polygon(0 0, 100% 0, 94% 8%, 100% 16%, 95% 25%, 100% 34%, 93% 43%, 99% 52%, 94% 61%, 100% 70%, 95% 80%, 100% 90%, 96% 100%, 0 100%); }
 .tear.right { right: 0; clip-path: polygon(6% 0, 100% 0, 100% 100%, 4% 100%, 0 90%, 5% 80%, 0 70%, 6% 61%, 1% 52%, 7% 43%, 0 34%, 5% 25%, 0 16%, 6% 8%); }
-.tear-cover.open .tear.left { transform: translateX(-105%) rotate(-3deg); }
-.tear-cover.open .tear.right { transform: translateX(105%) rotate(3deg); }
+.tear-cover.open .tear.left { transform: translateX(-125%) rotate(-3deg); }
+.tear-cover.open .tear.right { transform: translateX(125%) rotate(3deg); }
 .tear-text { position: absolute; left: 0; right: 0; top: 45%; text-align: center; font-size: 30px; transition: opacity 0.3s; }
 .tear-cover.open .tear-text { opacity: 0; }
 .stub { height: 100%; color: var(--paper); }
@@ -566,3 +566,15 @@
 .award-village { font-size: 32px; }
 .confetto { position: absolute; top: -20px; width: 10px; height: 14px; z-index: 6; animation: confettiFall 3s ease-in both; }
 @keyframes confettiFall { to { transform: translate(var(--dx), 110vh) rotate(720deg); } }
+
+.pin-new { position: absolute; top: 10px; left: -14px; padding: 2px 6px; background: var(--red); color: var(--white); font-size: 9px; transform: rotate(-14deg); box-shadow: 0 2px 4px rgba(0,0,0,0.35); animation: pulse 1.4s ease-in-out infinite; }
+.teaser-img { width: 70%; aspect-ratio: 2 / 3; object-fit: cover; border: 6px solid var(--white); box-shadow: 0 6px 16px rgba(0,0,0,0.35); transform: rotate(-3deg); margin: 6px auto; display: block; }
+.link.dark { color: var(--ink-soft); }
+.photo-corner { position: absolute; width: 26px; height: 26px; z-index: 3; pointer-events: none; background: #2a2622; opacity: 0.92; box-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+.photo-corner.tl { clip-path: polygon(0 0, 100% 0, 0 100%); }
+.photo-corner.tr { clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.photo-corner.bl { clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.photo-corner.br { clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+
+.zoom-reset { position: absolute; left: 50%; translate: -50% 0; bottom: calc(var(--safe-bottom) + 104px); z-index: 6; padding: 0 14px 0 8px; font-size: 13px; }
+.zoom-reset svg { width: 20px; height: 20px; }

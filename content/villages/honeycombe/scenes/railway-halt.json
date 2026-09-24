@@ -544,7 +544,30 @@
  "restoration": [
   {
    "project": "halt-paint",
-   "props": []
+   "props": [
+    {
+     "id": "pot-door-l",
+     "sprite": "props/geranium-pot",
+     "x": 268,
+     "y": 912,
+     "h": 58,
+     "tags": [
+      "flowers",
+      "standing"
+     ]
+    },
+    {
+     "id": "pot-door-r",
+     "sprite": "props/lavender-pot",
+     "x": 372,
+     "y": 916,
+     "h": 56,
+     "tags": [
+      "flowers",
+      "standing"
+     ]
+    }
+   ]
   },
   {
    "project": "halt-flowers",

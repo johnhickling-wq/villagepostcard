@@ -12,8 +12,8 @@
   "slot": "zones",
   "pool": "litter",
   "sizeMul": [
-   1.25,
-   0.72
+   1.6,
+   0.85
   ],
   "camouflage": [
    0.0,
@@ -39,8 +39,8 @@
   "slot": "edges",
   "pool": "weeds",
   "sizeMul": [
-   1.15,
-   0.75
+   1.35,
+   0.85
   ],
   "camouflage": [
    0.0,

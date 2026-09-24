@@ -143,7 +143,7 @@ export function generateMess(content, o) {
 /** Small regions (distant windows) only become faults at higher tiers. */
 function regionBigEnough(ctx, r) {
   const b = G.bbox(r.poly);
-  return Math.sqrt(b.w * b.h) >= ctx.minSize * 0.55;
+  return Math.sqrt(b.w * b.h) >= ctx.minSize * 0.65;
 }
 
 function capacities(ctx) {

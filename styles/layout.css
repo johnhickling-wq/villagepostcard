@@ -16,17 +16,6 @@
 
 /* ------------------------------------------------ orientation handling */
 .rotate-prompt { display: none; }
-@media (orientation: portrait) and (hover: none) {
-  .rotate-prompt {
-    position: fixed; inset: 0; z-index: 1000; display: grid; place-content: center; justify-items: center; gap: 14px;
-    padding: 24px; text-align: center; color: var(--paper); background: var(--desk) var(--grain);
-  }
-  .rotate-prompt .display { font-size: 26px; }
-  .rotate-prompt .hand { font-size: 22px; opacity: 0.85; }
-  .rotate-phone { width: 64px; height: 110px; border: 4px solid var(--paper); border-radius: 12px; position: relative; animation: turn 2.4s ease-in-out infinite; }
-  .rotate-phone i { position: absolute; left: 50%; bottom: 6px; width: 16px; height: 4px; margin-left: -8px; border-radius: 2px; background: var(--paper); }
-  @keyframes turn { 0%, 25% { transform: rotate(0); } 55%, 90% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
-}
 /* a tall desktop window (or a narrow preview panel) letterboxes the landscape stage */
 @media (orientation: portrait) and (hover: hover) {
   #app { top: 50%; bottom: auto; height: min(100vh, 62vw); transform: translateY(-50%); box-shadow: 0 0 0 100vmax #141a18; }
@@ -285,3 +274,13 @@
 .jc-photo { aspect-ratio: 3 / 2; }
 .jc-name { font-size: 20px; }
 .jc-remark { font-size: 17px; }
+
+/* portrait phone (rotation locked or not): the stage is drawn turned 90°,
+   so the insets swap sides too */
+#app.rotated {
+  position: fixed; left: 0; top: 0; right: auto; bottom: auto; transform-origin: 0 0;
+  --safe-t: env(safe-area-inset-right, 0px);
+  --safe-r: env(safe-area-inset-bottom, 0px);
+  --safe-b: env(safe-area-inset-left, 0px);
+  --safe-l: env(safe-area-inset-top, 0px);
+}

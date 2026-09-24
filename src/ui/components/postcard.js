@@ -63,8 +63,9 @@ export function beforeAfter(app, pc, beforeCanvasOrUrl, { auto = true } = {}) {
   set(1);
   let dragging = false;
   const move = (e) => {
-    const r = photo.getBoundingClientRect();
-    set(1 - (e.clientX - r.left) / r.width);
+    const r = app.localRect(photo);
+    const [x] = app.toLocal(e.clientX, e.clientY);
+    set(1 - (x - r.left) / r.width);
   };
   photo.addEventListener('pointerdown', (e) => { dragging = true; photo.setPointerCapture(e.pointerId); move(e); stopAuto(); });
   photo.addEventListener('pointermove', (e) => dragging && move(e));

@@ -40,7 +40,7 @@ export class RestoreScreen {
   resize() { this.layout(); }
   /** The scene on the left, the villager's thanks on the right. */
   layout() {
-    const r = this.app.root.getBoundingClientRect();
+    const r = { width: this.app.width, height: this.app.height };
     const sf = this.app.safe;
     const side = Math.min(320, Math.max(220, r.width * 0.3));
     const x0 = sf.l + 12, y0 = sf.t + 12;

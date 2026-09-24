@@ -1,8 +1,7 @@
 # Postcard Perfect
 
 A cosy, touch-only hidden-object game for phones, played in landscape. Tidy
-picture-perfect villages
-by tapping what's wrong:
+picture-perfect villages by tapping what's wrong:
 
 - litter is popped away;
 - crooked signs swing level;

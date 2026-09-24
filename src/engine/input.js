@@ -2,9 +2,10 @@
 // Mouse and wheel work too, for desktop testing.
 
 export class Gestures {
-  constructor(el, handlers) {
+  constructor(el, handlers, toLocal = null) {
     this.el = el;
     this.h = handlers;
+    this.toLocal = toLocal;
     this.pointers = new Map();
     this.tapCandidate = null;
     this.pinch = null;
@@ -31,6 +32,10 @@ export class Gestures {
   }
 
   _pos(e) {
+    if (this.toLocal) {
+      const [x, y] = this.toLocal(e.clientX, e.clientY);
+      return { x: x - this.el.offsetLeft, y: y - this.el.offsetTop };
+    }
     const r = this.el.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   }

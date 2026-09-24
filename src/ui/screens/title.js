@@ -33,8 +33,7 @@ export class TitleScreen {
   }
 
   resize() {
-    const r = this.app.root.getBoundingClientRect();
-    this.app.view.setView(0, 0, r.width, r.height, { cover: true });
+    this.app.view.setView(0, 0, this.app.width, this.app.height, { cover: true });
     this.app.view.cam.zoom = 1.08;
     this.app.view.clampCam();
   }

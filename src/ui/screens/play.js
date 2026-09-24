@@ -81,7 +81,7 @@ export class PlayScreen {
       onTap: (x, y) => this.tap(x, y),
       onPan: (dx, dy) => app.view.pan(dx, dy),
       onPinch: (f, cx, cy, dx, dy) => { app.view.zoomAt(f, cx, cy); app.view.pan(dx, dy); },
-    });
+    }, (x, y) => app.toLocal(x, y));
     app.audio.startMusic('play');
     const amb = [...(this.scene.ambience || [])];
     if (this.play.condition === 'dusk') amb.push('crickets');
@@ -101,12 +101,11 @@ export class PlayScreen {
 
   /** The print sits between the two rails and uses the full height. */
   layout() {
-    const r = this.app.root.getBoundingClientRect();
-    const lr = this.el.querySelector('.rail-left')?.getBoundingClientRect();
-    const rr = this.el.querySelector('.rail-right')?.getBoundingClientRect();
-    const safeT = this.app.safe.t, safeB = this.app.safe.b;
-    const x0 = lr ? lr.right + 6 : 110;
-    const x1 = rr ? rr.left - 6 : r.width - 110;
+    const app = this.app, sf = app.safe;
+    const r = { width: app.width, height: app.height };
+    const safeT = sf.t, safeB = sf.b;
+    const x0 = sf.l + app.rail + 6;
+    const x1 = r.width - sf.r - app.rail - 6;
     const y0 = safeT + 8, y1 = r.height - safeB - 8;
     const view = this.app.view;
     view.setView(x0, y0, Math.max(200, x1 - x0), Math.max(160, y1 - y0));
@@ -215,7 +214,7 @@ export class PlayScreen {
         if (!app.save.flags.seen.cat) { app.save.flags.seen.cat = true; app.toast([h('img', { src: app.assets.spriteUrl('critters/cat-sit', 'common', 0.3) }), 'You found Marmalade, the village cat! She hides in every scene.'], { ms: 3600 }); }
         return;
       case 'collectible': {
-        const target = this.el.querySelector('.hud-score').getBoundingClientRect();
+        const target = app.localRect(this.el.querySelector('.hud-score'));
         view.collectibleFound([target.left + target.width / 2, target.top + target.height / 2]);
         view.popup(ev.collectible.cx, ev.collectible.cy - 30, `${ev.collectible.name}!`, { color: '#2f4f86', size: 26 });
         app.sfx('collect');
@@ -400,7 +399,7 @@ export class PlayScreen {
     if (tg) {
       let x, y;
       if (tg.world) [x, y] = this.app.view.worldToScreen(...tg.world);
-      else { const r = tg.el.getBoundingClientRect(); x = r.left - 30; y = r.top + r.height / 2 - 30; }
+      else { const r = this.app.localRect(tg.el); x = r.left - 30; y = r.top + r.height / 2 - 30; }
       this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + Math.sin(performance.now() / 180) * 6}px)`;
     }
   }

@@ -24,18 +24,13 @@ export class App {
     this.safeProbe = h('div.safe-probe');
     this.ui.append(this.layers, this.toasts, this.safeProbe);
     this.safe = { t: 0, r: 0, b: 0, l: 0 };
-    // the game is landscape-only; a phone held upright is asked to turn
-    this.rotate = h('div.rotate-prompt',
-      h('div.rotate-phone', h('i')),
-      h('div.display', { text: 'Turn your phone sideways' }),
-      h('div.hand', { text: 'Postcard Perfect is played in landscape.' }));
-    document.body.append(this.rotate);
     this.audio = audio;
     this.haptics = haptics;
     this.last = performance.now();
     this._loop = this._loop.bind(this);
     this.dpr = Math.min(2, window.devicePixelRatio || 1);
     window.addEventListener('resize', () => this.resize());
+    window.addEventListener('orientationchange', () => setTimeout(() => this.resize(), 250));
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { this.persist(true); audio.ctx?.suspend(); } else audio.ctx?.resume();
     });
@@ -132,15 +127,43 @@ export class App {
     return wait(closing ? 380 : 420).then(() => { if (!closing) el.classList.remove('on'); });
   }
 
+  /** Portrait on a touch screen: draw the landscape stage turned 90°, so the
+   *  game can be played sideways even when the phone's rotation is locked. */
+  get rotated() { return this.root.classList.contains('rotated'); }
+
+  /** Viewport (client) point -> coordinates inside the stage. */
+  toLocal(cx, cy) {
+    if (this.rotated) return [cy, window.innerWidth - cx];
+    const r = this.root.getBoundingClientRect();
+    return [cx - r.left, cy - r.top];
+  }
+
+  /** An element's box in stage coordinates (transform-safe). */
+  localRect(el) {
+    let x = 0, y = 0, n = el;
+    while (n && n !== this.root) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+    return { left: x, top: y, width: el.offsetWidth, height: el.offsetHeight, right: x + el.offsetWidth, bottom: y + el.offsetHeight };
+  }
+
+  get width() { return this.root.clientWidth; }
+  get height() { return this.root.clientHeight; }
+
   resize() {
+    const portraitTouch = window.innerHeight > window.innerWidth && matchMedia('(hover: none)').matches;
+    this.root.classList.toggle('rotated', portraitTouch);
+    if (portraitTouch) {
+      Object.assign(this.root.style, { width: `${window.innerHeight}px`, height: `${window.innerWidth}px`, transform: `translateX(${window.innerWidth}px) rotate(90deg)` });
+    } else {
+      Object.assign(this.root.style, { width: '', height: '', transform: '' });
+    }
     const cs = getComputedStyle(this.safeProbe);
     this.safe = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
     const w = this.root.clientWidth, h2 = this.root.clientHeight;
     // side rails in play take whatever width the 3:2 scene doesn't need
     const sceneH = h2 - this.safe.t - this.safe.b - 16;
     const spare = w - this.safe.l - this.safe.r - sceneH * 1.5 - 24;
-    const rail = Math.max(90, Math.min(170, spare / 2));
-    this.root.style.setProperty('--rail', `${Math.round(rail)}px`);
+    this.rail = Math.round(Math.max(90, Math.min(170, spare / 2)));
+    this.root.style.setProperty('--rail', `${this.rail}px`);
     this.canvas.width = Math.round(w * this.dpr);
     this.canvas.height = Math.round(h2 * this.dpr);
     this.screen?.resize?.(w, h2);

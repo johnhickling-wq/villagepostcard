@@ -16,5 +16,13 @@
   "out": "posters/provence.webp",
   "width": 800,
   "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). A vintage railway travel poster illustration (without any text) of a hilltop village in Provence, France: ochre and pastel houses with blue shutters and terracotta roofs, a bell tower, cypress trees, rows of purple lavender fields and olive trees in the foreground, bright Mediterranean sky. Leave a plain band of sky at the top. No text, no letters. Full-bleed."
+ },
+ "poster/cotswolds": {
+  "src": "common/poster-cotswolds.webp",
+  "out": "posters/cotswolds.webp",
+  "width": 800,
+  "aspect": "2:3",
+  "size": null,
+  "prompt": "Match the art style of the reference image exactly (a whimsical hand-made collage built from cut and torn painted paper, gouache and screen-print textures, paper grain, loose wobbly ink linework, warm palette of honey-gold stone, cream, sage and olive greens, duck-egg blue, mustard, tomato red and teal). A vintage railway travel poster illustration (without any text) of a Cotswold village: a row of honey-stone cottages with steep stone-slate roofs stepping down to a clear river with a little arched stone footbridge, a church tower on the hill behind, rolling green hills with sheep and dry-stone walls, daffodils and blossom in the foreground, a steam train puffing along the valley in the distance, a big bright spring sky. Leave a plain band of sky at the top. No text, no letters. Full-bleed."
  }
 }

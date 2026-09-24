@@ -616,6 +616,11 @@
    "src": "posters/provence.webp",
    "w": 800,
    "h": 1192
+  },
+  "poster/cotswolds": {
+   "src": "posters/cotswolds.webp",
+   "w": 800,
+   "h": 1200
   }
  }
 }

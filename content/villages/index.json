@@ -6,8 +6,8 @@
    "free": true,
    "name": "Honeycombe-on-the-Wold",
    "region": "The Cotswolds",
-   "poster": "plate/weavers-row",
-   "posterPack": "honeycombe",
+   "poster": "poster/cotswolds",
+   "posterPack": "common",
    "tagline": "Honey-stone cottages, a duck pond and a very particular Colonel."
   },
   {

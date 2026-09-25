@@ -632,14 +632,6 @@
    "h": 96,
    "color": "#e1bd8b"
   },
-  "tools/water": {
-   "atlas": "tools.webp",
-   "x": 290,
-   "y": 0,
-   "w": 91,
-   "h": 96,
-   "color": "#82854c"
-  },
   "tools/light": {
    "atlas": "tools.webp",
    "x": 384,
@@ -679,6 +671,14 @@
    "w": 96,
    "h": 27,
    "color": "#9e7b4c"
+  },
+  "tools/wateringCan": {
+   "atlas": "tools.webp",
+   "x": 290,
+   "y": 0,
+   "w": 91,
+   "h": 96,
+   "color": "#82854c"
   }
  },
  "images": {

@@ -15,8 +15,8 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app, P = window.__progression;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; s.flags.seen.mapIntro = true;
-    s.player.plays = 6;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
+    s.player.plays = 12;
     for (const p of app.v.projects.slice(0, 7)) s.villages.honeycombe.projects[p.id] = 1;
     P.refillRequests(s, app.content, 'honeycombe');
     await window.__flows.playDaily(app);

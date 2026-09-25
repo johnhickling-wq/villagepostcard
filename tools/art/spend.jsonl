@@ -73,3 +73,7 @@
 {"t": 1790364142.8641093, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/sheets/collect-b_gen.png", "cost": 0.502363}
 {"t": 1790364150.0520027, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/sheets/villagers_gen.png", "cost": 0.502747}
 {"t": 1790364186.8993378, "model": "openai/gpt-5.4-image-2", "out": "scratch_art/cutpaper/map/map.png", "cost": 0.353904}
+{"t": 1790364904.4442835, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/sheets/tools_gen.png", "cost": 0.489914}
+{"t": 1790365033.376326, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/sheets/tools-b_gen.png", "cost": 0.487211}
+{"t": 1790365399.84337, "model": "openai/gpt-5.4-image-2", "out": "scratch_art/posters/cotswolds.png", "cost": 0.339383}
+{"t": 1790365405.6586547, "model": "openai/gpt-5.4-image-2", "out": "scratch_art/posters/cornwall.png", "cost": 0.338371}

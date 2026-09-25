@@ -6,8 +6,8 @@ export default async function ({ page, shot, wait, url }) {
   await wait(2500);
   await page.evaluate(async () => {
     const app = window.__app;
-    app.save.flags.intro = true; app.save.flags.tutorial = true; app.save.flags.seen.mapIntro = true;
-    app.save.player.plays = 5; app.save.player.xp = 300;
+    app.save.flags.intro = true; app.save.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) app.save.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) app.save.flags.seen['intro:' + k] = true; app.save.flags.seen.mapIntro = true;
+    app.save.player.plays = 12; app.save.player.xp = 300;
     await window.__flows.goMap(app, { transition: 'none' });
   });
   await wait(1200);
@@ -25,7 +25,7 @@ export default async function ({ page, shot, wait, url }) {
     const { showRewardsQueue } = await import('/src/ui/components/rewards.js');
     const app = window.__app;
     const set = app.v.collectibles.sets[1];
-    showRewardsQueue(app, { levelUps: [{ level: 5, title: 'Keen Amateur', reward: { flashbulbs: 1, pennies: 60, cosmetic: 'film-sepia' } }],
+    showRewardsQueue(app, { levelUps: [{ level: 5, title: 'Keen Amateur', reward: { flashbulbs: 1, fund: 60, cosmetic: 'film-sepia' } }],
       events: [{ kind: 'collectible', item: set.items[2], set }], sets: [set] });
   });
   await wait(1200);

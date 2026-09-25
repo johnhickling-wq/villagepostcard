@@ -2,8 +2,8 @@
 
 A cosy, touch-only, **landscape** hidden-object game for phones, written in pure
 JavaScript. It will later be wrapped for iOS. The player taps to fix the mess
-in 1930s–60s collage-style villages, then a postcard of the scene prints into
-their album. The first village, Honeycombe (Cotswolds), is complete and free.
+in 1930s–60s cut-paper villages, then a postcard of the scene prints into
+their album, and the money it raises goes into the Village Fund. The first village, Honeycombe (Cotswolds), is complete and free.
 Other villages are cheap packs, and the purchase is a visual mock only.
 
 - **Why the game works as it does:** `DESIGN.md`. Its numbers match the content JSON.
@@ -14,6 +14,14 @@ Other villages are cheap packs, and the purchase is a visual mock only.
 
 - Quality and production value come first. Game feel matters most: fix
   animations, sound, combos, juice. We are now polishing towards "perfect".
+- Players aren't gamers. Introduce one idea at a time and always show one
+  obvious next step (`content/common/intro.json`). Nothing appears on screen
+  before it has been introduced.
+- The play screen is the full-screen scene with small overlays: a thin bar of
+  jobs along the top (tool icons, never a specific object), pause top-left,
+  hints bottom-right. Nothing to find may sit under an overlay
+  (`content/common/hud.json`; the bot checks it).
+- The currency is the Village Fund (a jar and a number), never "pennies".
 - The game is landscape only. On portrait-locked phones the app rotates its
   own stage (see below).
 - The monetisation rules are fixed: no energy system, no ads, and nothing sold
@@ -57,8 +65,9 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   - `mess.js` is the deterministic mess generator: plate, tier, condition,
     seed and restoration state produce faults with hit shapes.
   - `session.js` runs one play.
-  - `progression.js` covers the save and migrations, currencies, projects,
-    requests, daily and levels.
+  - `progression.js` covers the save and migrations, the Village Fund,
+    postcards (five per scene, one per weather), projects, the step-by-step
+    introduction, requests, daily and levels.
   - `sim.js` is the perception-model player.
 - **`src/render/`** draws the canvas scene: grading, props, fix animations,
   particles and ambient life.
@@ -71,7 +80,8 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   looks), `layout.css` (the landscape layout of every screen).
 - **Content:**
   - `content/common/*.json` holds rules: faults, tiers, conditions, scoring,
-    levels, requests, notes, cosmetics, items.
+    levels, requests, notes, cosmetics, items, intro (the step-by-step
+    introduction) and hud (overlay keep-out areas).
   - `content/villages/<id>/` is one pack: `village.json`, `villagers.json`,
     `collectibles.json` and `scenes/*.json`.
 - **Assets:** runtime files are in `assets/`, built from `art_src/` by
@@ -80,7 +90,8 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
 ## Gotchas (each of these has bitten before)
 
 - **Coordinates:**
-  - Scenes are 1500×1000 units, and the plates are 3:2.
+  - Scenes are 2000×1000 units, and the plates are 2:1. The village map is
+    still 1500×1000 (3:2).
   - Never use `getBoundingClientRect`/`clientX` directly for layout or hit
     tests. Use `app.toLocal(cx, cy)`, `app.localRect(el)`, `app.width`,
     `app.height`, `app.safe` and `app.rail`.
@@ -107,14 +118,20 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   under a prop or the cat. `npm run bot` reports this, and it must show zero
   issues.
 - **Balance targets:**
-  - The simulated average player should take about 40/55/70/85/100 s on tiers
-    1–5 and about 90 s in Free Play, and get 3 stamps in roughly 30% of plays.
+  - The simulated average player should take about 40/55/70/85/100 s on
+    postcards (tiers) 1–5 and about 90 s in Free Play, and get 3 stamps in
+    roughly 30% of plays. Each postcard has a fixed weather, so mist makes
+    tier 3 run a little slow (about 75 s).
   - The economy should take about 2 hours to reach judging, with no more than
     about 6 plays between purchases.
 
 ## Art pipeline (OpenRouter)
 
 - **Key:** `OPENROUTER_API_KEY` is in the environment. Never print it.
+- **Style:** flat cut-paper collage. Plates match
+  `art_src/style_ref_cutpaper.jpg`; sprite sheets match
+  `art_src/style_ref_objects.jpg` and are redrawn pose for pose from the old
+  painted sheets in `art_src/sheets_painted/`.
 - **Tools:**
   - `tools/art/orgen.py` is the API helper.
   - `tools/art/generate.py plates|sheets|extra|spend` generates art and
@@ -122,11 +139,15 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   - `cutout.py` cuts magenta chroma-key sheets.
   - `build.py` builds atlases, plates, colour grids and inpainting.
   - `grid.py` and `overlay.py` draw annotation overlays for placing slots.
+  - `cutpaper_plates.py` restyles a village's plates; `widen.py` makes a 3:2
+    plate 2:1 without moving anything in it; `widen_scene.py` shifts a scene
+    file to match.
 - **Models:**
-  - Plates, the map and posters use `openai/gpt-5.4-image-2`, at about $0.34
-    per plate and $0.16 per poster.
-  - Sprite sheets use `google/gemini-3.1-flash-image`.
+  - Everything uses `openai/gpt-5.4-image-2`: about $0.35 per plate, map or
+    poster and $0.50 per sprite sheet. It offers 21:9 but not 2:1, so plates
+    are painted at 21:9 and trimmed.
   - The prompts live next to the art in `art_src/**.json`.
+  - Spend was $24.56 after the cut-paper rebuild.
 - **Budget:**
   - Every call is logged to `tools/art/spend.jsonl` (committed).
     `python3 tools/art/generate.py spend` shows the total.
@@ -137,8 +158,9 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
     in the workspace's settings on openrouter.ai; the key can't change it.
 - **Scratch output:** `scratch_art/` and `art_src/cut/` are gitignored and
   are lost with the container. Anything worth keeping goes in `art_src/` or
-  `assets/`. The old portrait plates in `art_src/honeycombe/plates_portrait/`
-  are kept as style references.
+  `assets/`. The painted plates, sheets, map and posters are kept in
+  `art_src/**/*_painted*`, and the older portrait plates in
+  `art_src/honeycombe/plates_portrait/`.
 
 ## Preview Artifact
 

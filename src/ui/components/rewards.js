@@ -3,6 +3,7 @@
 
 import { h, icon } from '../dom.js';
 import { showLetter } from './letter.js';
+import { introduced } from '../../core/progression.js';
 
 function cosmeticName(app, id) {
   const c = app.content.cosmetics;
@@ -11,7 +12,7 @@ function cosmeticName(app, id) {
 
 export function rewardList(app, reward) {
   const items = [];
-  if (reward.pennies) items.push(h('div.rw', icon('penny'), h('span', { text: `${reward.pennies} pennies` })));
+  if (reward.fund) items.push(h('div.rw', icon('fund'), h('span', { text: `${reward.fund} for the Village Fund` })));
   if (reward.flashbulbs) items.push(h('div.rw', h('img', { src: app.assets.spriteUrl('ui/flashbulb', 'common', 0.3) }), h('span', { text: `${reward.flashbulbs} flashbulb${reward.flashbulbs > 1 ? 's' : ''}` })));
   if (reward.secondClass) items.push(h('div.rw', h('img', { src: app.assets.spriteUrl('ui/postcard-stamp', 'common', 0.3) }), h('span', { text: 'Second-Class Stamp (saves a streak)' })));
   if (reward.cosmetic) items.push(h('div.rw', icon('sparkle'), h('span', { text: `New look: ${cosmeticName(app, reward.cosmetic)}` })));
@@ -27,7 +28,9 @@ function celebrate(app, content, { button = 'Lovely!', cls = '' } = {}) {
 }
 
 export async function showRewardsQueue(app, out) {
-  for (const lu of out.levelUps || []) {
+  // before levels are introduced, experience (and its rewards) build up quietly
+  const levelUps = introduced(app.save, app.content, 'level') ? out.levelUps || [] : [];
+  for (const lu of levelUps) {
     app.sfx('levelup');
     app.haptic('success');
     await celebrate(app, h('div.col.center',
@@ -71,7 +74,7 @@ export async function showRewardsQueue(app, out) {
     if (ev.kind === 'friendship') {
       await showLetter(app, { from: ev.villager, title: 'A letter for you', body: ev.letter, button: 'How kind' });
     }
-    if (ev.kind === 'duplicate') app.toast(`Another ${ev.item.name}: swapped for 15 pennies`, { ms: 2400 });
+    if (ev.kind === 'duplicate') app.toast(`Another ${ev.item.name}: sold for 15 for the Village Fund`, { ms: 2400 });
     if (ev.kind === 'newPostcard' && !app.save.flags.seen.album) app.save.flags.seen.album = true;
   }
   for (const set of out.sets || []) {

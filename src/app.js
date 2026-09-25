@@ -54,7 +54,7 @@ export class App {
     this.assets = new Assets(this.content);
     this.view = new SceneView(this.canvas, this);
     this.save = migrate(storage.load(), this.content);
-    if (!storage.load()) this.save.player.pennies = 40; // the Committee's float
+    if (!storage.load()) this.save.player.fund = 40; // the Committee's float
     refillRequests(this.save, this.content, this.village);
     this.applySettings();
     boot.progress(0.15, 'Unpacking the collage box…');
@@ -96,7 +96,7 @@ export class App {
   async show(screen, { transition = 'fade', instant = false } = {}) {
     const old = this.screen;
     // toasts belong to the screen that raised them
-    for (const t of this.toasts.children) { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }
+    this.clearToasts();
     if (!instant && transition === 'iris') await this.iris(true);
     this.screen = screen;
     screen.el.classList.add('screen');
@@ -186,6 +186,7 @@ export class App {
   // ------------------------------------------------ sheets & modals ---
   /** Bottom sheet. Returns {el, close, closed(promise)}. */
   sheet(content, { cls = '', onClose, dismissable = true } = {}) {
+    this.clearToasts(); // a pop-up must never cover the sheet it pointed at
     const overlay = h('div.overlay');
     const close = h('button.iconbtn.close', { 'aria-label': 'Close' });
     close.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
@@ -232,6 +233,10 @@ export class App {
     };
     if (dismissable) overlay.addEventListener('click', () => close());
     return { el: box, close, closed };
+  }
+
+  clearToasts() {
+    for (const t of this.toasts.children) { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }
   }
 
   toast(content, { ms = 2600, cls = '' } = {}) {

@@ -7,8 +7,8 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; s.flags.seen.mapIntro = true;
-    s.player.pennies = 2000; s.player.plays = 6;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
+    s.player.fund = 2000; s.player.plays = 6;
     s.villages.honeycombe.scenes['railway-halt'].tier = 3;
     s.villages.honeycombe.projects['open-high-street'] = 1;
     await window.__flows.restoreProject(app, 'halt-paint');

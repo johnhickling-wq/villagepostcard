@@ -17,7 +17,7 @@ export function showLetter(app, { from, title, body, button = 'Continue', reward
       h('div', h('div.label.muted', { text: who ? who.role : 'Wold & Vale Postcard Co.' }), h('div.display.letter-title', { text: title })),
     ),
     text,
-    reward ? h('div.letter-reward.row', icon('penny'), h('span', { text: reward })) : null,
+    reward ? h('div.letter-reward.row', icon('fund'), h('span', { text: reward })) : null,
     h('div.letter-foot', btn),
   );
   const m = app.modal(el, { dismissable: false, cls: 'letter-modal' });

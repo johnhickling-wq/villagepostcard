@@ -116,7 +116,8 @@
     "tools-b/standUp-2"
    ],
    "rename": {
-    "tools-b/standUp-2": "standUp"
+    "tools-b/standUp-2": "standUp",
+    "tools/water": "wateringCan"
    }
   }
  },

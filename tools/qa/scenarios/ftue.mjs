@@ -41,6 +41,6 @@ export default async function ({ page, shot, wait, url }) {
   await page.locator('.ss-play').click({ force: true });
   await wait(3000);
   await shot('65-highstreet-play');
-  const st = await page.evaluate(() => ({ plays: window.__app.save.player.plays, pennies: window.__app.save.player.pennies, xp: window.__app.save.player.xp, req: window.__app.save.requests.active.length }));
+  const st = await page.evaluate(() => ({ plays: window.__app.save.player.plays, fund: window.__app.save.player.fund, xp: window.__app.save.player.xp, req: window.__app.save.requests.active.length }));
   console.log(JSON.stringify(st));
 }

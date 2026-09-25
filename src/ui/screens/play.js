@@ -85,7 +85,55 @@ export class PlayScreen {
     if (this.play.condition === 'storm') amb.push('drips', 'breeze');
     app.audio.startAmbience(this.play.condition === 'mist' ? amb.filter((a) => a !== 'birds') : amb);
     setTimeout(() => this.tab.classList.add('gone'), this.tutorial ? 1800 : 2200);
-    if (this.tutorial) setTimeout(() => this.tutorialStep(), 1400);
+    if (this.tutorial) {
+      // the coach teaches the first two jobs
+      for (const t of ['litter', 'crooked']) app.save.flags.seen[`job:${t}`] = true;
+      setTimeout(() => this.tutorialStep(), 1400);
+    } else {
+      setTimeout(() => this.introduceJobs(), 2300);
+    }
+  }
+
+  /** A job never seen before gets a little card before the clock starts. */
+  introduceJobs() {
+    const app = this.app, seen = app.save.flags.seen;
+    const fresh = Object.keys(this.session.remainingByType()).filter((t) => !seen[`job:${t}`]);
+    if (!fresh.length || this.finishing) return this.introduceFeature();
+    this.paused = true;
+    const rows = fresh.map((t) => {
+      const f = this.content.faults[t];
+      const art = app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
+      return h('div.job-row', h('span.job-ico', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon)),
+        h('div', h('div.display.job-name', { text: f.action }), h('div.job-text', { text: f.intro })));
+    });
+    const go = h('button.btn.teal.small', { text: 'Got it' });
+    const card = h('div.job-card.card.paper.pop-in', h('div.label.muted', { text: fresh.length > 1 ? 'New jobs' : 'A new job' }), ...rows, go);
+    card.style.top = `${this.app.localRect(this.bar).bottom + 8}px`;
+    this.el.append(card);
+    app.sfx('unlock');
+    go.addEventListener('click', () => {
+      app.sfx('ui.tap');
+      for (const t of fresh) seen[`job:${t}`] = true;
+      app.persist();
+      card.remove();
+      this.paused = false;
+      for (const t of fresh) { const c = this.chips[t]?.chip; if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); } }
+      this.introduceFeature();
+    });
+  }
+
+  /** The first play with a new tool on screen points it out once. */
+  introduceFeature() {
+    const app = this.app, seen = app.save.flags.seen, coach = this.content.intro?.coach || {};
+    const targets = { flash: this.flashBtn, loupe: this.loupeBtn, score: this.scorePill };
+    for (const f of ['flash', 'loupe', 'score']) {
+      if (!this.show[f] || seen[`coach:${f}`] || !coach[f]) continue;
+      seen[`coach:${f}`] = true;
+      app.persist();
+      this.setCoach(coach[f], { el: targets[f], below: f === 'score' });
+      setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent === coach[f]) this.setCoach(null); }, 4200);
+      return;
+    }
   }
 
   exit() {
@@ -202,6 +250,7 @@ export class PlayScreen {
   // ------------------------------------------------------------- update ---
   update(dt) {
     if (this.paused) return;
+    if (!this.tutorial && this.fingerTarget) this.moveFinger();
     const s = this.session;
     const events = this.finishing ? [] : s.update(dt);
     for (const ev of events) {
@@ -249,7 +298,7 @@ export class PlayScreen {
       case 'fix': return this.onFix(ev, sx, sy);
       case 'cat':
         view.catFound();
-        view.popup(ev.cat.cx, ev.cat.y - ev.cat.h, `Marmalade! +${ev.points}`, { color: '#c0602a', size: 28 });
+        view.popup(ev.cat.cx, ev.cat.y - ev.cat.h, this.show.score ? `Marmalade! +${ev.points}` : 'Marmalade!', { color: '#c0602a', size: 28 });
         app.sfx('cat');
         app.haptic('success');
         view.tapRipple(sx, sy, true);
@@ -304,6 +353,13 @@ export class PlayScreen {
       this.comboEl.classList.remove('bump'); void this.comboEl.offsetWidth; this.comboEl.classList.add('bump');
     }
     if (ev.callout && this.show.combo) this.showCallout(ev.callout);
+    // the first combo ever gets a word of explanation
+    const comboTip = this.content.intro?.coach?.combo;
+    if (ev.chain === 2 && this.show.combo && comboTip && !app.save.flags.seen['coach:combo']) {
+      app.save.flags.seen['coach:combo'] = true;
+      this.setCoach(comboTip);
+      setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent === comboTip) this.setCoach(null); }, 3000);
+    }
     if (ev.left === 2 || ev.left === 1) this.app.toast(ev.left === 1 ? 'Just one more!' : 'Two to go!', { ms: 1400, cls: 'mini' });
     if (this.tutorial) this.tutorialAfterFix(ev);
     if (ev.complete) this.complete(ev.complete);
@@ -425,11 +481,6 @@ export class PlayScreen {
   tutorialAfterFix(ev) {
     const t = this.tutorial;
     if (t.step < 2) { t.step++; this.tutorialStep(); }
-    if (ev.chain === 2 && !t.comboShown && t.step >= 2 && this.show.combo) {
-      t.comboShown = true;
-      this.setCoach('Quick fixes in a row make a combo, worth more points!');
-      setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent.startsWith('Quick')) this.setCoach(null); }, 3000);
-    }
   }
 
   updateTutorial(dt) {
@@ -439,13 +490,16 @@ export class PlayScreen {
       t.step = 3;
       this.setCoach('Stuck? The magnifying glass shows you where to look. It recharges as you play.', { el: this.loupeBtn });
     }
+    this.moveFinger();
+  }
+
+  moveFinger() {
     const tg = this.fingerTarget;
-    if (tg) {
-      let x, y;
-      if (tg.world) [x, y] = this.app.view.worldToScreen(...tg.world);
-      else if (tg.below) { const r = this.app.localRect(tg.el); x = r.left + r.width / 2; y = r.bottom + 2; }
-      else { const r = this.app.localRect(tg.el); x = r.left - 30; y = r.top + r.height / 2 - 30; }
-      this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + Math.sin(performance.now() / 180) * 6}px)`;
-    }
+    if (!tg) return;
+    let x, y;
+    if (tg.world) [x, y] = this.app.view.worldToScreen(...tg.world);
+    else if (tg.below) { const r = this.app.localRect(tg.el); x = r.left + r.width / 2; y = r.bottom + 2; }
+    else { const r = this.app.localRect(tg.el); x = r.left - 30; y = r.top + r.height / 2 - 30; }
+    this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + Math.sin(performance.now() / 180) * 6}px)`;
   }
 }

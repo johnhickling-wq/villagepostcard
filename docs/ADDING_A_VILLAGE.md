@@ -45,7 +45,7 @@ Copy `content/villages/honeycombe/` as a template:
 - `village.json`:
   - **`scenes`** (in unlock order) and **`start`**.
   - **`projects`**: each scene needs one access project with `unlocks`, plus
-    two beautification projects.
+    two beautification projects. Each has a `cost`, paid from the Village Fund.
   - **`map.pins`**: coordinates on the 1500×1000 map.
   - **`finale`**.
   - **`letters`**: intro, welcome, teaser and finale.
@@ -54,21 +54,32 @@ Copy `content/villages/honeycombe/` as a template:
 - `villagers.json`: lines for every request kind (`fix`, `fixAny`, `cat`,
   `stamps`, `condition`, `combo`, `nohint`, `quick`, `plays`, `collect`),
   three `thanks` lines, and five `letters` (one per friendship level).
-- `collectibles.json`: six sets, each with a `reward` (pennies, xp and a
+- `collectibles.json`: six sets, each with a `reward` (`fund`, `xp` and a
   cosmetic from `content/common/cosmetics.json`).
 
 New litter or props that don't exist yet go in `content/common/items.json`,
 tagged with the village's themes.
 
+These are shared by every village and need nothing from a new pack:
+
+- `content/common/intro.json`: the step-by-step introduction (which jobs and
+  features arrive after how many postcards, and their cards);
+- `content/common/hud.json`: the play screen's overlay areas, which the mess
+  generator keeps clear;
+- `content/common/faults.json`: each job's action name, tool icon and the
+  one-line explanation on its "new job" card.
+
 ## 2. Generate the art
 
 1. Write the prompts:
-   - `art_src/<id>/plates.json`: one prompt per scene, generated as wide 3:2
-     landscape plates. Reuse the `common` text from Honeycombe; it asks for
-     the collage style, a clear foreground across the full width, no people
-     and no text.
+   - `art_src/<id>/plates.json`: one prompt per scene. Plates are 2:1 (the
+     shape of a phone held sideways). Reuse the `common` text from Honeycombe;
+     it asks for the cut-paper style, calm ground across the full width where
+     litter will lie, no people and no text. Every plate is matched to
+     `art_src/style_ref_cutpaper.jpg`.
    - `art_src/sheets.json`: add sheets for the new props, the collectibles and
-     a `villagers` portrait sheet.
+     a `villagers` portrait sheet. Sprite sheets are matched to
+     `art_src/style_ref_objects.jpg`, a close-up of cut-paper objects.
    - `art_src/<id>/extra.json`: a `map` prompt (3:2 landscape). Pin
      coordinates in `village.json` use the map's 1500 × 1000 units.
 2. Generate. `OPENROUTER_API_KEY` must be set.
@@ -80,9 +91,9 @@ tagged with the village's themes.
    python3 tools/art/generate.py extra <id>
    ```
 
-   A village costs about **$4–5**: plates about $0.34 each, sheets about $0.07
-   each, and the map. `generate.py spend` shows the running total. Look at each
-   plate. If one misses, regenerate it with `--only <scene> --force`.
+   A village costs about **$6–8**: plates and the map about $0.35 each, sprite
+   sheets about $0.50 each. `generate.py spend` shows the running total. Look
+   at each plate. If one misses, regenerate it with `--only <scene> --force`.
 3. Add the new sheet items to `art_src/atlases.json` (props go in the common
    `props` atlas; collectibles and portraits go under `villages/<id>`), then
    build:
@@ -98,6 +109,13 @@ tagged with the village's themes.
 **Replacing art later** (for example with final commissioned art) works the
 same way: drop in a new source file with the same name and rerun `build.py`.
 Keys and scene data stay valid as long as the composition is similar.
+
+**Restyling or widening existing plates** keeps the scene data too:
+`tools/art/cutpaper_plates.py` redraws a village's plates in another style from
+`art_src/<id>/cutpaper.json`, and `tools/art/widen.py` paints new scenery at the
+sides of a 3:2 plate to make it 2:1 while pasting the original middle back
+untouched. `tools/art/widen_scene.py` then moves the scene file's coordinates
+across to match. Check each result with `overlay.py`.
 
 ## 3. Annotate each scene
 
@@ -129,7 +147,10 @@ python3 tools/art/grid.py art_src/<id>/plates/<scene>.webp out.jpg 100 400 600 9
 python3 tools/art/overlay.py <id> <scene> out.jpg --restored                          # draw all slots and props
 ```
 
-Scene coordinates are 1500 wide and 1000 tall (the game is played in landscape), whatever the image size.
+Scene coordinates are 2000 wide and 1000 tall, whatever the image size. Keep
+anything to find (zones, props, windows, lamps, cat spots) out of the top 14%
+and the bottom-right corner, where the play screen's overlays sit: the mess
+generator won't place faults there (`content/common/hud.json`).
 
 ## 4. Check and tune
 
@@ -150,7 +171,7 @@ Aim for:
 - 2–3 hours to judging;
 - no more than about 6 plays between purchases.
 
-Adjust the project `cost` and `rosettes` in `village.json` if needed.
+Adjust the project `cost` in `village.json` if needed.
 
 ## 5. Play it
 
@@ -158,4 +179,4 @@ Run `npm run dev` and open http://localhost:5173.
 
 The QA harness (`node tools/qa/shots.mjs <scenario>`) screenshots flows on a
 844×390 landscape phone viewport. `gallery` shows every scene of the pack under a
-different weather condition at Tier 5.
+different weather condition at Tier 5 (set `TIER` to change it).

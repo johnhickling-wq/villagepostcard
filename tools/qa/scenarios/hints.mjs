@@ -7,7 +7,7 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; s.player.flashbulbs = 3;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.player.flashbulbs = 3; s.player.plays = 12;
     for (const p of app.v.projects) if (p.unlocks) s.villages.honeycombe.projects[p.id] = 1;
     await window.__flows.playScene(app, 'weavers-row', { tier: 3, condition: 'golden', seed: 5 });
   });

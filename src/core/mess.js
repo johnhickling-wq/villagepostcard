@@ -84,7 +84,8 @@ function inScene(ctx, shape) {
 
 /**
  * @param {Content} content
- * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, collectible?, script?}
+ * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, collectible?, script?, types?, cat?}
+ *   types: the jobs allowed (the rest aren't introduced yet); cat: false keeps Marmalade away
  */
 export function generateMess(content, o) {
   const village = content.village(o.village);
@@ -112,6 +113,7 @@ export function generateMess(content, o) {
   for (const [type, w] of Object.entries(tier.types)) {
     const f = content.faults[type];
     if (!f || !capacity[type]) continue;
+    if (o.types && !o.types.includes(type)) continue; // not introduced yet
     if (f.requires === 'dark' && !cond.dark) continue;
     weights[type] = w * f.weight * (cond.faultMods?.[type] ?? 1) * (scene.mess?.types?.[type] ?? 1);
   }
@@ -138,7 +140,7 @@ export function generateMess(content, o) {
   const mess = {
     village: o.village, scene: o.scene, tier: o.tier, condition: condId, seed: o.seed,
     faults: ctx.faults,
-    cat: placeCat(ctx),
+    cat: o.cat === false ? null : placeCat(ctx),
     collectible: o.collectible ? placeCollectible(ctx, o.collectible) : null,
     neglect, props: props.map((p) => p.id),
   };

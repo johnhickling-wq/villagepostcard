@@ -1,31 +1,30 @@
 import { h, icon, countUp } from '../dom.js';
-import { levelInfo, rosettes } from '../../core/progression.js';
+import { levelInfo, introduced } from '../../core/progression.js';
 import { openSettings } from './settings.js';
 
-/** Level badge, pennies, rosettes and settings. */
+/** Level badge (once introduced), the Village Fund and settings. */
 export function topBar(app, { back = null, onChange } = {}) {
   const lvl = levelInfo(app.content, app.save.player.xp);
-  const pennies = h('span', { text: app.save.player.pennies.toLocaleString('en-GB') });
-  const penniesChip = h('div.chip.pennies', icon('penny'), pennies);
-  const ros = rosettes(app.save, app.village);
+  const fund = h('span', { text: app.save.player.fund.toLocaleString('en-GB') });
+  const fundChip = h('div.chip.fund', { 'aria-label': 'The Village Fund', title: 'The Village Fund' }, icon('fund'), fund);
   const el = h('div.topbar',
     back ? h('button.iconbtn', { 'aria-label': 'Back', onclick: () => { app.sfx('ui.tap'); back(); } }, icon('back')) : null,
-    h('button.chip.level-badge', { onclick: () => profile(app) },
+    introduced(app.save, app.content, 'level') ? h('button.chip.level-badge', { onclick: () => profile(app) },
       h('div.num', { text: String(lvl.level) }),
-      h('div.col', { style: { gap: '3px' } }, h('div.t', { text: lvl.title }), h('div.bar', h('i', { style: { width: `${(lvl.into / lvl.need) * 100}%` } })))),
+      h('div.col', { style: { gap: '3px' } }, h('div.t', { text: lvl.title }), h('div.bar', h('i', { style: { width: `${(lvl.into / lvl.need) * 100}%` } })))) : null,
     h('div.grow'),
-    penniesChip,
-    h('div.chip', icon('rosette'), h('span', { text: String(ros) })),
+    fundChip,
     h('button.iconbtn.small', { 'aria-label': 'Settings', onclick: () => { app.sfx('ui.tap'); openSettings(app, onChange); } }, icon('gear')),
   );
   return {
     el,
-    animatePennies(from, to) {
-      pennies.textContent = from.toLocaleString('en-GB');
+    fundChip,
+    animateFund(from, to) {
+      fund.textContent = from.toLocaleString('en-GB');
       setTimeout(() => {
         app.sfx('coin');
-        penniesChip.classList.add('bump');
-        countUp(pennies, to, { from, dur: 900, tick: () => app.sfx('tick') });
+        fundChip.classList.add('bump');
+        countUp(fund, to, { from, dur: 900, tick: () => app.sfx('tick') });
       }, 500);
     },
   };

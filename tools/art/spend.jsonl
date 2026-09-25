@@ -35,3 +35,11 @@
 {"t": 1790281761.809932, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/honeycombe/plates/st-aldhelms.png", "cost": 0.342458}
 {"t": 1790281777.9456563, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/art_src/honeycombe/plates/rose-cottage.png", "cost": 0.341997}
 {"t": 1790283469.6770551, "model": "openai/gpt-5.4-image-2", "out": "scratch_art/poster_cotswolds.png", "cost": 0.163212}
+{"t": 1790331678.3126884, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/A-calm/plate.png", "cost": 0.347522}
+{"t": 1790331682.2575977, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/C-screenprint/plate.png", "cost": 0.347866}
+{"t": 1790331682.3679798, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/D-diorama/plate.png", "cost": 0.348097}
+{"t": 1790331689.265632, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/B-cutpaper/plate.png", "cost": 0.354443}
+{"t": 1790331792.633728, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/A-calm/sheet.png", "cost": 0.490502}
+{"t": 1790331802.2732313, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/D-diorama/sheet.png", "cost": 0.489973}
+{"t": 1790331802.3283365, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/C-screenprint/sheet.png", "cost": 0.491605}
+{"t": 1790331805.364264, "model": "openai/gpt-5.4-image-2", "out": "/home/user/villagepostcard/scratch_art/styletest/B-cutpaper/sheet.png", "cost": 0.491991}

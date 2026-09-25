@@ -27,6 +27,9 @@ for (const t of c.tiers) for (const cond of Object.keys(t.conditions)) if (!c.co
 for (const [vid, v] of Object.entries(c.villages)) {
   const W = (s) => `${vid}/${s}`;
   if (!v.sceneOrder.includes(v.start)) err(W('village'), `start scene "${v.start}" not in scenes`);
+  // postcards and album slots take one shape per village
+  const ar = (sid) => v.scenes[sid].size[0] / v.scenes[sid].size[1];
+  for (const sid of v.sceneOrder) if (Math.abs(ar(sid) - ar(v.start)) > 0.01) err(W(sid), `aspect ${ar(sid).toFixed(2)} differs from the start scene's ${ar(v.start).toFixed(2)}`);
   sprite(v.map.image, vid, W('map'));
   const projectIds = new Set(v.projects.map((p) => p.id));
   const unlocked = new Set([v.start]);

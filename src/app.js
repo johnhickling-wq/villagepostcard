@@ -60,6 +60,9 @@ export class App {
     boot.progress(0.15, 'Unpacking the collage box…');
     const vid = this.village;
     const v = this.content.village(vid);
+    // postcards, album slots and thumbnails take the shape of the village's scenes
+    const [sw, sh] = v.scenes[v.start].size;
+    this.root.style.setProperty('--scene-ar', String(sw / sh));
     const imageKeys = [[v.map.image, vid], ...v.sceneOrder.map((s) => [v.scenes[s].plate, vid, true]), ['plate/high-street', vid]];
     await Promise.all([
       this.assets.preload(['common', vid], imageKeys, (k) => boot.progress(0.15 + k * 0.8, 'Unpacking the collage box…')),

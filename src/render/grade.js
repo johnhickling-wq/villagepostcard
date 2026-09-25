@@ -3,7 +3,7 @@
 // restoration "bloom": a tired, unloved scene is cooler and greyer; restoring
 // it warms it up.
 
-export function bakePlate(img, cond, bloom, W = 1000, H = 1500, maxW = 1664) {
+export function bakePlate(img, cond, bloom, W = 1000, H = 1500, maxW = 2600) {
   const scale = Math.min(1, maxW / img.width);
   const c = document.createElement('canvas');
   c.width = Math.round(img.width * scale);

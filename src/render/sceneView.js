@@ -3,7 +3,7 @@
 // fix animation. It also renders still "before"/"after" images for postcards.
 
 import { bakePlate, gradeSprite, gradeColor } from './grade.js';
-import { grimeTexture, drawCobweb, flakes } from './textures.js';
+import { drawCobweb, flakes, peeling, sootScrap } from './textures.js';
 import { Particles } from './particles.js';
 import { Ambient } from './ambient.js';
 import { Ease, springDecay, clamp01, lerp } from '../engine/tween.js';
@@ -87,6 +87,12 @@ export class SceneView {
     const raw = this.assets.sprite(key, this.village);
     return raw ? this.graded(raw) : null;
   }
+
+  /** A flat colour graded for this scene's light, as a CSS colour (for drawn-in-code fault art). */
+  tone = (hex, a = 1) => {
+    const c = gradeColor(hex, this.cond, this.bloom);
+    return a < 1 ? c.replace('rgb(', 'rgba(').replace(')', `,${a})`) : c;
+  };
 
   graded(raw) {
     this.gradeCache ||= new Map();
@@ -432,26 +438,23 @@ export class SceneView {
     c.height = Math.max(2, Math.ceil(b.h * u));
     const g = c.getContext('2d');
     if (f.type === 'faded') {
+      // sun-bleached paper, with torn patches peeled back to bare cream paper
       g.drawImage(this.base, b.x * u, b.y * u, b.w * u, b.h * u, 0, 0, c.width, c.height);
       g.globalCompositeOperation = 'saturation';
-      g.globalAlpha = 0.92 * f.amount;
+      g.globalAlpha = 0.95 * f.amount;
       g.fillStyle = '#888';
       g.fillRect(0, 0, c.width, c.height);
       g.globalCompositeOperation = 'screen';
-      g.globalAlpha = 0.55 * f.amount;
-      g.fillStyle = '#cfc6b4';
+      g.globalAlpha = 0.62 * f.amount;
+      g.fillStyle = this.tone('#d9d0bc');
       g.fillRect(0, 0, c.width, c.height);
       g.globalCompositeOperation = 'source-over';
       g.globalAlpha = 1;
-      flakes(g, c.width, c.height, f.pattern, f.amount);
+      flakes(g, c.width, c.height, f.pattern, f.amount * 0.6);
+      peeling(g, c.width, c.height, f.pattern, f.amount, this.tone);
     } else {
-      const tex = grimeTexture();
-      const r = new Rng(f.pattern);
-      g.globalAlpha = Math.min(1, 0.3 + 0.75 * f.amount);
-      g.translate(-r.float(0, 256), -r.float(0, 256));
-      g.fillStyle = g.createPattern(tex, 'repeat');
-      g.fillRect(0, 0, c.width + 512, c.height + 512);
-      g.setTransform(1, 0, 0, 1, 0, 0);
+      // a stained scrap of paper stuck over the glass
+      sootScrap(g, c.width, c.height, f.pattern, Math.min(1, 0.35 + 0.65 * f.amount), this.tone);
     }
     // cut to the region's shape
     g.globalCompositeOperation = 'destination-in';

@@ -1,0 +1,38 @@
+{
+ "styleRefs": ["art_src/style_ref_cutpaper.jpg"],
+ "restyle": "Redraw the first image in the cut-paper collage style of the second image, like a 1950s children's picture book made from coloured paper: every shape is a flat piece of cut or torn coloured paper with a subtle paper grain and slightly irregular hand-cut edges, simple drawn lines for stone courses, roof slates and planks, tiny soft shadows where paper layers overlap, and a limited warm palette of honey stone, cream, sage and olive greens, duck-egg blue sky, mustard, tomato red and teal. Keep the composition of the first image identical: every building, roof, chimney, door, window, sign bracket, lamp, bench, table, fence, wall, gate, tree, path, bridge, water and hill must stay in exactly the same place, at the same size and in the same shape, so the new picture lines up when laid over the old one. Do not add or remove anything. Doors and window frames are clean, bold, clearly separate pieces of paper. Paths, pavements, lawns, cobbles, platforms and other ground surfaces are made of a few large, calm pieces of paper with only faint drawn joints, so that small objects lying on them would be easy to see. No people, no text, no lettering, no litter. Wide 3:2 landscape, full-bleed, no border or frame.",
+ "scenes": {
+  "railway-halt": {
+   "left": "more blossom trees, a hedge and the white picket fence, with the flagstone platform and its edge continuing",
+   "right": "the curving railway track continuing past hedges into rolling green hills with trees"
+  },
+  "high-street": {
+   "left": "more honey-stone cottages with front doors and sash windows along the left-hand side of the street, with the pavement and cobbles continuing",
+   "right": "more honey-stone cottages and a little shop front along the right-hand side of the street, with the pavement and cobbles continuing"
+  },
+  "village-green": {
+   "left": "more of the grassy green with a large tree and a row of honey-stone cottages behind, the footpath continuing",
+   "right": "more of the grassy green around the edge of the duck pond, with cottages and a garden hedge behind"
+  },
+  "weavers-row": {
+   "left": "the row of honey-stone weavers' cottages continuing with another front door, windows and a flower bed, and the path continuing",
+   "right": "the little river continuing past a weeping willow into water meadows, with reeds along the bank"
+  },
+  "old-mill": {
+   "left": "a tall tree, the stone wall of the mill yard and the grassy river bank continuing, with daffodils",
+   "right": "the river continuing under trees past a meadow, with the far bank beyond the stone bridge"
+  },
+  "bee-and-bramble": {
+   "left": "the dry-stone wall, a wooden field gate and the lawn continuing, with rolling fields and hedges behind",
+   "right": "the side of the pub and its beer garden continuing with the lawn, a flower border and a hedge"
+  },
+  "st-aldhelms": {
+   "left": "a tall tree, the churchyard's dry-stone wall and the path continuing, with daffodils",
+   "right": "the churchyard continuing with a few old gravestones, yew trees and a flowering tree, the grass continuing"
+  },
+  "rose-cottage": {
+   "left": "the cottage garden continuing with rows of vegetables, bean poles and the hedge, and the path continuing",
+   "right": "the far end of the thatched cottage with a rose-covered window, a flower border and the lawn continuing"
+  }
+ }
+}

@@ -130,8 +130,11 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
 - **Budget:**
   - Every call is logged to `tools/art/spend.jsonl` (committed).
     `python3 tools/art/generate.py spend` shows the total.
-  - The authorised cap is about $25 in total. $8.33 had been used at handover.
-    Ask the owner before going past the cap.
+  - The owner has authorised spending all the credit on the account (about
+    $45 in total) on the cut-paper art rebuild. Ask before going past that.
+  - The key belongs to an OpenRouter workspace with its own lifetime budget.
+    A 403 "Workspace lifetime budget exceeded" means the owner must raise it
+    in the workspace's settings on openrouter.ai; the key can't change it.
 - **Scratch output:** `scratch_art/` and `art_src/cut/` are gitignored and
   are lost with the container. Anything worth keeping goes in `art_src/` or
   `assets/`. The old portrait plates in `art_src/honeycombe/plates_portrait/`

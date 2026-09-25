@@ -4,3 +4,4 @@ dist/
 *.log
 .DS_Store
 art_src/cut/
+__pycache__/

@@ -78,6 +78,7 @@ export class PlaySession {
     if (this.done) return { kind: 'done' };
     if (this.locked) return { kind: 'locked' };
     const hit = this._hitTest(x, y, tol);
+    if (hit) this.lastMiss = null;
     if (hit?.kind === 'fault') return this._fix(hit.target, x, y);
     if (hit?.kind === 'cat') {
       this.catFound = true;
@@ -143,9 +144,25 @@ export class PlaySession {
     if (this.missTimes.length >= cfg.misses) {
       this.lockedUntil = this.t + cfg.duration;
       this.missTimes = [];
+      this.lastMiss = null;
       return { kind: 'shaky', x, y, duration: cfg.duration, brokeChain };
     }
+    this.lastMiss = { chain: brokeChain };
     return { kind: 'miss', x, y, brokeChain };
+  }
+
+  /** What a tap here would hit, without counting the tap. */
+  peek(x, y, tol = 20) { return this.locked || this.done ? null : this._hitTest(x, y, tol); }
+
+  /** Take back the last mis-tap (it turned out to be the first half of a double-tap zoom). */
+  forgiveLastMiss() {
+    if (!this.lastMiss) return false;
+    this.misses--;
+    this.penalties -= this.scoring.missPenalty;
+    this.missTimes.pop();
+    this.chain = this.lastMiss.chain;
+    this.lastMiss = null;
+    return true;
   }
 
   _hardestRemaining(hardest = true) {
@@ -157,11 +174,18 @@ export class PlaySession {
     return pick;
   }
 
-  useLoupe() {
+  /** Point at the hardest thing left, or the hardest of one type (tapping an action in the bar). */
+  useLoupe(type = null) {
     if (!this.loupeReady || !this.left || this.done) return null;
+    let fault = this._hardestRemaining(true);
+    if (type) {
+      const ofType = [...this.remaining].map((id) => this.byId.get(id)).filter((f) => f.type === type);
+      if (!ofType.length) return null;
+      fault = ofType.reduce((a, b) => (b.salience < a.salience ? b : a));
+    }
     this.hints++;
     this.loupeReadyAt = this.t + this.loupeCooldown;
-    return { kind: 'loupe', fault: this._hardestRemaining(true) };
+    return { kind: 'loupe', fault };
   }
 
   useFlash() {

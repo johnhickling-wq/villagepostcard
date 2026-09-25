@@ -3,7 +3,7 @@
 // metadata is in /assets/**/manifest.json. This module is DOM-free: the
 // browser passes a fetch-based loader, Node (bot, validator) passes an fs one.
 
-const COMMON_FILES = ['faults', 'items', 'tiers', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics'];
+const COMMON_FILES = ['faults', 'items', 'tiers', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics', 'hud'];
 
 export async function loadContent(readJson) {
   const common = {};

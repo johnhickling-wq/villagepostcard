@@ -68,10 +68,18 @@ export function propPoly(g, angle = 0, pivot = null) {
   return pts.map(([x, y]) => [ox + (x - ox) * c - (y - oy) * s, oy + (x - ox) * s + (y - oy) * c]);
 }
 
-function inScene(scene, shape) {
-  const b = G.shapeBounds(shape);
+/** The play screen's overlays (action bar, buttons, phone edges) in scene units. */
+export function keepOutBoxes(content, scene) {
   const [W, H] = scene.size;
-  return b.x >= MARGIN && b.y >= MARGIN && b.x + b.w <= W - MARGIN && b.y + b.h <= H - MARGIN;
+  return (content.hud?.keepOut || []).map((k) => ({ id: k.id, x: k.x * W, y: k.y * H, w: k.w * W, h: k.h * H }));
+}
+
+/** Inside the scene and not even partly under an overlay. */
+function inScene(ctx, shape) {
+  const b = G.shapeBounds(shape);
+  const [W, H] = ctx.scene.size;
+  if (b.x < MARGIN || b.y < MARGIN || b.x + b.w > W - MARGIN || b.y + b.h > H - MARGIN) return false;
+  return !ctx.keepOut.some((k) => G.boundsOverlap(b, k) > 0);
 }
 
 /**
@@ -93,7 +101,7 @@ export function generateMess(content, o) {
   const ctx = {
     content, scene, village, rng, tier, cond, condId, props,
     neglected: new Set(neglect.map((n) => n.target)),
-    used: new Set(), faults: [], minSize: tier.minSize,
+    used: new Set(), faults: [], minSize: tier.minSize, keepOut: keepOutBoxes(content, scene),
   };
 
   // ---- how many faults, of which types --------------------------------
@@ -152,15 +160,21 @@ function capacities(ctx) {
   for (const [type, f] of Object.entries(ctx.content.faults)) {
     switch (f.strategy) {
       case 'spawn': cap[type] = f.slot === 'edges' ? Math.min(4, (scene.edges || []).length * 2) : ((scene.zones || []).length ? 9 : 0); break;
-      case 'prop': cap[type] = props.filter((p) => hasTag(p.tags, f.tag) && !neglected.has(p.id)).length; break;
-      case 'region': cap[type] = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !neglected.has(r.id) && regionBigEnough(ctx, r)).length; break;
-      case 'lamp': cap[type] = (scene.lamps || []).length; break;
+      case 'prop': cap[type] = props.filter((p) => hasTag(p.tags, f.tag) && !neglected.has(p.id) && propClear(ctx, p)).length; break;
+      case 'region': cap[type] = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !neglected.has(r.id) && regionBigEnough(ctx, r) && inScene(ctx, regionShape(r))).length; break;
+      case 'lamp': cap[type] = (scene.lamps || []).filter((l) => inScene(ctx, lampShape(l))).length; break;
       case 'corner': cap[type] = Math.min(3, (scene.regions || []).filter((r) => hasTag(r.tags, f.tag)).length); break;
       case 'perch': cap[type] = Math.min(3, (scene.perches || []).length); break;
       default: cap[type] = 0;
     }
   }
   return cap;
+}
+
+const regionShape = (r) => ({ kind: 'poly', pts: r.poly });
+const lampShape = (l) => ({ kind: 'circle', x: l.x, y: l.y, r: l.r * 1.25 });
+function propClear(ctx, p) {
+  return inScene(ctx, { kind: 'poly', pts: propPoly(propGeom(ctx.content, ctx.scene, p), 0) });
 }
 
 /** Choose fault types: variety first, then weighted with diminishing returns. */
@@ -277,7 +291,7 @@ function spawnItem(ctx, type, f, subtlety) {
     const rot = lie ? rng.float(-1, 1) * (item.lie ? 70 : 32) * DEG : rng.float(-6, 6) * DEG;
     const cx = x, cy = lie ? y - h * 0.3 : y - h / 2;
     const shape = { kind: 'poly', pts: G.rectPoly(cx, cy, w * 0.92, h * 0.92, rot) };
-    if (!inScene(scene, shape)) continue;
+    if (!inScene(ctx, shape)) continue;
     if (!clearOfOthers(ctx, shape, (f.spacing || 50) * ds)) continue;
     if (!notOccluded(ctx, shape, y)) continue;
     const ground = content.colorAt(scene, cx, cy);
@@ -296,7 +310,7 @@ function spawnItem(ctx, type, f, subtlety) {
 
 function propFault(ctx, type, f, subtlety) {
   const { content, scene, rng } = ctx;
-  let candidates = ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id));
+  let candidates = ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id) && propClear(ctx, p));
   const free = candidates.filter((p) => { const g = propGeom(content, scene, p); return !overlapsFaults(ctx, { x: g.cx - g.w / 2, y: g.cy - g.h / 2, w: g.w, h: g.h }); });
   if (free.length) candidates = free;
   if (!candidates.length) return null;
@@ -308,6 +322,7 @@ function propFault(ctx, type, f, subtlety) {
     const sign = p.tiltSign || rng.sign();
     fault.angle = sign * bySubtlety(f.angle, subtlety) * DEG * (p.tiltScale ?? 1);
     fault.shape = { kind: 'poly', pts: propPoly(g, fault.angle) };
+    if (!inScene(ctx, fault.shape)) { ctx.used.delete(p.id); return null; }
   } else if (type === 'toppled') {
     const sign = p.fallSign || rng.sign();
     fault.angle = sign * bySubtlety(f.angle, subtlety) * DEG;
@@ -317,12 +332,12 @@ function propFault(ctx, type, f, subtlety) {
     fault.amount = bySubtlety(f.amount, subtlety);
     fault.shape = { kind: 'poly', pts: propPoly(g, 0) };
   }
-  if (type === 'toppled' && (!inScene(scene, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape)))) {
+  if (type === 'toppled' && (!inScene(ctx, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape)))) {
     // fell out of frame or onto something else: fall the other way instead
     fault.angle = -fault.angle;
     fault.pivot = [g.px + Math.sign(fault.angle) * g.w / 2, g.py];
     fault.shape = { kind: 'poly', pts: propPoly(g, fault.angle, fault.pivot) };
-    if (!inScene(scene, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape))) {
+    if (!inScene(ctx, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape))) {
       ctx.used.delete(p.id);
       return null;
     }
@@ -334,7 +349,7 @@ function propFault(ctx, type, f, subtlety) {
 
 function regionFault(ctx, type, f, subtlety) {
   const { scene, rng } = ctx;
-  let candidates = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r));
+  let candidates = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r) && inScene(ctx, regionShape(r)));
   const free = candidates.filter((r) => !overlapsFaults(ctx, G.bbox(r.poly)));
   if (free.length) candidates = free;
   if (!candidates.length) return null;
@@ -350,11 +365,11 @@ function regionFault(ctx, type, f, subtlety) {
 
 function lampFault(ctx, type, f, subtlety) {
   const { scene, rng } = ctx;
-  const candidates = (scene.lamps || []).filter((l) => !ctx.used.has(l.id));
+  const candidates = (scene.lamps || []).filter((l) => !ctx.used.has(l.id) && inScene(ctx, lampShape(l)));
   if (!candidates.length) return null;
   const l = rng.pick(candidates);
   ctx.used.add(l.id);
-  const shape = { kind: 'circle', x: l.x, y: l.y, r: l.r * 1.25 };
+  const shape = lampShape(l);
   return { type, subtlety, lamp: l.id, shape, cx: l.x, cy: l.y, size: G.shapeSize(shape), z: -1 };
 }
 
@@ -370,7 +385,7 @@ function cornerFault(ctx, type, f, subtlety) {
     const y = b.y;
     const cx = x + (corner === 'tl' ? 1 : -1) * size * 0.32, cy = y + size * 0.32;
     const shape = { kind: 'circle', x: cx, y: cy, r: size * 0.5 };
-    if (!inScene(scene, shape) || !clearOfOthers(ctx, shape, 30)) continue;
+    if (!inScene(ctx, shape) || !clearOfOthers(ctx, shape, 30)) continue;
     ctx.used.add('web:' + r.id);
     return { type, subtlety, region: r.id, corner, x, y, cx, cy, webSize: size, pattern: rng.int(0, 1e6), shape, size: G.shapeSize(shape), z: 1e5 };
   }
@@ -390,7 +405,7 @@ function perchFault(ctx, type, f, subtlety) {
     const w = (h * meta.w) / meta.h;
     const cx = p.x, cy = p.y - h / 2;
     const shape = { kind: 'poly', pts: G.rectPoly(cx, cy, w, h, 0) };
-    if (!inScene(scene, shape) || !clearOfOthers(ctx, shape, 40)) continue;
+    if (!inScene(ctx, shape) || !clearOfOthers(ctx, shape, 40)) continue;
     ctx.used.add('perch' + scene.perches.indexOf(p));
     return {
       type, subtlety, item: itemId, sprite: item.sprite, fly: item.fly, x: p.x, y: p.y, cx, cy, w, h,
@@ -413,6 +428,7 @@ function placeCat(ctx) {
     const cx = spot.x, cy = spot.y - h / 2;
     const shape = { kind: 'poly', pts: G.rectPoly(cx, cy, w, h, 0) };
     const b = G.shapeBounds(shape);
+    if (!inScene(ctx, shape)) continue;
     if (ctx.faults.some((f) => G.boundsOverlap(b, G.shapeBounds(f.shape)) > 0.02)) continue;
     return { sprite: pose.sprite, pose: spot.pose, x: spot.x, y: spot.y, cx, cy, w, h, flip: !!spot.flip, z: spot.z ?? spot.y, shape };
   }
@@ -428,7 +444,7 @@ function placeCollectible(ctx, item) {
     const [x, y] = G.randomPointInPoly(z.poly, r);
     const size = Math.max(52, 62 * depthScale(scene, y));
     const shape = { kind: 'circle', x, y: y - size * 0.4, r: size * 0.55 };
-    if (!inScene(scene, shape) || !clearOfOthers(ctx, shape, 60)) continue;
+    if (!inScene(ctx, shape) || !clearOfOthers(ctx, shape, 60)) continue;
     return { id: item.id, sprite: item.sprite, x, y, cx: x, cy: y - size * 0.4, size, shape, z: y };
   }
   return null;

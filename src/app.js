@@ -159,11 +159,6 @@ export class App {
     const cs = getComputedStyle(this.safeProbe);
     this.safe = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
     const w = this.root.clientWidth, h2 = this.root.clientHeight;
-    // side rails in play take whatever width the 3:2 scene doesn't need
-    const sceneH = h2 - this.safe.t - this.safe.b - 16;
-    const spare = w - this.safe.l - this.safe.r - sceneH * 1.5 - 24;
-    this.rail = Math.round(Math.max(90, Math.min(170, spare / 2)));
-    this.root.style.setProperty('--rail', `${this.rail}px`);
     this.canvas.width = Math.round(w * this.dpr);
     this.canvas.height = Math.round(h2 * this.dpr);
     this.screen?.resize?.(w, h2);

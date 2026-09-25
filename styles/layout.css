@@ -82,8 +82,9 @@
 }
 .act { position: relative; display: flex; align-items: center; gap: 4px; height: 30px; padding: 0 7px 0 5px; border: 0; border-radius: 9px; background: none; color: var(--ink); font: 600 12px/1 var(--ui); white-space: nowrap; cursor: pointer; transition: opacity 0.3s; }
 .act:active { background: rgba(44, 42, 53, 0.08); }
-.act-ico { width: 22px; height: 22px; display: grid; place-items: center; flex: none; }
+.act-ico { min-width: 22px; height: 24px; display: grid; place-items: center; flex: none; }
 .act-ico svg { width: 21px; height: 21px; }
+.act-ico img { max-width: 34px; max-height: 24px; object-fit: contain; }
 .act-label { letter-spacing: 0.02em; }
 .act-count { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--ink); color: var(--white); font: 700 11px/18px var(--ui); text-align: center; }
 .act.bump { animation: bump 0.35s ease; }

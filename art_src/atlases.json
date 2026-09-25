@@ -98,6 +98,26 @@
     "collect-c/flashbulb",
     "collect-c/camera-badge"
    ]
+  },
+  "tools": {
+   "maxSide": 96,
+   "width": 1024,
+   "quality": 90,
+   "items": [
+    "tools/broom",
+    "tools/weed",
+    "tools/brush",
+    "tools/clean",
+    "tools/water",
+    "tools/light",
+    "tools/dust",
+    "tools/shoo",
+    "tools-b/straighten",
+    "tools-b/standUp-2"
+   ],
+   "rename": {
+    "tools-b/standUp-2": "standUp"
+   }
   }
  },
  "villages/honeycombe": {

@@ -599,6 +599,86 @@
    "w": 300,
    "h": 271,
    "color": "#aa7b45"
+  },
+  "tools/broom": {
+   "atlas": "tools.webp",
+   "x": 0,
+   "y": 0,
+   "w": 73,
+   "h": 96,
+   "color": "#ca9c61"
+  },
+  "tools/weed": {
+   "atlas": "tools.webp",
+   "x": 76,
+   "y": 0,
+   "w": 63,
+   "h": 96,
+   "color": "#848059"
+  },
+  "tools/brush": {
+   "atlas": "tools.webp",
+   "x": 142,
+   "y": 0,
+   "w": 53,
+   "h": 96,
+   "color": "#526c63"
+  },
+  "tools/clean": {
+   "atlas": "tools.webp",
+   "x": 198,
+   "y": 0,
+   "w": 89,
+   "h": 96,
+   "color": "#e1bd8b"
+  },
+  "tools/water": {
+   "atlas": "tools.webp",
+   "x": 290,
+   "y": 0,
+   "w": 91,
+   "h": 96,
+   "color": "#82854c"
+  },
+  "tools/light": {
+   "atlas": "tools.webp",
+   "x": 384,
+   "y": 0,
+   "w": 39,
+   "h": 96,
+   "color": "#d5804a"
+  },
+  "tools/dust": {
+   "atlas": "tools.webp",
+   "x": 426,
+   "y": 0,
+   "w": 78,
+   "h": 96,
+   "color": "#a28a6c"
+  },
+  "tools/shoo": {
+   "atlas": "tools.webp",
+   "x": 507,
+   "y": 0,
+   "w": 96,
+   "h": 96,
+   "color": "#938377"
+  },
+  "tools/standUp": {
+   "atlas": "tools.webp",
+   "x": 606,
+   "y": 0,
+   "w": 88,
+   "h": 96,
+   "color": "#e2ab45"
+  },
+  "tools/straighten": {
+   "atlas": "tools.webp",
+   "x": 697,
+   "y": 0,
+   "w": 96,
+   "h": 27,
+   "color": "#9e7b4c"
   }
  },
  "images": {

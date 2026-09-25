@@ -148,8 +148,10 @@ export class PlayScreen {
     for (const [type, n] of Object.entries(types)) {
       const f = this.content.faults[type];
       const count = h('span.act-count', { text: String(n.left) });
+      // cut-paper tool art when there is some, the line icon otherwise
+      const art = this.app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
       const chip = h('button.act', { 'aria-label': `${f.action}: ${n.left} left`, onclick: () => this.tapAction(type) },
-        h('span.act-ico', icon(f.actionIcon)), h('span.act-label', { text: f.action }), count);
+        h('span.act-ico', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon)), h('span.act-label', { text: f.action }), count);
       if (!n.left) chip.classList.add('done');
       this.chips[type] = { chip, count };
       this.bar.append(chip);

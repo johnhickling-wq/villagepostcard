@@ -186,6 +186,36 @@
    ],
    "prompt": "OVERRIDE: exactly 8 head-and-shoulders character portraits arranged in a grid of 4 columns and 2 rows, each portrait cut out as its own oval of coloured paper with a torn cream paper edge, generous magenta space between them. Friendly, whimsical 1950s English villagers in a charming picture-book style, gentle expressions. In reading order: Colonel Rupert Whitby, an elderly retired army colonel with a magnificent white moustache, tweed jacket and regimental tie; Mrs Edna Pemberton, a plump postmistress in her sixties with spectacles on a chain and a cardigan; Albert Figg, a stationmaster with grey sideburns in a peaked railway cap and waistcoat; Mabel Tuck, a jolly red-cheeked pub landlady with curly auburn hair and an apron; the Reverend Hollis, a lanky young vicar with a dog collar, round glasses and untidy hair; Nan Honeysett, a tiny twinkly old beekeeper lady with a straw hat and a veil pushed back; Percy Budd, a young freckled postman in a blue uniform cap; Miss Clementine Ashby, a smart editor of a postcard company with a neat bob, red lipstick and a pencil behind her ear.",
    "redraw": true
+  },
+  "tools": {
+   "model": "openai/gpt-5.4-image-2",
+   "items": [
+    "broom",
+    "weed",
+    "_frame-arrow",
+    "_frame",
+    "_churn",
+    "_churn-arrow",
+    "brush",
+    "clean",
+    "water",
+    "light",
+    "dust",
+    "shoo",
+    "_circle",
+    "_square"
+   ],
+   "prompt": "Simple chunky icons of tools and actions, each one a small flat cut-paper badge that reads clearly at 24 pixels, bold silhouettes, no background shapes behind them. Objects, in reading order: a besom broom sweeping a little puff of dust; a hand-fork pulling a weed up by its root; a small tilted picture frame with a curved arrow showing it swinging level; a tipped-over milk churn with a curved arrow standing it back up; a paintbrush with a drip of fresh teal paint; a cleaning cloth with three sparkles; a small watering can pouring drops; a lit match flame; a feather duster; a pigeon flapping away with speed lines; then a plain cream paper circle; then a plain cream paper square."
+  },
+  "tools-b": {
+   "model": "openai/gpt-5.4-image-2",
+   "items": [
+    "straighten",
+    "standUp",
+    "straighten-2",
+    "standUp-2"
+   ],
+   "prompt": "OVERRIDE: exactly 4 simple chunky icons arranged in a grid of 2 columns and 2 rows with generous magenta space between them, each a flat cut-paper badge that reads clearly at 24 pixels, bold silhouettes, no background shapes behind them, no real-world objects that could be mistaken for something in a village scene. In reading order: a wooden spirit level with a green bubble in the middle; a curved arrow sweeping upward from lying flat to standing straight up, drawn as a thick strip of mustard paper; a set square with a small plumb bob hanging from it; a thick mustard paper arrow bending from horizontal to point straight up, with a small cream base line."
   }
  },
  "redrawRules": "The first image shows the art style: a picture made entirely of flat pieces of cut coloured paper and felt, with a fine paper grain, simple hand-cut edges, very little shading and no shine. The second image is an old sprite sheet: use it ONLY for which objects to draw, their pose, orientation, proportions and position in the grid. Rebuild every object from scratch in the style of the first image: made of a few flat pieces of cut paper layered together, simple bold shapes, matte colours, no painted shading, no metallic or glassy highlights, no fine hatching or ink lines, so that each object would sit naturally in the first image. Signs and boards stay blank."

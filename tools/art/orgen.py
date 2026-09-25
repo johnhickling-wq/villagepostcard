@@ -6,12 +6,12 @@ Usage (CLI):
       --aspect 3:2 --size 2K --out out.png "prompt text" [--ref ref.png ...]
 
 The API key is read from the OPENROUTER_API_KEY environment variable.
-Every call is appended to tools/art/.spend.log so we can keep track of credit.
+Every call is appended to tools/art/spend.jsonl (committed) so credit can be tracked across sessions.
 """
 import argparse, base64, json, os, sys, time, urllib.request, pathlib
 
 API = "https://openrouter.ai/api/v1/chat/completions"
-LOG = pathlib.Path(__file__).with_name(".spend.log")
+LOG = pathlib.Path(__file__).with_name("spend.jsonl")
 
 
 def _data_url(path):

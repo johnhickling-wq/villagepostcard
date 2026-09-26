@@ -44,7 +44,7 @@ export class RevealScreen {
     this.run();
   }
 
-  exit() { clearTimeout(this.musicTimer); }
+  exit() { this.gone = true; clearTimeout(this.musicTimer); clearTimeout(this.restoreTimer); }
 
   resize() { this.layout(); if (this.card) this.placeCard(); }
 
@@ -66,9 +66,12 @@ export class RevealScreen {
   }
 
   /** wait, or not at all once the player has tapped to skip */
-  W(ms) { return this.skip ? wait(0) : wait(ms); }
+  W(ms) { return (this.skip ? wait(0) : wait(ms)).then(() => { if (this.gone) throw new Error('left'); }); }
 
-  async run() {
+  /** The ceremony; it stops quietly if the player leaves before it ends. */
+  run() { this.ceremony().catch((e) => { if (e.message !== 'left') throw e; }); }
+
+  async ceremony() {
     const app = this.app, view = app.view, d = this.d;
     const reduced = app.reducedMotion;
     await this.W(450);
@@ -80,8 +83,8 @@ export class RevealScreen {
     requestAnimationFrame(() => this.stage.classList.add('go'));
     // the visit's permanent work arrives as the wipe passes
     let change = null;
-    setTimeout(() => {
-      if (!this.story) return;
+    this.restoreTimer = setTimeout(() => {
+      if (!this.story || this.gone) return;
       change = view.playRestore(this.visit.effects, { fixed: d.receipt.after?.fixed || [], bloom: d.receipt.after?.bloom });
       if (change.appeared || change.removed || change.warmed) app.sfx('restore');
     }, this.skip ? 0 : wipe * 0.55);
@@ -96,7 +99,7 @@ export class RevealScreen {
     app.haptic('heavy');
     if (!reduced) this.flash.classList.add('go');
     const photo = view.renderStill('after', Math.min(1600, Math.round(this.rect.w * app.dpr * 1.2)));
-    await wait(reduced ? 0 : 160);
+    await this.W(reduced ? 0 : 160);
     this.showPostcard(photo);
     this.musicTimer = setTimeout(() => app.audio.startMusic('map'), 900);
   }
@@ -163,7 +166,7 @@ export class RevealScreen {
       this.pc.classList.add('forming');
       this.rail.animate([{ opacity: 0, transform: slide }, { opacity: 0, transform: slide, offset: 0.55 }, { opacity: 1, transform: 'none' }], { duration: 1300, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)', fill: 'backwards' });
     }
-    setTimeout(() => this.afterPrint(), reduced ? 500 : 1300);
+    setTimeout(() => { if (!this.gone) this.afterPrint(); }, reduced ? 500 : 1300);
   }
 
   /** On a short screen, tighten the rail rather than cut anything off. */

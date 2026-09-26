@@ -66,7 +66,7 @@ export async function playWalk(app, sceneId, opts = {}) {
   const mess = generateMess(app.content, {
     village: plan.village, scene: plan.scene, tier: plan.tier, condition: plan.condition, seed: plan.seed,
     projectsDone: plan.effects, fixed: plan.fixed, protect: plan.protect, policy: true,
-    collectible: plan.collectible, types: plan.types, cat: plan.cat,
+    collectible: plan.collectible, types: plan.script ? null : plan.types, cat: plan.cat, script: plan.script,
   });
   return showPlay(app, plan, mess, progress);
 }

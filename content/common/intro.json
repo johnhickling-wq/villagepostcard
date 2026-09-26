@@ -1,6 +1,15 @@
 {
  "note": "One idea at a time. Features arrive after this many finished visits and photo walks (save.player.plays). Jobs are taught by the story's visits the first time they appear; photo walks only use jobs the player has met, plus the weather jobs that aren't in storyJobs.",
- "storyJobs": ["litter", "crooked", "faded", "grimy", "wilted", "weeds", "toppled", "plant"],
+ "storyJobs": [
+  "litter",
+  "crooked",
+  "faded",
+  "grimy",
+  "wilted",
+  "weeds",
+  "toppled",
+  "plant"
+ ],
  "features": {
   "loupe": 0,
   "zoom": 0,
@@ -14,7 +23,9 @@
   "flash": 8,
   "daily": 9
  },
- "afterFinale": ["travel"],
+ "afterFinale": [
+  "travel"
+ ],
  "cards": {
   "journal": {
    "icon": "album",
@@ -54,5 +65,10 @@
   "score": "Photo walks are scored, just for fun. Quick, careful tidying earns three stamps.",
   "combo": "Quick fixes one after another make a run!",
   "flash": "New! A flashbulb lights up everything that's left, just for a moment."
+ },
+ "updateCard": {
+  "icon": "sparkle",
+  "title": "Honeycombe has changed",
+  "text": "No more fundraising: the village is now put right one visit at a time, and the villagers will tell you where to go next. Your postcards, keepsakes and everything you restored are all still here."
  }
 }

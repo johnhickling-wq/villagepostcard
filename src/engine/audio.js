@@ -425,7 +425,6 @@ const SFX = {
     a.tone(NOTE(84), 0.9, { type: 'sine', delay: 0.18, gain: 0.08, reverb: 0.7 });
   },
   miss: (a) => { a.tone(190, 0.08, { glide: 120, gain: 0.18 }); a.noise(0.05, { type: 'lowpass', freq: 400, gain: 0.08 }); },
-  shaky: (a) => a.tone(320, 0.45, { glide: 180, gain: 0.1, vibrato: [9, 30], type: 'triangle' }),
   cat: (a) => {
     const t = a.now;
     a.tone(560, 0.5, { when: t, type: 'sawtooth', glide: 820, glideTime: 0.18, gain: 0.08, attack: 0.04, filter: { type: 'bandpass', freq: 1200, to: 900, q: 3 } });
@@ -514,7 +513,6 @@ const MIX = {
   'combo': 3.13,
   'callout': 1.53,
   'miss': 2,
-  'shaky': 1.7,
   'cat': 8.22,
   'shutter': 1.74,
   'flash': 1.08,

@@ -128,6 +128,10 @@ function migrateV2(save, content, now) {
       save.stats.visits++;
     }
   }
+  // they know their way around: cards for features they already had aren't
+  // shown again; a single card explains the update instead
+  for (const [f, at] of Object.entries(content.intro?.features || {})) if ((save.player.plays || 0) >= at && content.intro.cards?.[f]) save.flags.seen[`intro:${f}`] = true;
+  save.flags.updated = 3;
   save.v = 3;
 }
 
@@ -168,7 +172,7 @@ export function placeName(content, vid, sid) {
 export function visitLabel(save, content, vid, visit) {
   const place = placeName(content, vid, visit.scene);
   if (visit.kind === 'committee') return `Committee request: ${visit.title}`;
-  const been = visitsOf(content, vid).some((x) => x.scene === visit.scene && save.villages[vid].visits[x.id]);
+  const been = save.villages[vid].scenes[visit.scene].plays > 0 || visitsOf(content, vid).some((x) => x.scene === visit.scene && save.villages[vid].visits[x.id]);
   return been ? `Return to ${place}: ${visit.goal}` : `Visit ${place}`;
 }
 
@@ -179,7 +183,8 @@ export function nextStep(save, content, vid) {
   const visit = nextVisit(save, content, vid);
   if (!visit) return { kind: 'free', label: 'Take a photo walk', text: '' };
   const who = content.village(vid).villagers[visit.villager];
-  return { kind: 'visit', visit, scene: visit.scene, label: visitLabel(save, content, vid, visit), villager: visit.villager, text: `${who?.short || ''}: ${visit.title}` };
+  const text = visit.kind === 'committee' ? `${content.scene(vid, visit.scene).name} · for ${who?.short || 'the Committee'}` : `${who?.short || ''}: ${visit.title}`;
+  return { kind: 'visit', visit, scene: visit.scene, label: visitLabel(save, content, vid, visit), villager: visit.villager, text };
 }
 
 /** Where a place stands: its stage ("First tidy complete"), what's still to
@@ -472,7 +477,7 @@ export function planWalk(save, content, vid, sid, opts = {}) {
   const collectible = introduced(save, content, 'collectibles') ? rollCollectible(save, content, vid, scene, rng.fork('collect'), opts) : null;
   const jobs = jobsOpen(save, content);
   return {
-    mode: 'walk', village: vid, scene: sid, tier, condition, seed, collectible,
+    mode: 'walk', village: vid, scene: sid, tier, condition, seed, collectible, script: opts.script || null,
     daily: opts.daily || null,
     effects: effectsDone(save, vid), fixed: fixedIn(save, vid, sid), protect: protectedTargets(save, content, vid, sid),
     bloom: placeBloom(save, content, vid, sid),

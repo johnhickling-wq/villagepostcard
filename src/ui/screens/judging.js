@@ -33,10 +33,12 @@ export class JudgingScreen {
 
   enter() {
     // the ceremony runs on its own; show() must not wait for it
-    this.run();
+    this.run().catch((e) => { if (e.message !== 'left') throw e; });
   }
 
-  W(ms) { return wait(this.fast ? ms * 0.3 : ms); }
+  W(ms) { return wait(this.fast ? ms * 0.3 : ms).then(() => { if (this.gone) throw new Error('left'); }); }
+
+  exit() { this.gone = true; }
 
   async run() {
     const app = this.app, v = app.v;

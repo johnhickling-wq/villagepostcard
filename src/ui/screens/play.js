@@ -420,6 +420,11 @@ export class PlayScreen {
       this.lastTap = null;
       return;
     }
+    // tomorrow's job: a friendly word, never a mistake (checked before the tap is scored)
+    if (!s.peek(wx, wy, tol)) {
+      const later = view.laterAt(wx, wy, tol);
+      if (later) return this.sayLater(later, sx, sy);
+    }
     const ev = s.tap(wx, wy, tol);
     if (this.tutorial) this.tutorial.idle = 0;
     switch (ev.kind) {
@@ -449,11 +454,8 @@ export class PlayScreen {
         return;
       case 'miss': {
         this.lastTap.miss = true;
-        // tomorrow's job: a friendly word, never a mistake
-        const later = view.laterAt(wx, wy, tol);
-        if (later) return this.sayLater(later, sx, sy);
         view.tapRipple(sx, sy, ev.gentle ? 'soft' : false);
-        if (ev.gentle) { app.sfx('ui.tap', { volume: 0.4 }); return; }
+        if (ev.gentle) { app.sfx('ui.tap'); return; }
         app.sfx('miss');
         app.haptic('select');
         if (ev.brokeChain > 1) this.comboEl.classList.add('hidden');

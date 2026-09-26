@@ -810,7 +810,6 @@
 .cr-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cr-result { display: inline-flex; align-items: flex-start; gap: 6px; font-size: 15px; font-weight: 600; color: var(--teal-dark); }
 .cr-result svg { width: 18px; height: 18px; flex: none; }
-.notice-sub { grid-column: 1 / -1; text-align: center; margin-top: 4px; }
 
 /* ------------------------------------------------------------ the finale */
 .jc-photo { position: relative; }
@@ -823,11 +822,14 @@
 .jc-who { justify-content: center; gap: 6px; margin-top: 2px; }
 .jc-who img { width: 26px; height: 30px; object-fit: cover; }
 .judge-end { position: absolute; left: 50%; bottom: calc(var(--safe-b, 0px) + 14px); transform: translateX(-50%) rotate(-0.4deg); z-index: 20; width: min(640px, 90vw); padding: 12px 18px; text-align: center; }
-.judge-end p { font-size: 19px; margin: 0 0 10px; }
+.judge-end p { font-size: 19px; margin: 0 0 10px; color: var(--ink); }
 .judge-end-btns { justify-content: center; flex-wrap: wrap; }
 
 /* ------------------------------------------------------ the travel office */
 .poster-soon { color: var(--mustard); margin-top: 6px; }
+.poster-foot .ms-text { color: var(--paper); }
+.poster-status .inner { font-size: 9px; letter-spacing: 0.08em; line-height: 1.1; text-align: center; padding: 0 4px; }
+.req-kicker { color: var(--ink-soft); margin-bottom: 6px; }
 .travel-foot { display: grid; justify-items: center; gap: 10px; padding: 8px 20px 0; text-align: center; }
 
 /* ----------------------------------------------------------- reduced motion */

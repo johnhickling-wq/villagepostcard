@@ -66,11 +66,12 @@ export class MapScreen {
 
   /** New features arrive one per visit to the map, each with a card and a pulsing button. */
   async introduceFeatures() {
-    const app = this.app;
-    for (const f of introCardsDue(app.save, app.content).slice(0, 1)) {
+    const app = this.app, seen = app.save.flags.seen;
+    const update = app.save.flags.updated && !seen[`update:${app.save.flags.updated}`] ? 'update' : null;
+    for (const f of update ? [update] : introCardsDue(app.save, app.content).slice(0, 1)) {
       if (app.screen !== this || app.ui.querySelector('.overlay')) return;
-      const card = app.content.intro.cards[f];
-      app.save.flags.seen[`intro:${f}`] = true;
+      const card = f === 'update' ? app.content.intro.updateCard : app.content.intro.cards[f];
+      seen[f === 'update' ? `update:${app.save.flags.updated}` : `intro:${f}`] = true;
       app.persist();
       const btn = this.nav.querySelector(`[data-feature="${f}"]`) || (f === 'level' ? this.top.el.querySelector('.level-badge') : null);
       btn?.classList.add('just-new');
@@ -78,7 +79,7 @@ export class MapScreen {
       const ok = h('button.btn.teal', { text: 'Lovely!' });
       const m = app.modal(h('div.celebrate.card.paper.deckle.intro-card',
         h('div.intro-ico.pop-in', icon(card.icon)),
-        h('div.label.muted', { text: 'Something new' }),
+        h('div.label.muted', { text: f === 'update' ? 'Welcome back' : 'Something new' }),
         h('div.display.celebrate-title', { text: card.title }),
         h('p.hand', { text: card.text }),
         h('div.celebrate-foot', ok),
@@ -105,7 +106,7 @@ export class MapScreen {
     const thumb = app.assets.imageUrl(scene.plate, app.village, true);
     const rot = ((sid.length * 7) % 9) - 4;
     const isNext = this.next.scene === sid;
-    const line = st.restored ? 'Restored' : st.progress ? `${st.progress.done.length} jobs done` : st.stage || (st.available.length ? 'Not visited yet' : '');
+    const line = st.restored ? 'Restored' : st.progress ? `${st.progress.done.length} job${st.progress.done.length === 1 ? '' : 's'} done` : st.stage || (st.available.length ? 'Not visited yet' : '');
     const el = h('button.pin' + (st.restored ? '.restored' : '') + (isNext ? '.next' : ''), {
       'data-scene': sid, style: { left: `${(x / MW) * 100}%`, top: `${(y / MH) * 100}%`, '--rot': `${rot}deg` },
       'aria-label': `${scene.name}${line ? `: ${line}` : ''}`,
@@ -170,7 +171,7 @@ export class MapScreen {
         h('div.vc-body',
           h('div.label.muted', { text: visit.kind === 'committee' ? 'Committee request' : visit.kind === 'incident' ? 'After the storm' : v.villagers[visit.villager].short }),
           h('div.display.vc-title', { text: visit.title }),
-          prog?.done?.length ? h('div.vc-progress', { text: `${prog.done.length} jobs done, carry on where you left off` }) : null,
+          prog?.done?.length ? h('div.vc-progress', { text: `${prog.done.length} job${prog.done.length === 1 ? '' : 's'} done: carry on where you left off` }) : null,
         ),
         h('button.btn.teal.vc-go', { 'aria-label': label, onclick: () => { sheet.close(); playVisit(app, visit.id); } }, icon('play'), h('span', { text: prog?.done?.length ? 'Carry on' : 'Go' })),
       );

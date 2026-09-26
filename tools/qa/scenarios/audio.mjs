@@ -7,7 +7,7 @@ export default async function ({ page, wait, url, logs }) {
     const a = window.__app.audio;
     a.unlock();
     const names = ['ui.tap', 'ui.open', 'ui.close', 'ui.toggle', 'page', 'fix.pop', 'fix.pluck', 'fix.swing', 'fix.thunk', 'fix.paint', 'fix.squeak', 'fix.bloom', 'fix.lamp', 'fix.sweep', 'fix.flap',
-      'combo', 'callout', 'miss', 'shaky', 'cat', 'shutter', 'flash', 'print', 'stamp', 'coin', 'tick', 'xp', 'levelup', 'rosette', 'unlock', 'restore', 'collect', 'whistle', 'bell', 'hint', 'nudge', 'complete', 'arrive', 'whoosh'];
+      'combo', 'callout', 'miss', 'cat', 'shutter', 'flash', 'print', 'stamp', 'coin', 'tick', 'xp', 'levelup', 'rosette', 'unlock', 'restore', 'collect', 'whistle', 'bell', 'hint', 'nudge', 'complete', 'arrive', 'whoosh'];
     const errs = [];
     for (const n of names) { try { a.play(n, { step: 3, force: true }); } catch (e) { errs.push(n + ': ' + e.message); } await new Promise((r) => setTimeout(r, 30)); }
     a.startMusic('map'); await new Promise((r) => setTimeout(r, 1500));

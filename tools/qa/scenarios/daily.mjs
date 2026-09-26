@@ -1,28 +1,21 @@
-// Daily postcard flow, request claim with friendship letter, and a perf sample.
+// The Daily Postcard (a photo walk), its reveal and stamp card, a favour claimed
+// with a friendship letter, and a frame-time sample.
+import { seedStory, tapAll } from './lib.mjs';
+
 export default async function ({ page, shot, wait, url }) {
-  const tapFaults = async () => {
-    const ids = await page.evaluate(() => window.__app.screen.mess.faults.map((f) => f.id));
-    for (const id of ids) {
-      const p = await page.evaluate((fid) => { const f = window.__app.screen.mess.faults.find((x) => x.id === fid); return window.__app.view.worldToScreen(f.cx, f.cy); }, id);
-      await page.mouse.click(p[0], p[1]);
-      await wait(260);
-    }
-  };
   await page.goto(url);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await wait(2500);
+  await seedStory(page, 5, { plays: 12 });
   await page.evaluate(async () => {
     const app = window.__app, P = window.__progression;
-    const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
-    s.player.plays = 12;
-    for (const p of app.v.projects.slice(0, 7)) s.villages.honeycombe.projects[p.id] = 1;
-    P.refillRequests(s, app.content, 'honeycombe');
+    for (const t of Object.keys(app.content.faults)) app.save.flags.seen['job:' + t] = true;
+    app.save.flags.seen['coach:score'] = true;
+    P.refillRequests(app.save, app.content, 'honeycombe');
     await window.__flows.playDaily(app);
   });
-  await wait(2500);
-  // perf sample: time 120 frames of update+draw
+  await wait(3000);
   const perf = await page.evaluate(() => {
     const v = window.__app.view;
     const t0 = performance.now();
@@ -31,21 +24,21 @@ export default async function ({ page, shot, wait, url }) {
   });
   console.log('avg frame ms (desktop chromium, 2x DPR):', perf.toFixed(2));
   await shot('90-daily-play');
-  await tapFaults();
-  await wait(9000);
-  await shot('91-daily-results');
-  for (let i = 0; i < 5; i++) { const b = page.locator('.celebrate .btn'); if (await b.count()) { await shot(`92-daily-celebrate-${i}`); await b.first().click({ force: true }); await wait(700); } }
-  // claim a request
+  await tapAll(page, wait, 260);
+  await wait(7000);
+  await shot('91-daily-reveal');
+  const chip = page.locator('.rv-extra:not([disabled])');
+  if (await chip.count()) { await chip.first().click({ force: true }); await wait(900); await shot('92-daily-stamp'); await page.locator('.celebrate .btn').first().click({ force: true }); await wait(600); }
   await page.evaluate(async () => {
     const app = window.__app;
     const r = app.save.requests.active[0];
     r.progress = r.count;
-    app.save.requests.friendship[r.villager] = 1; // next claim reaches friendship level 1
+    app.save.requests.friendship[r.villager] = 1;
     const { NoticeboardScreen } = await import('/src/ui/screens/noticeboard.js');
     await app.show(new NoticeboardScreen(app), { transition: 'none' });
   });
   await wait(1200);
-  await page.locator('.req-note .btn').first().click({ force: true });
+  await page.locator('.req-note:not(.committee) .btn').first().click({ force: true });
   await wait(1800);
   await shot('93-claim-letter');
 }

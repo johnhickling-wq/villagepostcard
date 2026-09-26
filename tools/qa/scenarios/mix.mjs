@@ -5,7 +5,7 @@
 // src/engine/audio.js by the suggested factor after changing a sound.
 const T = {
   'fix.pop': -27, 'fix.pluck': -27, 'fix.swing': -27, 'fix.thunk': -27, 'fix.paint': -27, 'fix.squeak': -27, 'fix.bloom': -27, 'fix.lamp': -27, 'fix.sweep': -27, 'fix.flap': -27,
-  combo: -28, callout: -26, miss: -38, shaky: -34, cat: -28, shutter: -28, flash: -28, print: -34, stamp: -28, coin: -32,
+  combo: -28, callout: -26, miss: -38, cat: -28, shutter: -28, flash: -28, print: -34, stamp: -28, coin: -32,
   levelup: -25, rosette: -27, unlock: -27, restore: -26, collect: -27, whistle: -32, hint: -31, nudge: -42,
   'ui.tap': -34, 'ui.open': -40, 'ui.close': -42, page: -38, complete: -24, arrive: -33, whoosh: -40,
 };

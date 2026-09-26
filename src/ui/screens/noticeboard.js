@@ -25,7 +25,6 @@ export class NoticeboardScreen {
     const board = h('div.cork');
     board.append(h('div.notice-header.card.paper', h('div.display', { text: 'Village Noticeboard' }), h('div.hand', { text: 'The Committee’s requests, and little favours from the neighbours.' })));
     for (const n of this.committee()) board.append(n);
-    board.append(h('div.notice-sub.label.muted-light', { text: 'Favours · optional, just for fun' }));
     app.save.requests.active.forEach((r, i) => board.append(this.note(r, i)));
     board.append(this.friends());
     this.el.append(h('div.notice-scroll', board), this.top.el);
@@ -66,6 +65,7 @@ export class NoticeboardScreen {
     if (r.reward.collectible) rw.push(h('span.nr-item', icon('sparkle'), h('span', { text: 'keepsake' })));
     const el = h('div.req-note.card' + (done ? '.done' : ''), { style: { '--rot': `${[-2.5, 1.8, -1.2][i % 3]}deg` } },
       h('div.pushpin'),
+      h('div.label.req-kicker', { text: 'A favour · optional' }),
       h('div.req-top',
         h('div.req-portrait', h('img', { src: app.assets.spriteUrl(vg.portrait, app.village, 0.4), alt: '' })),
         h('div', h('div.display.req-name', { text: vg.name }), h('div.label.muted', { text: vg.role })),

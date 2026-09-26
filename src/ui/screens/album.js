@@ -8,7 +8,7 @@ import { postcardEl, beforeAfter } from '../components/postcard.js';
 import { goMap } from '../flows.js';
 import { renderPostcard } from '../../render/stills.js';
 import { postcardNote } from '../../core/notes.js';
-import { sceneUnlocked } from '../../core/progression.js';
+import { sceneUnlocked, introduced } from '../../core/progression.js';
 
 const CONDS = ['clear', 'golden', 'mist', 'dusk', 'storm'];
 
@@ -16,9 +16,12 @@ export class AlbumScreen {
   constructor(app, tab = 'postcards') {
     this.app = app;
     this.tab = tab;
+    this.stamps = introduced(app.save, app.content, 'score');
     this.body = h('div.album-body');
+    // the scrapbook and the diary appear with keepsakes and the Daily Postcard
+    const tabs = ['postcards', introduced(app.save, app.content, 'collectibles') && 'scrapbook', introduced(app.save, app.content, 'daily') && 'diary'].filter(Boolean);
     this.tabs = h('div.album-tabs',
-      ['postcards', 'scrapbook', 'diary'].map((t) => h('button.album-tab' + (t === tab ? '.on' : ''), { 'data-tab': t, onclick: () => this.switch(t) },
+      tabs.map((t) => h('button.album-tab' + (t === tab ? '.on' : ''), { 'data-tab': t, onclick: () => this.switch(t) },
         { postcards: 'Postcards', scrapbook: 'Scrapbook', diary: 'Daily Diary' }[t])),
     );
     this.el = h('div.album',
@@ -63,7 +66,7 @@ export class AlbumScreen {
         },
           e ? h('div.as-photo', h('div.as-loading')) : h('div.as-empty', gold ? icon('rosette') : icon(CONDITION_ICONS[cid])),
           h('div.as-label.label', { text: gold ? 'Mastered' : app.content.conditions[cid].name }),
-          e ? h('div.as-stamps', { text: '★'.repeat(e.stamps) }) : null,
+          e && this.stamps ? h('div.as-stamps', { text: '★'.repeat(e.stamps) }) : null,
         );
         if (e) {
           renderPostcard(app, sid, e, { width: 180 }).then(({ after }) => {
@@ -106,7 +109,7 @@ export class AlbumScreen {
       h('div.pcb-right',
         h('div.pcb-stamp.stamp', h('div.inner', h('img', { src: app.assets.spriteUrl('ui/postcard-stamp', 'common', 0.45) }))),
         h('div.pcb-lines', h('i'), h('i'), h('i'), h('i')),
-        h('div.pcb-meta.label', { text: `${'★'.repeat(entry.stamps)}  ·  ${entry.score.toLocaleString('en-GB')} pts  ·  ${entry.time}s` }),
+        this.stamps ? h('div.pcb-meta.label', { text: `${'★'.repeat(entry.stamps)}  ·  ${entry.score.toLocaleString('en-GB')} pts  ·  ${entry.time}s` }) : null,
       ),
     );
     const flipper = h('div.flipper', h('div.flip-front', pc), h('div.flip-back', back));
@@ -136,7 +139,7 @@ export class AlbumScreen {
             got ? h('i.tape.si-tape') : null,
           );
         })),
-        h('div.scrap-reward.row', icon(complete ? 'check' : 'sparkle'), h('span', { text: `Set reward: ${set.reward.pennies} pennies + ${rewardName(app, set.reward.cosmetic)}` })),
+        h('div.scrap-reward.row', icon(complete ? 'check' : 'sparkle'), h('span', { text: `Set reward: ${set.reward.fund} for the Village Fund + ${rewardName(app, set.reward.cosmetic)}` })),
       ));
     }
   }

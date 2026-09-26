@@ -16,8 +16,11 @@ Prompts live next to the art:
   art_src/sheets.json             {"style", "sheetRules", "sheets": {name: {model, items, prompt}}}
   art_src/<village>/extra.json    one-off images; entries with a "prompt" can be generated
 
-Everything is matched to one style reference (art_src/style_ref.webp) so a new
-village looks like it belongs to the same game. After generating, run
+Everything is matched to one style reference (art_src/style_ref_cutpaper.jpg,
+the cut-paper Honeycombe Halt) so a new village looks like it belongs to the
+same game. Plates are painted at 21:9 and trimmed to 2:1, the shape of every
+scene. Sheets marked "redraw" are redrawn from their earlier version in
+art_src/sheets_painted/, so each object keeps its pose and proportions. After generating, run
 `python3 tools/art/build.py` to cut, pack and publish the assets.
 """
 import json, sys, pathlib, subprocess, shutil
@@ -29,8 +32,9 @@ SRC = ROOT / "art_src"
 sys.path.insert(0, str(HERE))
 from orgen import generate, spent  # noqa: E402
 
-STYLE_REF = SRC / "style_ref.webp"
-SHEET_REF = SRC / "sheet_ref.png"
+STYLE_REF = SRC / "style_ref_cutpaper.jpg"
+OBJECT_REF = SRC / "style_ref_objects.jpg"   # close-up of cut-paper objects, for sprite sheets
+REDRAW_FROM = SRC / "sheets_painted"
 EST = {"openai/gpt-5.4-image-2": 0.34, "google/gemini-3.1-flash-image": 0.07, "google/gemini-3-pro-image": 0.14}
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 flags = {a.split("=")[0]: (a.split("=", 1)[1] if "=" in a else True) for a in sys.argv[1:] if a.startswith("--")}
@@ -64,12 +68,21 @@ def run(jobs):
         out = pathlib.Path(out)
         if out.exists():
             shutil.copy(out, out.with_suffix(out.suffix + ".prev"))
-        tmp = out.with_suffix(".png")
-        path, c = generate(prompt, str(tmp), model=model, aspect=aspect, size=size, refs=refs)
+        tmp = out.with_name(out.stem + "_gen.png")
+        # scenes are 2:1, which the image model doesn't offer: paint 21:9 and trim the sides
+        crop = aspect == "2:1"
+        path, c = generate(prompt, str(tmp), model=model, aspect="21:9" if crop else aspect, size=size, refs=refs)
+        from PIL import Image
+        im = Image.open(tmp)
+        if crop:
+            w = im.height * 2
+            x0 = (im.width - w) // 2
+            im = im.crop((x0, 0, x0 + w, im.height))
         if out.suffix == ".webp":
-            from PIL import Image
-            Image.open(tmp).convert("RGB").save(out, "WEBP", quality=95, method=6)
-            tmp.unlink()
+            im.convert("RGB").save(out, "WEBP", quality=95, method=6)
+        else:
+            im.save(out)
+        tmp.unlink()
         print(f"  {key}: saved {out.relative_to(ROOT)} (${c})")
     with ThreadPoolExecutor(max_workers=6) as ex:
         list(ex.map(one, todo))
@@ -88,7 +101,7 @@ def plates(village):
             if r.exists():
                 refs.append(ref_png(r, 768))
         jobs.append((sid, SRC / village / "plates" / f"{sid}.webp", model, cfg["common"] + " " + prompt, refs,
-                     cfg.get("aspect", "3:2"), cfg.get("size", "2K")))
+                     cfg.get("aspect", "2:1"), cfg.get("size", "2K")))
     run(jobs)
 
 
@@ -98,16 +111,19 @@ def sheets(names):
     for name, s in cfg["sheets"].items():
         if names and name not in names:
             continue
-        model = s.get("model", "google/gemini-3.1-flash-image")
+        model = s.get("model", "openai/gpt-5.4-image-2")
         if s["prompt"].startswith("OVERRIDE:"):
             prompt = cfg["style"] + " " + s["prompt"][9:] + " The background must be one perfectly flat, solid, uniform pure magenta colour (#FF00FF) with no texture, no shadows and no gradients. No text anywhere."
         else:
             prompt = cfg["style"] + " " + cfg["sheetRules"] + " " + s["prompt"]
-        refs = []
-        if "gemini" in model and SHEET_REF.exists():
-            refs = [ref_png(SHEET_REF, 512)]
+        refs = [ref_png(OBJECT_REF, 1024)]
+        prev = REDRAW_FROM / f"{name}.png"
+        if s.get("redraw") and prev.exists():
+            refs.append(ref_png(prev, 1024))
+            prompt = cfg["redrawRules"] + " " + prompt
+        else:
             prompt = "Match the illustration style of the reference image exactly. " + prompt
-        jobs.append((name, SRC / "sheets" / f"{name}.png", model, prompt, refs, "1:1", None))
+        jobs.append((name, SRC / "sheets" / f"{name}.png", model, prompt, refs, "1:1", "2K"))
     run(jobs)
 
 

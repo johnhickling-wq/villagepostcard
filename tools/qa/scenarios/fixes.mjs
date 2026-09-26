@@ -7,7 +7,7 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true;
     for (const p of app.v.projects) if (p.unlocks) s.villages.honeycombe.projects[p.id] = 1;
     await window.__flows.playScene(app, 'high-street', { tier: 5, condition: 'dusk', seed: 77, script: ['faded', 'grimy', 'crooked', 'toppled', 'litter', 'weeds', 'cobweb', 'pigeon', 'unlit', 'wilted'] });
   });

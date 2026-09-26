@@ -46,14 +46,16 @@ export function countUp(el, to, { dur = 900, from = null, tick, format = (n) => 
   const start = from ?? (parseInt(el.dataset.value || el.textContent.replace(/\D/g, '')) || 0);
   el.dataset.value = to;
   const t0 = performance.now();
-  let last = start;
+  let last = start, lastTick = 0;
   return new Promise((res) => {
     const step = (now) => {
       const k = Math.min(1, (now - t0) / dur);
       const e = 1 - Math.pow(1 - k, 3);
       const v = Math.round(start + (to - start) * e);
       el.textContent = format(v);
-      if (v !== last) { tick?.(v); last = v; }
+      // ticks like a till: steady, not one per number
+      if (v !== last && now - lastTick > 55) { tick?.(v); lastTick = now; }
+      last = v;
       if (k < 1) requestAnimationFrame(step); else res();
     };
     requestAnimationFrame(step);
@@ -63,7 +65,8 @@ export function countUp(el, to, { dur = 900, from = null, tick, format = (n) => 
 const S = (inner, vb = '0 0 24 24') => `<svg viewBox="${vb}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 
 export const ICONS = {
-  penny: `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#b8683a"/><circle cx="16" cy="16" r="14" fill="none" stroke="#7a3f1e" stroke-width="2"/><circle cx="16" cy="16" r="10.5" fill="none" stroke="#e8a676" stroke-width="1.2" stroke-dasharray="1.5 1.8"/><text x="16" y="21" text-anchor="middle" font-family="Fraunces, serif" font-weight="800" font-size="13" fill="#fbe3c6">1d</text></svg>`,
+  // the Village Fund: a glass jar of coins with a paper label
+  fund: `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3.5" width="14" height="4" rx="1.2" fill="#b8683a" stroke="#7a3f1e" stroke-width="1.2"/><path d="M8.5 8h15c1.4 2 2.2 3.4 2.2 6v11.5a3 3 0 0 1-3 3H9.3a3 3 0 0 1-3-3V14c0-2.6.8-4 2.2-6Z" fill="#d8ecea" stroke="#5b8f8a" stroke-width="1.3"/><circle cx="12.5" cy="24" r="3" fill="#e3a72f" stroke="#b9811a"/><circle cx="19" cy="24.5" r="3" fill="#e3a72f" stroke="#b9811a"/><circle cx="15.8" cy="20.6" r="3" fill="#f2c14e" stroke="#b9811a"/><rect x="10.5" y="12" width="11" height="5.2" rx="0.8" fill="#fbf6ea" stroke="#c9483b" stroke-width="0.9"/><path d="M13 14.6h6" stroke="#c9483b" stroke-width="1.1" stroke-linecap="round"/></svg>`,
   rosette: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 18 L7 30 L11.5 27.5 L13.5 31 L16 20Z" fill="#2f4f86"/><path d="M21 18 L25 30 L20.5 27.5 L18.5 31 L16 20Z" fill="#c9483b"/><g fill="#e3a72f" stroke="#b9811a" stroke-width="0.8">${Array.from({ length: 12 }, (_, i) => `<ellipse cx="16" cy="6.2" rx="2.6" ry="4.4" transform="rotate(${i * 30} 16 13)"/>`).join('')}</g><circle cx="16" cy="13" r="5.4" fill="#fbf6ea" stroke="#b9811a" stroke-width="1"/><text x="16" y="15.6" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="7" fill="#9e3328">★</text></svg>`,
   rosetteGrey: `<svg viewBox="0 0 32 32" aria-hidden="true" opacity="0.35"><g fill="#8a8580">${Array.from({ length: 12 }, (_, i) => `<ellipse cx="16" cy="6.2" rx="2.6" ry="4.4" transform="rotate(${i * 30} 16 13)"/>`).join('')}</g><circle cx="16" cy="13" r="5.4" fill="#d8d2c6"/></svg>`,
   camera: S('<rect x="3" y="7" width="18" height="12" rx="2.5"/><path d="M8 7 9.5 4.5h5L16 7"/><circle cx="12" cy="13" r="3.6"/><circle cx="17.6" cy="10" r="0.6" fill="currentColor"/>'),
@@ -93,6 +96,15 @@ export const ICONS = {
   lamp: S('<path d="M9 3h6l2 5H7Z"/><path d="M8 8v6a4 4 0 0 0 8 0V8"/><path d="M12 18v3M9 21h6"/>'),
   cobweb: S('<path d="M3 3l18 18M3 3v18M3 3h18M3 3l9 18M3 3l18 9"/><path d="M3 9c2-.5 4-2.5 5.5-5.5M3 15c4.5-1 9-5.5 11.5-12M3 21c7-1.5 15-8 18-18" stroke-width="1.2"/>'),
   broom: S('<path d="M19 3 12 11"/><path d="m12 11 3 3-4.5 6.5L4 14l4.5-4.5Z"/><path d="m6 16 3 3M8 13.5l3.5 3.5"/>'),
+  // actions (what you do, never which object to look for)
+  weed: S('<path d="M12 12v9M10 21h4"/><path d="M8.5 3v4a3.5 3.5 0 0 0 7 0V3M12 3v6.5"/>'),
+  straighten: S('<rect x="5" y="10" width="11" height="8" rx="1" transform="rotate(-12 10.5 14)"/><path d="M7.5 6a8 8 0 0 1 11.5 3"/><path d="m19.6 5.6-.4 3.4-3.3-.8"/>'),
+  standUp: S('<path d="M5 20.5h14"/><rect x="10.5" y="8" width="6" height="12.5" rx="1.5"/><path d="M4.5 14a8 8 0 0 1 4.5-7.5"/><path d="m6.2 5.3 3 1-.9 3"/>'),
+  clean: S('<path d="M3.5 15.5c2-1.5 3.5-.5 5 0s3 1.5 5 0 3.5-1 7 0M3.5 19.5c2-1.5 3.5-.5 5 0s3 1.5 5 0 3.5-1 7 0"/><path d="M16.5 3v5M14 5.5h5M8 6.5v3M6.5 8h3"/>'),
+  wateringCan: S('<path d="M4.5 10h9.5v8a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2Z"/><path d="M14 12.5 19 8.2M17.6 6.8l2.8 2.8"/><path d="M4.5 12.5H3.6a1.8 1.8 0 0 1 0-3.6h.9"/><path d="M19.8 13v.6M21 15.8v.6M18.4 16.8v.6"/>'),
+  light: S('<path d="M12 21.5v-7"/><path d="M12 14.5c-2.4 0-4-1.7-4-4 0-3 4-7 4-7s4 4 4 7c0 2.3-1.6 4-4 4Z"/><path d="M12 12.2c-.8 0-1.4-.6-1.4-1.4 0-1 1.4-2.6 1.4-2.6s1.4 1.6 1.4 2.6c0 .8-.6 1.4-1.4 1.4Z"/>'),
+  dust: S('<path d="M3.5 20.5 11 13"/><path d="M11 13c.5-4.5 4-8.5 9.5-9.5-1 5.5-5 9-9.5 9.5Z"/><path d="m13 11 3.5-3.5M14.8 12.6l2.4-2.4M11.4 9.2l2.4-2.4"/>'),
+  shoo: S('<path d="M3 12.5c2.5-1 4.5-.2 6 1.8 1.6-3.2 4.8-5.3 9-5.3"/><path d="M9 14.3c.4-2.8-.2-5.4-2-7.3"/><path d="M13 17.5h8M15.5 20.5H21"/>'),
   gate: S('<path d="M4 20V5M20 20V5M4 8h16M4 16h16M8 8v8M12 8v8M16 8v8"/>'),
   path: S('<path d="M9 21c0-4 6-5 6-9s-5-4-5-9"/><path d="M4 21c1-5 6-6 6-10M20 21c-1-5-4-6-4-9" stroke-dasharray="2 2.5"/>'),
   bench: S('<path d="M3 11h18M4 15h16M5 11V6h14v5M6 15v5M18 15v5"/>'),

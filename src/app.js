@@ -34,9 +34,10 @@ export class App {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { this.persist(true); audio.ctx?.suspend(); } else audio.ctx?.resume();
     });
-    // unlock audio on the first touch anywhere
-    const unlock = () => { audio.unlock(); this.applySettings(); };
-    window.addEventListener('pointerdown', unlock, { once: false, passive: true });
+    // unlock (or, after a phone call or lock screen, resume) audio on any touch.
+    // iOS only lets sound start inside touchend/click, not pointerdown.
+    const unlock = () => { if (audio.ctx?.state !== 'running') { audio.unlock(); this.applySettings(); } };
+    for (const ev of ['pointerdown', 'touchend', 'click']) window.addEventListener(ev, unlock, { passive: true });
   }
 
   async boot() {
@@ -54,12 +55,15 @@ export class App {
     this.assets = new Assets(this.content);
     this.view = new SceneView(this.canvas, this);
     this.save = migrate(storage.load(), this.content);
-    if (!storage.load()) this.save.player.pennies = 40; // the Committee's float
+    if (!storage.load()) this.save.player.fund = 40; // the Committee's float
     refillRequests(this.save, this.content, this.village);
     this.applySettings();
     boot.progress(0.15, 'Unpacking the collage box…');
     const vid = this.village;
     const v = this.content.village(vid);
+    // postcards, album slots and thumbnails take the shape of the village's scenes
+    const [sw, sh] = v.scenes[v.start].size;
+    this.root.style.setProperty('--scene-ar', String(sw / sh));
     const imageKeys = [[v.map.image, vid], ...v.sceneOrder.map((s) => [v.scenes[s].plate, vid, true]), ['plate/high-street', vid]];
     await Promise.all([
       this.assets.preload(['common', vid], imageKeys, (k) => boot.progress(0.15 + k * 0.8, 'Unpacking the collage box…')),
@@ -93,7 +97,7 @@ export class App {
   async show(screen, { transition = 'fade', instant = false } = {}) {
     const old = this.screen;
     // toasts belong to the screen that raised them
-    for (const t of this.toasts.children) { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }
+    this.clearToasts();
     if (!instant && transition === 'iris') await this.iris(true);
     this.screen = screen;
     screen.el.classList.add('screen');
@@ -159,11 +163,6 @@ export class App {
     const cs = getComputedStyle(this.safeProbe);
     this.safe = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
     const w = this.root.clientWidth, h2 = this.root.clientHeight;
-    // side rails in play take whatever width the 3:2 scene doesn't need
-    const sceneH = h2 - this.safe.t - this.safe.b - 16;
-    const spare = w - this.safe.l - this.safe.r - sceneH * 1.5 - 24;
-    this.rail = Math.round(Math.max(90, Math.min(170, spare / 2)));
-    this.root.style.setProperty('--rail', `${this.rail}px`);
     this.canvas.width = Math.round(w * this.dpr);
     this.canvas.height = Math.round(h2 * this.dpr);
     this.screen?.resize?.(w, h2);
@@ -188,6 +187,7 @@ export class App {
   // ------------------------------------------------ sheets & modals ---
   /** Bottom sheet. Returns {el, close, closed(promise)}. */
   sheet(content, { cls = '', onClose, dismissable = true } = {}) {
+    this.clearToasts(); // a pop-up must never cover the sheet it pointed at
     const overlay = h('div.overlay');
     const close = h('button.iconbtn.close', { 'aria-label': 'Close' });
     close.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
@@ -216,6 +216,7 @@ export class App {
   }
 
   modal(content, { cls = '', dismissable = true } = {}) {
+    this.clearToasts();
     const overlay = h('div.overlay');
     const box = h(`div.modal${cls ? '.' + cls : ''}`, {}, content);
     this.ui.append(overlay, box);
@@ -234,6 +235,10 @@ export class App {
     };
     if (dismissable) overlay.addEventListener('click', () => close());
     return { el: box, close, closed };
+  }
+
+  clearToasts() {
+    for (const t of this.toasts.children) { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }
   }
 
   toast(content, { ms = 2600, cls = '' } = {}) {

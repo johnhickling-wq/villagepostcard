@@ -1,9 +1,11 @@
 // Progression: the meta-game. Pure functions over a plain-JSON save object,
 // so the same rules run in the browser, the economy simulator and tests.
 //
-//   rosettes   one per completed mastery tier (5 per scene)          -> gate scenes
-//   pennies    earned every play, spent on restoration projects       -> the sink
+//   postcards  five per scene, one per weather, each a step harder     -> the album
+//   fund       the Village Fund: raised by every postcard, spent on    -> the sink
+//              restoration projects
 //   projects   permanently beautify scenes; access projects unlock    -> "building something"
+//   intro      content/common/intro.json opens jobs and features one at a time
 //   requests   small self-contained villager goals, 3 active slots
 //   scrapbook  collectible sets with a pity timer
 //   daily      seeded Daily Postcard + 7-day stamp card
@@ -12,11 +14,11 @@
 import { Rng, seedOf, clamp } from './rng.js';
 import { activeProps } from './mess.js';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 const STAMP_MULT = [1, 1.2, 1.5];
 const DAILY_CARD = [
-  { pennies: 40 }, { pennies: 60 }, { pennies: 80 }, { flashbulbs: 1 },
-  { pennies: 120 }, { pennies: 150 }, { pennies: 200, collectible: true },
+  { fund: 40 }, { fund: 60 }, { fund: 80 }, { flashbulbs: 1 },
+  { fund: 120 }, { fund: 150 }, { fund: 200, collectible: true },
 ];
 
 // ---------------------------------------------------------------- save ----
@@ -25,7 +27,7 @@ export function newSave(content, now = Date.now()) {
   const save = {
     v: SAVE_VERSION, created: now,
     settings: { sfx: true, music: true, haptics: true, reducedMotion: false },
-    player: { xp: 0, pennies: 0, flashbulbs: 1, secondClass: 0, plays: 0 },
+    player: { xp: 0, fund: 0, flashbulbs: 1, secondClass: 0, plays: 0 },
     cosmetics: { owned: [], equipped: {} },
     stats: { fixes: {}, cats: 0, bestCombo: 0, hints: 0, collectibles: 0, perfect: 0, score: 0 },
     flags: { intro: false, tutorial: false, seen: {} },
@@ -47,7 +49,9 @@ export function newSave(content, now = Date.now()) {
 
 export function migrate(save, content) {
   if (!save || typeof save !== 'object' || !save.v) return newSave(content);
-  // future: if (save.v < 2) { ...; save.v = 2 }
+  // v2 (before release) replaced rosettes and pennies with postcards and the
+  // Village Fund, so v1 saves start again. From here on, convert: if (save.v < 3) ...
+  if (save.v < 2) return newSave(content);
   for (const vid of Object.keys(content.villages)) ensureVillage(save, content, vid);
   return save;
 }
@@ -63,8 +67,29 @@ function ensureVillage(save, content, vid) {
 
 export const projectsDone = (save, vid) => new Set(Object.keys(save.villages[vid]?.projects || {}));
 
-export function rosettes(save, vid) {
+/** Postcards taken on the way to mastering the village's scenes (five per scene). */
+export function postcards(save, vid) {
   return Object.values(save.villages[vid].scenes).reduce((s, sc) => s + Math.min(5, sc.tier), 0);
+}
+
+// ---------------------------------------------------------- intro -------
+
+/** Has this feature been introduced yet? (content/common/intro.json, counted in postcards taken) */
+export function introduced(save, content, feature) {
+  const at = content.intro?.features?.[feature];
+  return at == null || save.player.plays >= at;
+}
+
+/** Jobs that may appear in the next play; types not listed follow the tier alone. */
+export function jobsOpen(save, content) {
+  const jobs = content.intro?.jobs || {};
+  return Object.keys(content.faults).filter((t) => jobs[t] == null || save.player.plays >= jobs[t]);
+}
+
+/** Map-screen feature cards that are due and not yet shown, in order. */
+export function introCardsDue(save, content) {
+  const cards = content.intro?.cards || {};
+  return Object.keys(cards).filter((f) => introduced(save, content, f) && !save.flags.seen[`intro:${f}`]);
 }
 
 export function bloom(save, content, vid) {
@@ -99,16 +124,14 @@ export function projectStatus(save, content, vid, pid) {
   const p = v.projects.find((x) => x.id === pid);
   const done = !!save.villages[vid].projects[pid];
   const sceneOpen = sceneUnlocked(save, content, vid, p.scene);
-  const r = rosettes(save, vid);
-  const needRosettes = Math.max(0, p.rosettes - r);
-  const needPennies = Math.max(0, p.cost - save.player.pennies);
-  return { project: p, done, sceneOpen, needRosettes, needPennies, canBuy: !done && sceneOpen && !needRosettes && !needPennies };
+  const needFund = Math.max(0, p.cost - save.player.fund);
+  return { project: p, done, sceneOpen, needFund, canBuy: !done && sceneOpen && !needFund };
 }
 
 export function buyProject(save, content, vid, pid) {
   const st = projectStatus(save, content, vid, pid);
   if (!st.canBuy) return null;
-  save.player.pennies -= st.project.cost;
+  save.player.fund -= st.project.cost;
   save.villages[vid].projects[pid] = Date.now();
   const events = [{ kind: 'project', project: st.project }];
   if (st.project.unlocks) events.push({ kind: 'sceneUnlocked', scene: st.project.unlocks });
@@ -122,8 +145,18 @@ export function buyProject(save, content, vid, pid) {
 }
 
 export function judgingReady(save, content, vid) {
+  return !save.villages[vid].judged && bloom(save, content, vid) >= 1;
+}
+
+/** The postcard to take next: the open scene with the fewest postcards (earliest in the village's order). */
+export function nextPostcard(save, content, vid) {
   const v = content.village(vid);
-  return !save.villages[vid].judged && bloom(save, content, vid) >= 1 && rosettes(save, vid) >= v.finale.rosettes;
+  const open = unlockedScenes(save, content, vid).filter((sid) => save.villages[vid].scenes[sid].tier < 5);
+  if (!open.length) return null;
+  const sid = open.reduce((a, b) => (save.villages[vid].scenes[b].tier < save.villages[vid].scenes[a].tier ? b : a));
+  const tier = save.villages[vid].scenes[sid].tier + 1;
+  const condition = Object.keys(content.tier(tier).conditions)[0];
+  return { scene: sid, tier, condition, name: v.scenes[sid].name, weather: content.conditions[condition].name };
 }
 
 /** The Committee Letter: the single clearest next thing to do. */
@@ -132,22 +165,19 @@ export function nextGoal(save, content, vid) {
   const vs = save.villages[vid];
   if (vs.judged) return { kind: 'free', text: 'Honeycombe is Best-Kept Village! Keep snapping, and a new assignment awaits at the Travel Office.' };
   if (judgingReady(save, content, vid)) return { kind: 'judging', text: 'The judges have arrived! Open the Judging on the map.' };
-  const r = rosettes(save, vid);
+  const next = nextPostcard(save, content, vid);
+  const snap = next ? `Next postcard: ${next.name} in ${next.weather}.` : '';
   for (const p of v.projects) {
     if (vs.projects[p.id]) continue;
     if (!sceneUnlocked(save, content, vid, p.scene)) continue;
-    if (p.rosettes > r) {
-      return { kind: 'rosettes', project: p, need: p.rosettes - r,
-        text: `Earn ${p.rosettes - r} more rosette${p.rosettes - r > 1 ? 's' : ''} to start “${p.name}”.` };
+    if (p.cost > save.player.fund) {
+      const need = p.cost - save.player.fund;
+      return { kind: 'fund', project: p, need, next,
+        text: `Raise ${need} more for “${p.name}”.`, hint: snap };
     }
-    if (p.cost > save.player.pennies) {
-      return { kind: 'pennies', project: p, need: p.cost - save.player.pennies,
-        text: `Save ${p.cost - save.player.pennies} more pennies for “${p.name}”.` };
-    }
-    return { kind: 'project', project: p, text: `You can afford “${p.name}”! Tap it on the map.` };
+    return { kind: 'project', project: p, next, text: `The Fund can pay for “${p.name}”! Tap it on the map.` };
   }
-  const need = v.finale.rosettes - r;
-  return { kind: 'rosettes', need, text: `Earn ${need} more rosette${need > 1 ? 's' : ''} before the judges arrive.` };
+  return { kind: 'free', next, text: 'Every project is done. Keep snapping!', hint: snap };
 }
 
 // -------------------------------------------------------------- level -----
@@ -174,7 +204,7 @@ export function loupeMultiplier(content, save) {
 
 function grant(save, content, reward, out) {
   if (!reward) return;
-  if (reward.pennies) { save.player.pennies += reward.pennies; out.pennies += reward.pennies; }
+  if (reward.fund) { save.player.fund += reward.fund; out.fund += reward.fund; }
   if (reward.flashbulbs) { save.player.flashbulbs += reward.flashbulbs; out.flashbulbs += reward.flashbulbs; }
   if (reward.secondClass) { save.player.secondClass += reward.secondClass; out.secondClass += reward.secondClass; }
   if (reward.cosmetic && !save.cosmetics.owned.includes(reward.cosmetic)) {
@@ -211,19 +241,27 @@ export function planPlay(save, content, vid, sid, opts = {}) {
   let script = opts.script || null;
   if (opts.tutorial) {
     tier = 1; condition = 'clear'; seed = 1957;
-    script = ['litter', 'crooked', 'litter', 'grimy', 'litter', 'wilted'];
+    script = content.intro?.tutorial?.script || ['litter', 'crooked', 'litter', 'crooked', 'litter'];
   }
   if (!condition) {
-    // prefer conditions not yet in the album, so replays fill the collection
+    // each postcard has its weather; Free Play prefers weathers not yet in the album
     const w = { ...content.tier(tier).conditions };
     for (const c of Object.keys(w)) if (!ss.album[c]) w[c] *= 3;
     condition = rng.fork('cond').weighted(w);
   }
-  const collectible = rollCollectible(save, content, vid, scene, rng.fork('collect'), opts);
+  const collectible = introduced(save, content, 'collectibles') ? rollCollectible(save, content, vid, scene, rng.fork('collect'), opts) : null;
+  const jobs = jobsOpen(save, content);
+  const show = Object.fromEntries(['score', 'combo', 'loupe', 'flash'].map((f) => [f, introduced(save, content, f)]));
+  show.timer = show.score;
   return {
     village: vid, scene: sid, tier, condition, seed, script, collectible,
     daily: opts.daily || null, tutorial: !!opts.tutorial,
     projects: [...projectsDone(save, vid)],
+    // jobs and Marmalade are part of the mess, so the album keeps them to redraw the postcard
+    types: jobs.length < Object.keys(content.faults).length ? jobs : null,
+    cat: introduced(save, content, 'cat'),
+    show,
+    stamps: introduced(save, content, 'score'),
     loupe: content.tier(tier).loupe * loupeMultiplier(content, save),
     nudge: content.tier(tier).nudge,
   };
@@ -233,7 +271,8 @@ function rollCollectible(save, content, vid, scene, rng, opts) {
   if (opts.tutorial) return null;
   const sets = content.village(vid).collectibles.sets.filter((s) => (scene.sets || []).includes(s.id));
   if (!sets.length) return null;
-  const guaranteed = save.player.plays === 1 || opts.forceCollectible;
+  const first = !save.stats.collectibles && !save.collect.pity;
+  const guaranteed = first || opts.forceCollectible;
   const chance = 0.35 + 0.2 * save.collect.pity;
   if (!guaranteed && !rng.chance(chance)) return null;
   const w = {};
@@ -248,7 +287,7 @@ function rollCollectible(save, content, vid, scene, rng, opts) {
  * result: {score, stamps, time, fixes:{type:n}, cat, collectible, maxCombo, hints, flashes, misses, faultCount}
  */
 export function applyResult(save, content, play, result, now = new Date()) {
-  const out = { pennies: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [], sets: [] };
+  const out = { fund: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [], sets: [] };
   const v = content.village(play.village);
   const vs = save.villages[play.village];
   const ss = vs.scenes[play.scene];
@@ -257,30 +296,33 @@ export function applyResult(save, content, play, result, now = new Date()) {
   save.player.plays++;
   ss.plays++;
 
-  // pennies & xp
-  const pennies = Math.round(tier.pennies * STAMP_MULT[result.stamps - 1]) + (result.cat ? 25 : 0);
-  save.player.pennies += pennies;
-  out.pennies += pennies;
-  out.basePennies = pennies;
+  // the Village Fund & xp (stamps only count once they've been introduced)
+  const fund = Math.round(tier.fund * (play.stamps === false ? 1 : STAMP_MULT[result.stamps - 1])) + (result.cat ? 25 : 0);
+  save.player.fund += fund;
+  out.fund += fund;
+  out.baseFund = fund;
   const xpRule = content.levels.xpPerPlay;
   addXp(save, content, Math.round((xpRule.base + xpRule.perFault * result.faultCount + xpRule.perStamp * result.stamps) * tier.xp), out);
 
-  // mastery
+  // the next postcard of this place
   if (!play.daily && play.tier === ss.tier + 1 && play.tier <= 5) {
     ss.tier++;
-    out.events.push({ kind: 'rosette', scene: play.scene, tier: ss.tier, total: rosettes(save, play.village) });
+    out.events.push({ kind: 'postcard', scene: play.scene, tier: ss.tier, total: postcards(save, play.village) });
     if (ss.tier === 5) out.events.push({ kind: 'mastered', scene: play.scene });
   }
   if (result.score > ss.best) ss.best = result.score;
   if (result.stamps > ss.bestStamps) ss.bestStamps = result.stamps;
 
-  // album: one slot per condition, best score kept
-  const slot = ss.album[play.condition];
+  // album: one slot per weather, best score kept (the Daily Postcard has its own diary)
   const entry = { seed: play.seed, tier: play.tier, condition: play.condition, stamps: result.stamps, score: result.score,
-    time: Math.round(result.time), date: now.toISOString().slice(0, 10), projects: play.projects, script: !!play.script };
-  if (!slot) { ss.album[play.condition] = entry; out.events.push({ kind: 'newPostcard', condition: play.condition }); }
-  else if (result.score > slot.score) { ss.album[play.condition] = entry; out.events.push({ kind: 'betterPostcard', condition: play.condition }); }
-  if (play.tier === 5 && !ss.album.mastered) { ss.album.mastered = { ...entry }; out.events.push({ kind: 'goldPostcard' }); }
+    time: Math.round(result.time), date: now.toISOString().slice(0, 10), projects: play.projects,
+    script: play.script || null, types: play.types || null, cat: play.cat !== false };
+  if (!play.daily) {
+    const slot = ss.album[play.condition];
+    if (!slot) { ss.album[play.condition] = entry; out.events.push({ kind: 'newPostcard', condition: play.condition }); }
+    else if (result.score > slot.score) { ss.album[play.condition] = entry; out.events.push({ kind: 'betterPostcard', condition: play.condition }); }
+    if (play.tier === 5 && !ss.album.mastered) { ss.album.mastered = { ...entry }; out.events.push({ kind: 'goldPostcard' }); }
+  }
 
   // stats
   for (const [t, n] of Object.entries(result.fixes)) save.stats.fixes[t] = (save.stats.fixes[t] || 0) + n;
@@ -291,7 +333,7 @@ export function applyResult(save, content, play, result, now = new Date()) {
   if (result.stamps === 3) save.stats.perfect++;
 
   // scrapbook
-  if (play.collectible) save.collect.pity = 0; else save.collect.pity++;
+  if (play.collectible) save.collect.pity = 0; else if (introduced(save, content, 'collectibles')) save.collect.pity++;
   if (result.collectible && play.collectible) addCollectible(save, content, play.village, play.collectible.id, out);
 
   // requests
@@ -323,7 +365,7 @@ function addCollectible(save, content, vid, itemId, out) {
   save.collect.owned[itemId] = had + 1;
   save.stats.collectibles++;
   if (had) {
-    save.player.pennies += 15; out.pennies += 15;
+    save.player.fund += 15; out.fund += 15;
     out.events.push({ kind: 'duplicate', item: found.item });
     return;
   }
@@ -426,7 +468,7 @@ export function makeRequest(save, content, vid, rng) {
   req.text = fill(rng.pick(vg.lines[kind]), vars);
   req.goal = goalLabel(content, vid, req);
   req.reward = {
-    pennies: rng.int(t.reward.pennies[0], t.reward.pennies[1]),
+    fund: rng.int(t.reward.fund[0], t.reward.fund[1]),
     xp: rng.int(t.reward.xp[0], t.reward.xp[1]),
     ...(t.reward.flashbulbs ? { flashbulbs: t.reward.flashbulbs } : {}),
     ...(t.reward.collectible ? { collectible: true } : {}),
@@ -442,7 +484,7 @@ export function goalLabel(content, vid, r) {
     case 'cat': return `Find Marmalade ${r.count === 1 ? 'once' : `${r.count} times`}`;
     case 'stamps': return `3-stamp postcard of ${sceneName}`;
     case 'condition': return `A postcard in ${content.conditions[r.condition].name}`;
-    case 'combo': return `Reach a ×${r.count} combo`;
+    case 'combo': return `Fix ${r.count} in a quick row`;
     case 'nohint': return 'Finish a scene without hints';
     case 'quick': return `Finish a scene in under ${r.seconds}s`;
     case 'plays': return `${r.count} postcard${r.count > 1 ? 's' : ''} of ${sceneName}`;
@@ -452,7 +494,7 @@ export function goalLabel(content, vid, r) {
 }
 
 export function refillRequests(save, content, vid) {
-  if (save.player.plays < content.requests.unlockAfterPlays) return;
+  if (!introduced(save, content, 'requests')) return;
   const rng = new Rng(seedOf('req', save.created, save.requests.seq, save.player.plays));
   let guard = 0;
   while (save.requests.active.length < content.requests.slots && guard++ < 10) {
@@ -488,10 +530,10 @@ export function claimRequest(save, content, vid, reqId) {
   if (i < 0) return null;
   const r = save.requests.active[i];
   if (r.progress < r.count) return null;
-  const out = { pennies: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [r], sets: [] };
+  const out = { fund: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [r], sets: [] };
   save.requests.active.splice(i, 1);
   save.requests.done++;
-  grant(save, content, { pennies: r.reward.pennies, xp: r.reward.xp, flashbulbs: r.reward.flashbulbs }, out);
+  grant(save, content, { fund: r.reward.fund, xp: r.reward.xp, flashbulbs: r.reward.flashbulbs }, out);
   if (r.reward.collectible) grantRandomCollectible(save, content, vid, new Rng(seedOf('reqc', r.id, save.created)), out);
   const f = (save.requests.friendship[r.villager] = (save.requests.friendship[r.villager] || 0) + content.requests.friendship.perRequest);
   const lvls = content.requests.friendship.levels;
@@ -544,7 +586,7 @@ export function dailyInfo(save, content, vid, today = dateKey()) {
   }
   const cardDay = (streak % 7) + (done ? 0 : 1);
   return { date: today, scene, condition, tier, seed: seedOf('daily-seed', vid, today) % 2 ** 31, done, streak,
-    cardDay: done ? ((streak - 1) % 7) + 1 : cardDay, card: DAILY_CARD, unlocked: save.player.plays >= 3 };
+    cardDay: done ? ((streak - 1) % 7) + 1 : cardDay, card: DAILY_CARD, unlocked: introduced(save, content, 'daily') };
 }
 
 function completeDaily(save, content, date, result, out) {
@@ -573,7 +615,7 @@ function completeDaily(save, content, date, result, out) {
 export function completeJudging(save, content, vid) {
   if (!judgingReady(save, content, vid)) return null;
   save.villages[vid].judged = Date.now();
-  const out = { pennies: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [], sets: [] };
-  grant(save, content, { pennies: 500, xp: 400, flashbulbs: 3, cosmetic: 'frame-gilt' }, out);
+  const out = { fund: 0, xp: 0, flashbulbs: 0, secondClass: 0, cosmetics: [], levelUps: [], events: [], requests: [], sets: [] };
+  grant(save, content, { fund: 500, xp: 400, flashbulbs: 3, cosmetic: 'frame-gilt' }, out);
   return out;
 }

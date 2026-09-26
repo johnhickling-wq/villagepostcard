@@ -11,7 +11,7 @@ export default async function ({ page, shot, wait, url }) {
     await page.evaluate(async ([sid, cond, tier]) => {
       const app = window.__app;
       const s = app.save;
-      s.flags.intro = true; s.flags.tutorial = true; s.flags.seen.mapIntro = true;
+      s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
       const v = app.v;
       for (const p of v.projects) if (p.unlocks) s.villages.honeycombe.projects[p.id] = 1;
       await window.__flows.playScene(app, sid, { tier, condition: cond, seed: 1000 + sid.length });

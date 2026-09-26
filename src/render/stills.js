@@ -17,7 +17,7 @@ export function renderPostcard(app, sceneId, entry, { width = 240, before = fals
     const mess = generateMess(app.content, {
       village: app.village, scene: sceneId, tier: entry.tier, condition: entry.condition, seed: entry.seed,
       projectsDone: entry.projects || [],
-      script: entry.script ? ['litter', 'crooked', 'litter', 'grimy', 'litter', 'wilted'] : null,
+      script: Array.isArray(entry.script) ? entry.script : null, types: entry.types || null, cat: entry.cat !== false,
     });
     await view.load({ village: app.village, scene: sceneId, mess, projects: entry.projects || [], thumb: width <= 480 });
     const after = view.renderStill('after', width).toDataURL('image/jpeg', 0.85);

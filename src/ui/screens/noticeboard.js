@@ -1,7 +1,7 @@
 // The village noticeboard: three pinned requests from the villagers, plus
 // everyone's friendship hearts and the letters they've written you.
 
-import { h, icon } from '../dom.js';
+import { h, icon, wait } from '../dom.js';
 import { topBar } from '../components/topbar.js';
 import { goMap } from '../flows.js';
 import { claimRequest, friendshipLevel, refillRequests } from '../../core/progression.js';
@@ -32,7 +32,7 @@ export class NoticeboardScreen {
     const vg = app.v.villagers[r.villager];
     const done = r.progress >= r.count;
     const pct = Math.round((r.progress / r.count) * 100);
-    const rw = [h('span.nr-item', icon('penny'), h('b', { text: String(r.reward.pennies) })), h('span.nr-item', h('b', { text: `+${r.reward.xp}` }), h('span', { text: 'xp' }))];
+    const rw = [h('span.nr-item', icon('fund'), h('b', { text: String(r.reward.fund) })), h('span.nr-item', h('b', { text: `+${r.reward.xp}` }), h('span', { text: 'xp' }))];
     if (r.reward.flashbulbs) rw.push(h('span.nr-item', h('img', { src: app.assets.spriteUrl('ui/flashbulb', 'common', 0.2) }), h('b', { text: `×${r.reward.flashbulbs}` })));
     if (r.reward.collectible) rw.push(h('span.nr-item', icon('sparkle'), h('span', { text: 'keepsake' })));
     const el = h('div.req-note.card' + (done ? '.done' : ''), { style: { '--rot': `${[-2.5, 1.8, -1.2][i % 3]}deg` } },
@@ -52,7 +52,7 @@ export class NoticeboardScreen {
 
   async claim(r) {
     const app = this.app;
-    const before = app.save.player.pennies;
+    const before = app.save.player.fund;
     const out = claimRequest(app.save, app.content, app.village, r.id);
     if (!out) return;
     app.persist(true);
@@ -61,7 +61,9 @@ export class NoticeboardScreen {
     const vg = app.v.villagers[r.villager];
     app.toast([h('img', { src: app.assets.spriteUrl(vg.portrait, app.village, 0.3) }), `“${vg.thanks[r.id.length % vg.thanks.length]}”`], { ms: 2600 });
     this.render();
-    this.top.animatePennies(before, app.save.player.pennies);
+    this.top.animateFund(before, app.save.player.fund);
+    // let the thanks be read before a level-up (which clears it) takes over
+    if (out.levelUps.length || out.events.length) await wait(1400);
     await showRewardsQueue(app, out);
     this.render();
   }

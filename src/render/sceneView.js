@@ -3,7 +3,7 @@
 // fix animation. It also renders still "before"/"after" images for postcards.
 
 import { bakePlate, gradeSprite, gradeColor } from './grade.js';
-import { grimeTexture, drawCobweb, flakes } from './textures.js';
+import { drawCobweb, flakes, peeling, sootScrap } from './textures.js';
 import { Particles } from './particles.js';
 import { Ambient } from './ambient.js';
 import { Ease, springDecay, clamp01, lerp } from '../engine/tween.js';
@@ -87,6 +87,12 @@ export class SceneView {
     const raw = this.assets.sprite(key, this.village);
     return raw ? this.graded(raw) : null;
   }
+
+  /** A flat colour graded for this scene's light, as a CSS colour (for drawn-in-code fault art). */
+  tone = (hex, a = 1) => {
+    const c = gradeColor(hex, this.cond, this.bloom);
+    return a < 1 ? c.replace('rgb(', 'rgba(').replace(')', `,${a})`) : c;
+  };
 
   graded(raw) {
     this.gradeCache ||= new Map();
@@ -199,6 +205,10 @@ export class SceneView {
     this.fx.set(fault.id, { t0: this.time, kind: this.content.faults[fault.type].fix });
     const cx = fault.cx, cy = fault.cy;
     const P = this.particles;
+    // impact: a warm glow, a heartbeat's pause, and the lightest nudge of the camera
+    this.overlays.push({ kind: 'glow', x: cx, y: cy, r: Math.max(fault.size * 0.75, 34 / this.scale), t0: this.time, life: 0.45 });
+    this.hitstop = 0.045;
+    this.shake = Math.max(this.shake, 2.2);
     switch (fault.type) {
       case 'litter': P.burst('sparkle', cx, cy, { scale: 1 }); break;
       case 'weeds': P.burst('dirt', fault.x, fault.y); break;
@@ -304,6 +314,8 @@ export class SceneView {
   // ------------------------------------------------------------- update ---
   update(dt) {
     if (!this.ready) return;
+    if (this.hitstop > 0) { this.hitstop -= dt; dt *= 0.12; }
+    this.particles.k = Math.max(1, Math.min(3, 0.9 / this.scale));
     this.time += dt;
     this.particles.update(dt);
     this.ambient.update(dt);
@@ -432,26 +444,23 @@ export class SceneView {
     c.height = Math.max(2, Math.ceil(b.h * u));
     const g = c.getContext('2d');
     if (f.type === 'faded') {
+      // sun-bleached paper, with torn patches peeled back to bare cream paper
       g.drawImage(this.base, b.x * u, b.y * u, b.w * u, b.h * u, 0, 0, c.width, c.height);
       g.globalCompositeOperation = 'saturation';
-      g.globalAlpha = 0.92 * f.amount;
+      g.globalAlpha = 0.95 * f.amount;
       g.fillStyle = '#888';
       g.fillRect(0, 0, c.width, c.height);
       g.globalCompositeOperation = 'screen';
-      g.globalAlpha = 0.55 * f.amount;
-      g.fillStyle = '#cfc6b4';
+      g.globalAlpha = 0.62 * f.amount;
+      g.fillStyle = this.tone('#d9d0bc');
       g.fillRect(0, 0, c.width, c.height);
       g.globalCompositeOperation = 'source-over';
       g.globalAlpha = 1;
-      flakes(g, c.width, c.height, f.pattern, f.amount);
+      flakes(g, c.width, c.height, f.pattern, f.amount * 0.6);
+      peeling(g, c.width, c.height, f.pattern, f.amount, this.tone);
     } else {
-      const tex = grimeTexture();
-      const r = new Rng(f.pattern);
-      g.globalAlpha = Math.min(1, 0.3 + 0.75 * f.amount);
-      g.translate(-r.float(0, 256), -r.float(0, 256));
-      g.fillStyle = g.createPattern(tex, 'repeat');
-      g.fillRect(0, 0, c.width + 512, c.height + 512);
-      g.setTransform(1, 0, 0, 1, 0, 0);
+      // a stained scrap of paper stuck over the glass
+      sootScrap(g, c.width, c.height, f.pattern, Math.min(1, 0.35 + 0.65 * f.amount), this.tone);
     }
     // cut to the region's shape
     g.globalCompositeOperation = 'destination-in';
@@ -651,7 +660,7 @@ export class SceneView {
     g.save();
     // pivot
     g.translate(geo.px, geo.py);
-    let angle = 0, sx = 1, sy = 1, dy = 0, spr = p.spr;
+    let angle = 0, sx = 1, sy = 1, dy = 0, spr = p.spr, over = null, overA = 0;
     if (p.sway) angle += Math.sin(this.time * 1.3 + geo.px) * 0.02;
     if (f?.type === 'crooked') {
       const t = fx ? this.time - fx.t0 : 0;
@@ -669,7 +678,8 @@ export class SceneView {
       const amt = f.amount * (fx ? 1 - Ease.outCubic(k) : 1);
       sy = 1 - 0.1 * amt;
       if (fx) { const b = Math.sin(Math.min(1, k * 1.5) * Math.PI) * 0.12; sy += b; sx += b * 0.5; }
-      spr = amt > 0.02 ? this.graded(this.assets.wilted(p.rawSpr, amt)) : p.spr;
+      // the fresh flowers show through as the wilted ones fade: two cached images, not one per frame
+      if (amt > 0.02) { over = this.graded(this.assets.wilted(p.rawSpr, f.amount)); overA = amt / f.amount; }
     }
     const neg = this.neglect.find((n) => n.target === p.id);
     if (neg && neg.type === 'wilted' && state !== 'after') spr = this.graded(this.assets.wilted(p.rawSpr, neg.amount));
@@ -682,6 +692,10 @@ export class SceneView {
     g.scale(sx, sy);
     g.translate(0, cy);
     this.assets.drawSprite(g, spr, w, h, p.flip);
+    if (over) {
+      g.globalAlpha *= overA;
+      this.assets.drawSprite(g, over, w, h, p.flip);
+    }
     g.restore();
   }
 
@@ -702,8 +716,8 @@ export class SceneView {
       g.rotate(f.rot + wob);
       if (k > 0) {
         const up = k < 0.3 ? Ease.outBack(k / 0.3) : 1;
-        const shrink = k < 0.3 ? 1 + 0.25 * up : Math.max(0, 1.25 * (1 - Ease.inBack((k - 0.3) / 0.7)));
-        g.translate(0, -40 * Ease.outCubic(k));
+        const shrink = k < 0.3 ? 1 + 0.4 * up : Math.max(0, 1.4 * (1 - Ease.inBack((k - 0.3) / 0.7)));
+        g.translate(0, -40 * this.particles.k * Ease.outCubic(k));
         g.rotate(k * TAU * 0.8);
         g.scale(shrink, shrink);
       }
@@ -925,6 +939,19 @@ export class SceneView {
           g.fillRect(0, 0, this.W, this.H);
           g.restore();
         }
+      } else if (o.kind === 'glow') {
+        // the fixed thing lights up for a moment, then the light spreads and fades
+        const a = (1 - k) * (1 - k);
+        const r = o.r * (0.7 + 0.6 * Ease.outCubic(k));
+        g.save();
+        g.globalCompositeOperation = 'lighter';
+        const gr = g.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
+        gr.addColorStop(0, `rgba(255,244,200,${0.55 * a})`);
+        gr.addColorStop(0.45, `rgba(255,226,150,${0.28 * a})`);
+        gr.addColorStop(1, 'rgba(255,210,120,0)');
+        g.fillStyle = gr;
+        g.beginPath(); g.arc(o.x, o.y, r, 0, TAU); g.fill();
+        g.restore();
       } else if (o.kind === 'nudge') {
         g.save();
         g.globalCompositeOperation = 'lighter';
@@ -948,8 +975,14 @@ export class SceneView {
         g.save();
         g.globalAlpha = 1 - k;
         g.strokeStyle = f.ok ? '#fffaf0' : '#e0605a';
-        g.lineWidth = f.ok ? 3 : 2.5;
-        g.beginPath(); g.arc(f.x, f.y, 10 + k * (f.ok ? 34 : 18), 0, TAU); g.stroke();
+        g.lineWidth = f.ok ? 4 * (1 - k) + 1 : 2.5;
+        g.beginPath(); g.arc(f.x, f.y, 10 + Ease.outCubic(k) * (f.ok ? 42 : 18), 0, TAU); g.stroke();
+        if (f.ok) {
+          g.globalAlpha = (1 - k) * 0.7;
+          g.strokeStyle = '#f2c14e';
+          g.lineWidth = 2;
+          g.beginPath(); g.arc(f.x, f.y, 6 + Ease.outCubic(Math.min(1, k * 1.4)) * 26, 0, TAU); g.stroke();
+        }
         if (!f.ok) {
           const s = 7 * (1 - k * 0.5);
           g.beginPath();

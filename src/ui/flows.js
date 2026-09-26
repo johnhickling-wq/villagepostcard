@@ -11,7 +11,7 @@ export async function startGame(app) {
   if (!s.flags.intro) {
     await showLetter(app, { from: 'editor', ...v.letters.intro, button: 'Off to Honeycombe!' });
     app.sfx('whistle');
-    await showLetter(app, { from: 'colonel', ...v.letters.welcome, button: 'Right-ho!', reward: '40 pennies from the Committee to get you started' });
+    await showLetter(app, { from: 'colonel', ...v.letters.welcome, button: 'Right-ho!', reward: '40 in the Village Fund from the Committee, to get you started' });
     s.flags.intro = true;
     app.persist(true);
   }
@@ -30,7 +30,7 @@ export async function playScene(app, sceneId, opts = {}) {
   const play = planPlay(app.save, app.content, app.village, sceneId, opts);
   const mess = generateMess(app.content, {
     village: play.village, scene: play.scene, tier: play.tier, condition: play.condition, seed: play.seed,
-    projectsDone: play.projects, collectible: play.collectible, script: play.script,
+    projectsDone: play.projects, collectible: play.collectible, script: play.script, types: play.types, cat: play.cat,
   });
   await app.assets.image(app.content.scene(play.village, play.scene).plate, play.village);
   return app.show(new PlayScreen(app, play, mess), { transition: 'iris' });

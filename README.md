@@ -12,8 +12,10 @@ picture-perfect villages by tapping what's wrong:
 Then the shutter clicks and a postcard prints into your album, with a
 before/after reveal.
 
-Restoration projects permanently beautify the village until it wins
-**Best-Kept Village**. The first village, *Honeycombe-on-the-Wold* in the
+Every postcard raises money for the Village Fund, which pays for restoration
+projects that permanently beautify the village until it wins **Best-Kept
+Village**. New players meet one idea at a time: the game starts as just
+tidying, and jobs, hints, scores and the rest arrive a postcard at a time. The first village, *Honeycombe-on-the-Wold* in the
 Cotswolds, is free and complete. More villages are cheap packs, shown in the
 in-game Travel Office.
 
@@ -45,7 +47,7 @@ src/core/      pure rules, no DOM; the bot runs them in Node
   session.js     one play: hit-testing, combos, mis-tap protection, hints, score
   scoring.js     points, time bonus, stamps
   sim.js         the perception model of a player (par times, bot)
-  progression.js currencies, rosettes, projects, requests, scrapbook, daily, levels
+  progression.js the Village Fund, postcards, projects, the step-by-step intro, requests, scrapbook, daily, levels
 src/render/    canvas scene: grading, props, fix animations, particles, ambient life
 src/engine/    assets (atlases/manifests), procedural WebAudio sound and music, input, haptics, storage
 src/ui/        screens (title, map hub, play, results, album, noticeboard, travel, judging)
@@ -84,10 +86,12 @@ Each sound has a named hook (`fix.paint`, `combo`, `shutter`…).
 
 ### Art
 
-The art was generated through OpenRouter (GPT Image and Gemini image models)
-and matched to one style reference. It was then cut out, packed and annotated
-by the tools in `tools/art/`. Replace any source image and rerun
-`python3 tools/art/build.py` to swap in final art.
+The art is flat cut-paper collage, generated through OpenRouter (GPT Image)
+and matched to one style reference (`art_src/style_ref_cutpaper.jpg`). Scenes
+are 2:1 to fill a phone held sideways. The art was then cut out, packed and
+annotated by the tools in `tools/art/`. Replace any source image and rerun
+`python3 tools/art/build.py` to swap in final art. The earlier painted art is
+kept in `art_src/**/*_painted*` for reference.
 
 ## Checks
 
@@ -96,4 +100,6 @@ npm run validate   # content pack integrity
 npm run bot        # fairness + difficulty across thousands of generated messes
 npm run economy    # full-village playthrough simulation
 node tools/qa/shots.mjs tutorial|map|screens|gallery|fixes|hints|restore|judging|dialogs   # 844x390 landscape phone screenshots
+VW=390 VH=844 node tools/qa/shots.mjs rotated   # portrait phone: the stage turns itself
+node tools/qa/shots.mjs mix                     # loudness of every sound against its target
 ```

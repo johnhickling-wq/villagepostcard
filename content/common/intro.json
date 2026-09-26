@@ -1,0 +1,68 @@
+{
+ "tutorial": {
+  "script": [
+   "litter",
+   "crooked",
+   "litter",
+   "crooked",
+   "litter"
+  ]
+ },
+ "jobs": {
+  "litter": 0,
+  "crooked": 0,
+  "faded": 1,
+  "grimy": 2,
+  "wilted": 3,
+  "weeds": 5,
+  "toppled": 7
+ },
+ "features": {
+  "album": 2,
+  "cat": 3,
+  "loupe": 4,
+  "score": 5,
+  "level": 6,
+  "zoom": 6,
+  "combo": 7,
+  "requests": 8,
+  "collectibles": 9,
+  "daily": 10,
+  "flash": 11,
+  "travel": 12
+ },
+ "cards": {
+  "album": {
+   "icon": "album",
+   "title": "Your postcard album",
+   "text": "Every place can be snapped in five kinds of weather, from a clear day to after the storm. Each one is a new postcard for your album, and raises more for the Village Fund."
+  },
+  "level": {
+   "icon": "camera",
+   "title": "Photographer level",
+   "text": "Every postcard earns you experience. Going up a level brings flashbulbs and new looks for your postcards."
+  },
+  "requests": {
+   "icon": "notice",
+   "title": "The Noticeboard",
+   "text": "The villagers have pinned up little favours. Do them while you tidy for extra money for the Fund."
+  },
+  "daily": {
+   "icon": "calendar",
+   "title": "The Daily Postcard",
+   "text": "A new postcard every day, the same for everyone. Come back each day to fill your stamp card."
+  },
+  "travel": {
+   "icon": "train",
+   "title": "The Travel Office",
+   "text": "Posters of other villages that would love a visit from you, one day."
+  }
+ },
+ "coach": {
+  "loupe": "New! The magnifying glass shows you where to look. It recharges as you tidy.",
+  "score": "From now on your postcards earn stamps. Be quick and careful for all three!",
+  "combo": "Quick fixes one after another count as a run, and a run earns more!",
+  "flash": "New! A flashbulb lights up everything that's left, just for a moment.",
+  "zoom": "Spread two fingers to zoom in close, or double-tap. Pinch to zoom back out."
+ }
+}

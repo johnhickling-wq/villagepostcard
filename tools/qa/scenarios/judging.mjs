@@ -6,7 +6,7 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; s.flags.seen.mapIntro = true;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
     s.player.plays = 70; s.player.xp = 7000;
     const all = app.v.projects.map((p) => p.id);
     for (const pid of all) s.villages.honeycombe.projects[pid] = 1;

@@ -7,8 +7,8 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(async () => {
     const app = window.__app, P = window.__progression;
     const s = app.save;
-    s.flags.intro = true; s.flags.tutorial = true; s.flags.seen.mapIntro = true;
-    s.player.pennies = 420; s.player.xp = 600; s.player.plays = 14;
+    s.flags.intro = true; s.flags.tutorial = true; for (const t of Object.keys(window.__app.content.faults)) s.flags.seen['job:' + t] = true; for (const k of Object.keys(window.__app.content.intro.cards)) s.flags.seen['intro:' + k] = true; s.flags.seen.mapIntro = true;
+    s.player.fund = 420; s.player.xp = 600; s.player.plays = 14;
     const vs = s.villages.honeycombe;
     for (const pid of ['open-high-street', 'halt-paint', 'halt-flowers', 'open-village-green']) vs.projects[pid] = 1;
     vs.scenes['railway-halt'].tier = 4; vs.scenes['high-street'].tier = 2;

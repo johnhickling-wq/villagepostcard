@@ -15,7 +15,8 @@ const inBounds = (pts, W, H, where) => {
 
 // common data
 for (const [id, f] of Object.entries(c.faults)) {
-  for (const k of ['name', 'label', 'verb', 'points', 'strategy', 'fix', 'sfx', 'phrase']) if (f[k] == null) err(`fault ${id}`, `missing "${k}"`);
+  for (const k of ['name', 'label', 'verb', 'action', 'actionIcon', 'intro', 'points', 'strategy', 'fix', 'sfx', 'phrase']) if (f[k] == null) err(`fault ${id}`, `missing "${k}"`);
+  if (!c.resolve(`tools/${f.actionIcon}`, null)) warn(`fault ${id}`, `no cut-paper art for tools/${f.actionIcon}; the bar falls back to a line icon`);
   if (f.pool && !c.items[f.pool]) err(`fault ${id}`, `unknown item pool "${f.pool}"`);
 }
 for (const [pool, items] of Object.entries(c.items)) {
@@ -23,10 +24,19 @@ for (const [pool, items] of Object.entries(c.items)) {
   for (const [id, it] of Object.entries(items)) { sprite(it.sprite, null, `item ${pool}/${id}`); if (it.fly) sprite(it.fly, null, `item ${id}`); }
 }
 for (const t of c.tiers) for (const cond of Object.keys(t.conditions)) if (!c.conditions[cond]) err(`tier ${t.tier}`, `unknown condition ${cond}`);
+// the step-by-step introduction
+for (const t of Object.keys(c.intro.jobs || {})) if (!c.faults[t]) err('intro', `unknown job "${t}"`);
+for (const t of c.intro.tutorial?.script || []) if ((c.intro.jobs?.[t] ?? 0) > 0) err('intro', `tutorial uses "${t}" before it is introduced`);
+const FEATURES = ['album', 'cat', 'loupe', 'score', 'level', 'zoom', 'combo', 'requests', 'collectibles', 'daily', 'flash', 'travel'];
+for (const f of Object.keys(c.intro.features || {})) if (!FEATURES.includes(f)) err('intro', `unknown feature "${f}"`);
+for (const f of Object.keys(c.intro.cards || {})) if (!(f in (c.intro.features || {}))) err('intro', `card for "${f}", which has no unlock point`);
 
 for (const [vid, v] of Object.entries(c.villages)) {
   const W = (s) => `${vid}/${s}`;
   if (!v.sceneOrder.includes(v.start)) err(W('village'), `start scene "${v.start}" not in scenes`);
+  // postcards and album slots take one shape per village
+  const ar = (sid) => v.scenes[sid].size[0] / v.scenes[sid].size[1];
+  for (const sid of v.sceneOrder) if (Math.abs(ar(sid) - ar(v.start)) > 0.01) err(W(sid), `aspect ${ar(sid).toFixed(2)} differs from the start scene's ${ar(v.start).toFixed(2)}`);
   sprite(v.map.image, vid, W('map'));
   const projectIds = new Set(v.projects.map((p) => p.id));
   const unlocked = new Set([v.start]);

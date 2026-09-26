@@ -24,8 +24,8 @@
   },
   "nudge": 9,
   "loupe": 20,
-  "combo": 3,
-  "pennies": 60,
+  "combo": 4.0,
+  "fund": 60,
   "xp": 1
  },
  {
@@ -50,25 +50,24 @@
    "toppled": 0.8
   },
   "conditions": {
-   "clear": 1,
    "golden": 1
   },
   "nudge": 16,
   "loupe": 25,
-  "combo": 2.8,
-  "pennies": 75,
+  "combo": 3.8,
+  "fund": 75,
   "xp": 1.1
  },
  {
   "tier": 3,
   "name": "Portrait",
   "faults": [
-   10,
-   11
+   8,
+   10
   ],
   "subtlety": [
-   0.17,
-   0.47
+   0.1,
+   0.4
   ],
   "minSize": 54,
   "types": {
@@ -83,13 +82,12 @@
    "pigeon": 0.9
   },
   "conditions": {
-   "golden": 1,
    "mist": 1
   },
   "nudge": 0,
   "loupe": 30,
-  "combo": 2.6,
-  "pennies": 95,
+  "combo": 3.6,
+  "fund": 95,
   "xp": 1.2
  },
  {
@@ -117,13 +115,12 @@
    "unlit": 1
   },
   "conditions": {
-   "dusk": 1,
-   "storm": 1
+   "dusk": 1
   },
   "nudge": 0,
   "loupe": 35,
-  "combo": 2.4,
-  "pennies": 115,
+  "combo": 3.4,
+  "fund": 115,
   "xp": 1.35
  },
  {
@@ -151,15 +148,12 @@
    "unlit": 1
   },
   "conditions": {
-   "golden": 1,
-   "mist": 1,
-   "dusk": 1,
    "storm": 1
   },
   "nudge": 0,
   "loupe": 40,
-  "combo": 2.2,
-  "pennies": 140,
+  "combo": 3.2,
+  "fund": 140,
   "xp": 1.5
  },
  {
@@ -196,8 +190,8 @@
   },
   "nudge": 0,
   "loupe": 35,
-  "combo": 2.4,
-  "pennies": 120,
+  "combo": 3.4,
+  "fund": 120,
   "xp": 1.3
  }
 ]

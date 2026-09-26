@@ -685,6 +685,7 @@
 .rv-body { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; scrollbar-width: none; }
 .rv-body::-webkit-scrollbar { display: none; }
 .rv-body > * { flex: none; }
+.rv-body { padding-bottom: 4px; }
 .rv-stage-line { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.2; margin-top: 2px; }
 .rv-stage-line.restored { color: var(--teal-dark); }
 .rv-who { gap: 10px; }
@@ -702,6 +703,15 @@
 .rv-rail.tighter .rv-who .label { display: none; }
 .rv-rail.tighter .rv-body { gap: 5px; }
 .rv-rail.tighter .rv-quote { font-size: 16px; }
+/* then the optional extras (keepsakes are in the scrapbook, levels on the map);
+   last of all the place's stage line (the map and journal show it) */
+.rv-rail.bare .rv-extras { display: none; }
+.rv-rail.tightest .rv-stage-line { display: none; }
+.rv-rail.tightest .rv-extra { height: 30px; font-size: 12px; }
+/* and then the extras become little round badges (still tappable) */
+.rv-rail.squeeze .rv-extra { width: 34px; height: 34px; padding: 0; justify-content: center; }
+.rv-rail.squeeze .rv-extra span { display: none; }
+.rv-rail.squeeze .rv-quote { font-size: 15px; }
 /* a narrow rail (small phones): the extra buttons stack their labels under the icons */
 .rv-rail.slim .rv-chip { flex-direction: column; gap: 1px; font-size: 10.5px; padding: 3px 2px; min-height: 46px; }
 .rv-rail.slim .rv-count { font-size: 13px; }
@@ -721,7 +731,10 @@
 .rv-stamp .grade-stamp { width: 52px; height: 52px; }
 .rv-stamp.earned.filled { opacity: 1; filter: none; animation: stampIn 0.4s cubic-bezier(0.3, 0, 0.3, 1.6) both; }
 @keyframes stampIn { from { transform: scale(1.8) rotate(-15deg); opacity: 0; } }
+.rv-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .rv-extras { display: flex; flex-wrap: wrap; gap: 6px; }
+.rv-rail.slim .rv-milestone .rv-dots { gap: 2px; }
+.rv-rail.slim .rv-milestone .rv-dots i { width: 9px; height: 9px; }
 .rv-extra { height: 34px; font-size: 13px; padding: 0 10px 0 5px; max-width: 100%; }
 .rv-extra span { overflow: hidden; text-overflow: ellipsis; }
 .rv-extra img, .rv-extra svg { width: 24px; height: 24px; }
@@ -823,6 +836,10 @@
 .jc-who img { width: 26px; height: 30px; object-fit: cover; }
 .judge-end { position: absolute; left: 50%; bottom: calc(var(--safe-b, 0px) + 14px); transform: translateX(-50%) rotate(-0.4deg); z-index: 20; width: min(640px, 90vw); padding: 12px 18px; text-align: center; }
 .judge-end p { font-size: 19px; margin: 0 0 10px; color: var(--ink); }
+/* the award moves up to make room for the ending's choice */
+.judging.ended .award { place-content: start center; padding-top: calc(var(--safe-t, 0px) + 10px); transition: padding 0.4s; }
+.judging.ended .award-rosette svg { width: 72px; height: 72px; }
+.judging.ended .judge-title { opacity: 0; }
 .judge-end-btns { justify-content: center; flex-wrap: wrap; }
 
 /* ------------------------------------------------------ the travel office */

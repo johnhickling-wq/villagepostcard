@@ -172,9 +172,12 @@ export class RevealScreen {
   /** On a short screen, tighten the rail rather than cut anything off. */
   fitRail() {
     const body = this.rail.querySelector('.rv-body');
-    this.rail.classList.remove('tight', 'tighter');
-    if (body.scrollHeight > body.clientHeight + 1) this.rail.classList.add('tight');
-    if (body.scrollHeight > body.clientHeight + 1) this.rail.classList.add('tighter');
+    const steps = ['tight', 'tighter', 'squeeze', 'bare', 'tightest'];
+    this.rail.classList.remove(...steps);
+    for (const step of steps) {
+      if (body.scrollHeight <= body.clientHeight + 1) break;
+      this.rail.classList.add(step);
+    }
   }
 
   afterPrint() {
@@ -223,8 +226,10 @@ export class RevealScreen {
         h('div.rv-score.display', { text: `${d.result.score.toLocaleString('en-GB')} points` }),
       ];
     }
+    // the milestone (or score) and any extras share one wrapping row
     const extras = this.extras();
-    return h('div.rv-rail.card.paper', h('div.rv-body', ...body, extras), h('div.rv-actions', primary, secondary));
+    const last = body.pop();
+    return h('div.rv-rail.card.paper', h('div.rv-body', ...body, h('div.rv-foot', last, extras)), h('div.rv-actions', primary, secondary));
   }
 
   /** One dot per place: full once restored, half once begun; the one just restored lands last. */
@@ -244,7 +249,8 @@ export class RevealScreen {
     const events = r.events || [];
     for (const ev of events) {
       if (ev.kind === 'collectible') chips.push(this.extraChip(h('img', { src: app.assets.spriteUrl(ev.item.sprite, app.village, 0.3), alt: '' }), ev.item.name, ev));
-      if (ev.kind === 'placeOpened') chips.push(this.extraChip(icon('map'), `New: ${app.content.scene(app.village, ev.scene).name}`, null));
+      // a newly opened place gets a chip unless the Next button already names it
+      if (ev.kind === 'placeOpened' && nextStep(app.save, app.content, app.village).scene !== ev.scene) chips.push(this.extraChip(icon('map'), `New: ${app.content.scene(app.village, ev.scene).name}`, null));
       if (ev.kind === 'mastered') chips.push(this.extraChip(icon('rosette'), 'All five weathers!', ev));
       if (ev.kind === 'daily') chips.push(this.extraChip(icon('calendar'), `Stamp card: day ${ev.day}`, ev));
     }
@@ -254,7 +260,7 @@ export class RevealScreen {
   }
 
   extraChip(ico, text, ev) {
-    const el = h('button.chip.rv-extra', { onclick: () => { if (ev) { this.app.sfx('ui.tap'); celebrateEvent(this.app, ev); } } }, ico, h('span', { text }));
+    const el = h('button.chip.rv-extra', { 'aria-label': text, title: text, onclick: () => { if (ev) { this.app.sfx('ui.tap'); celebrateEvent(this.app, ev); } } }, ico, h('span', { text }));
     if (!ev) el.disabled = true;
     return el;
   }

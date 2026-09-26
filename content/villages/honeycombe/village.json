@@ -73,12 +73,12 @@
   "intro": {
    "from": "editor",
    "title": "A new assignment",
-   "body": "Dear Photographer,\n\nWelcome to the Wold & Vale Postcard Company! Your first assignment is Honeycombe-on-the-Wold, which has entered the county's Best-Kept Village competition.\n\nThe village is lovely, but it has let itself go a little. Tidy each spot until it is picture-perfect, then take the postcard. They sell like hot cakes at the Post Office, and every penny goes into the Village Fund to put the place to rights.\n\nThe train gets in at eleven. Colonel Whitby will meet you.\n\nYours, with great expectations,\nClementine Ashby\nEditor"
+   "body": "Dear Photographer,\n\nWelcome to the Wold & Vale Postcard Company! Your first assignment is Honeycombe-on-the-Wold, which has entered the county's Best-Kept Village competition.\n\nThe village is lovely, but it has let itself go a little. The villagers will show you what needs doing, place by place. Help them put it right, and send us a postcard of every corner you restore.\n\nThe train gets in at eleven. Mr Figg, the stationmaster, will meet you.\n\nYours, with great expectations,\nClementine Ashby\nEditor"
   },
   "welcome": {
    "from": "colonel",
    "title": "Welcome to Honeycombe!",
-   "body": "Ah, the photographer! Capital. Colonel Whitby, chair of the Best-Kept Village Committee.\n\nThe judges arrive in the spring and, between ourselves, the place is a shambles. Litter on the platform, signs all anyhow.\n\nStart here at the Halt, would you? Tidy up, take your snap. Then we'll talk about the High Street."
+   "body": "Ah, the photographer! Capital. Colonel Whitby, chair of the Best-Kept Village Committee.\n\nThe judges arrive in the spring and, between ourselves, the place is a shambles. Litter on the platform, paint peeling on the High Street, and the Green not fit to be seen.\n\nMr Figg has you at the Halt first. After that, every villager in Honeycombe has a job for you. We'll get there, you'll see."
   },
   "teaser": {
    "from": "postman",
@@ -88,7 +88,7 @@
   "finale": {
    "from": "editor",
    "title": "Your next assignment",
-   "body": "Dear Photographer,\n\nBest-Kept Village! The whole company is thrilled, and the Honeycombe postcards are our best-sellers of the year.\n\nWhich brings me to Porthkennack Cove in Cornwall. A fishing village on a harbour, with storms, sea mist and gulls with opinions. They've entered the Coastal Village Prize and they're asking for you by name.\n\nThe sleeper leaves Paddington on Friday. Say the word and I'll book your ticket.\n\nYours, very proudly,\nClementine Ashby"
+   "body": "Dear Photographer,\n\nBest-Kept Village! The whole company is thrilled, and the Honeycombe postcards are our best-sellers of the year.\n\nWord travels. Porthkennack Cove in Cornwall has entered the Coastal Village Prize, and they're already asking for you by name. We're still making the arrangements, so there's no ticket yet; I'll write the moment there is.\n\nUntil then, enjoy Honeycombe. You've earned it.\n\nYours, very proudly,\nClementine Ashby"
   }
  },
  "legacy": {

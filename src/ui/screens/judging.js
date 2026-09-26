@@ -99,6 +99,7 @@ export class JudgingScreen {
     const app = this.app;
     const stay = h('button.btn.teal.big', { onclick: () => { app.sfx('ui.tap'); goMap(app, { transition: 'iris' }); } }, icon('home'), h('span', { text: `Stay in ${app.v.short}` }));
     const travel = h('button.btn.ink.small', { onclick: async () => { app.sfx('ui.tap'); const { TravelScreen } = await import('./travel.js'); app.show(new TravelScreen(app)); } }, icon('train'), h('span', { text: 'Look in at the Travel Office' }));
+    this.el.classList.add('ended');
     this.el.append(h('div.judge-end.card.paper.pop-in',
       h('p.hand', { text: `${app.v.short} is yours to enjoy: photo walks in every weather, the Daily Postcard and favours for the neighbours.` }),
       h('div.row.judge-end-btns', stay, this.replay ? null : travel),

@@ -31,8 +31,10 @@ Other villages are cheap packs, and the purchase is a visual mock only.
 - The game is front end only. The save is local (`src/engine/storage.js` wraps
   `localStorage`, so it can be swapped).
 - Git:
-  - Work on the branch the session assigns. `claude/gallant-ramanujan-3q1j4y`
-    is currently the repo's only (default) branch.
+  - `main` is the default branch: the official copy of the game. Work on the
+    branch the session assigns, which starts from `main`.
+  - The owner doesn't use git themselves. When they ask to merge a session's
+    work into `main`, do it for them and explain what happened in plain words.
   - Do not open a PR unless asked.
   - Keep model names out of commits, code and docs.
 

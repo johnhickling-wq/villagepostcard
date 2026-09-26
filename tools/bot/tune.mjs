@@ -1,4 +1,5 @@
-// Difficulty tuner. For each tier (in order) it nudges the fault count and
+// Difficulty tuner for the optional photo walks (story visits are authored,
+// not tuned). For each tier (in order) it nudges the fault count and
 // subtlety range until the simulated "average" player's median time lands
 // within 6% of the tier's target, while keeping difficulty monotonic: every
 // tier has at least as many faults and subtler faults than the one before.
@@ -12,6 +13,7 @@ import { loadFromDisk, ROOT } from '../lib/node-content.mjs';
 import { generateMess } from '../../src/core/mess.js';
 import { simulatePlay, SKILLS } from '../../src/core/sim.js';
 import { Rng } from '../../src/core/rng.js';
+import { walkStates } from './states.mjs';
 
 const args = Object.fromEntries(process.argv.slice(2).map((a, i, arr) => (a.startsWith('--') ? [a.slice(2), arr[i + 1] ?? true] : null)).filter(Boolean));
 const SEEDS = +(args.seeds || 20);
@@ -25,9 +27,10 @@ const r2 = (x) => Math.round(x * 100) / 100;
 async function measure(content, tierN) {
   const times = [], ratios = [];
   for (const [vid, v] of Object.entries(content.villages)) {
+    const states = walkStates(v);
     for (const sid of v.sceneOrder) {
       for (let seed = 1; seed <= SEEDS; seed++) {
-        const mess = generateMess(content, { village: vid, scene: sid, tier: tierN, seed: seed * 31, projectsDone: seed % 2 ? [] : v.projects.map((p) => p.id) });
+        const mess = generateMess(content, { village: vid, scene: sid, tier: tierN, seed: seed * 31, ...states[seed % 3].walk(sid) });
         const r = simulatePlay(content, mess, SKILLS.average, new Rng(seed * 13 + tierN), { par: mess.par });
         times.push(r.time);
         ratios.push((r.breakdown.total - r.breakdown.cat - r.breakdown.collectible) / mess.ref);

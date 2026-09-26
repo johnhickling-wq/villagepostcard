@@ -1,13 +1,19 @@
 # Postcard Perfect — Game Design
 
-> A cosy, touch-only hidden-object game. Tidy pretty villages until they are
-> picture-perfect, snap the postcard, and slowly restore each village until it
-> wins **Best-Kept Village**.
+> A cosy, touch-only restoration game. Put a tired village to rights one
+> short visit at a time, see each improvement stay done, take the postcard,
+> and win **Best-Kept Village**.
 
 This document is the source of truth for *why* the game works the way it does.
 The numbers here are the shipped defaults. They live in `content/common/*.json`
-and `content/villages/<id>/village.json`, and the balance bot (`npm run bot`)
-checks them.
+and `content/villages/<id>/`; `npm run validate`, `npm run bot` and
+`npm run economy` check them. Timings are simulated-player hypotheses until
+human playtests confirm them (see §9).
+
+The restoration update (September 2026, `docs/RESTORATION_HANDOVER.md`)
+replaced the earlier earn-and-spend design. **Do not reintroduce** a currency
+that opens places or buys restoration, a roughly two-hour main progression, or
+weather tiers as the main restoration structure.
 
 ---
 
@@ -15,82 +21,108 @@ checks them.
 
 1. **Every tap transforms.** You don't just *find* things, you *fix* them. Each
    fix is a small, satisfying animation: a sign swings level, a door floods with
-   fresh paint, a window squeaks clean, a lantern blooms warm.
-2. **Cosy, never punishing.** No fail state, no energy, no ads, no countdown that
-   ends a scene. Pressure is optional: it only affects your score and stamps.
-3. **You are building something.** Mess is temporary; *restoration is
-   permanent*. Every session leaves the village visibly lovelier and the album
-   fuller.
-4. **Systems, not hand-authoring.** Every scene is a clean plate. Code generates
-   the mess, so every fault's hitbox is known, every scene can be finished, and
-   no two plays are the same. New villages are *data*, not code.
+   fresh paint, a window squeaks clean, flowers grow in an empty tub.
+2. **What you fix stays fixed.** Restoration is permanent. A later visit, a
+   storm, a reload or a fortnight away never undoes paint, repairs or planting.
+3. **Always one clear next step.** After every visit the player can answer:
+   What improved? Who is pleased? Where am I going next?
+4. **The scene, the task and the touch agree.** If something looks like today's
+   work, it is. Tomorrow's work is either staged when its visit comes or answered
+   with a friendly word, never a penalty.
+5. **Cosy, never punishing.** No fail state, no energy, no ads, no timer that
+   ends a scene, nothing sold inside a play. Story visits have no score at all.
+6. **Systems, not hand-coding.** Every scene is a clean plate. Visits are data
+   that name stable things in the scene and a job to do to them; new villages
+   are data and art, never code.
 
 ## 2. Fiction and tone
 
-Somewhere between the 1930s and the 1960s, in a Britain of bunting, branch lines
-and village fêtes. You are the new roving photographer for the **Wold & Vale
-Postcard Company**. Your first assignment is **Honeycombe-on-the-Wold**, a
-honey-stone Cotswold village that has entered the county's *Best-Kept Village*
-competition and let itself go a bit.
+Honeycombe-on-the-Wold, a honey-stone Cotswold village, spring 1957. You are
+the Wold & Vale Postcard Company's roving photographer. The village has entered
+the county's **Best-Kept Village** competition and let itself go a bit. The
+residents ask for your help, place by place, and every visit ends with a
+postcard of what you put right.
 
-The fiction explains the economy. Your postcards sell in the village post office,
-and the money goes into the **Village Fund**. The Committee spends the Fund on
-**restoration projects**. Restoration makes the village prettier, and prettier
-villages make better postcards. At the end come the judges and the rosette. Then the Postcard
-Company posts you your next assignment (the next paid village).
+The opening is one sentence: *"Help Honeycombe look its best before the village
+judges arrive."* Then the stationmaster meets you on the platform. Longer
+letters live in the journal, to read if you like.
 
 The tone is warm, gently funny and British. The cast say things like
 "Splendid!", worry about the judges, and never have a crisis bigger than a
-wonky sign.
+wonky sign. The period is 1957: the colour request is for "a village
+celebration", not a royal occasion that didn't happen that year.
 
 The art is flat cut-paper collage, like a 1950s picture book made from coloured
-paper: calm areas of colour, hand-cut edges, paper grain and tiny shadows where
-layers overlap. Everything in a scene is paper, so the things you fix belong in
-it rather than sitting on top. The UI borrows from ephemera: postage stamps,
-luggage labels, railway tickets, rosettes, cork noticeboards.
+paper. Everything in a scene is paper, so the things you fix belong in it
+rather than sitting on top. The UI borrows from ephemera: postage stamps,
+railway tickets, rosettes, cork noticeboards.
 
-## 3. The session loop (60–120 seconds)
+## 3. A visit (about 1–2 minutes)
 
-The game is played in **landscape** on a phone. Scenes are 2:1, the shape of a
-phone held sideways, and fill the whole screen. Everything else floats over the
-picture, small and out of the way, as in phone hidden-object games:
-
-- a thin bar of **jobs** along the top, over the sky, each with a tool icon and
-  a count (Sweep up 3, Straighten 1…). It names what to *do*, never which object
-  to look for, and it is the only tally: there is no total counter. Tapping a
-  job names it and, if the loupe is charged, shows you one;
-- pause in the top-left corner; score and clock in one small pill top-right,
-  once they have been introduced;
-- the loupe and flashbulb in the bottom-right corner.
-
-`content/common/hud.json` lists these areas as fractions of the scene. The mess
-generator never places anything to find under them, and the bot checks it. On a
-portrait-locked phone the game turns its own stage sideways.
+The game is played in **landscape** on a phone. Scenes are 2:1 and fill the
+screen; on a squarer tablet they are letterboxed, with the place's name in the
+margin. On a portrait-locked phone the game turns its own stage sideways.
 
 ```
-Village map ──► pick a scene (pinned postcard)
-      ▲             │  preview: the next postcard (its weather), the album slots
-      │             ▼
-      │        TIDY THE SCENE  ── tap faults to fix them; combos; hints
-      │             │
-      │             ▼  last fix ► "Hold still…" ► shutter ► flash
-      │        POSTCARD PRINTS ── before/after wipe, stamp + postmark
-      │             │
-      │             ▼
-      │        REWARDS ── what it raised for the Fund, the jar filling towards the next project
-      │             │
-      └──── "What next?" nudge: a project you can now afford, a new scene, a finished request
+Map: the ribbon names one next step ("Visit the Village Green")
+      │  (or tap any place for its visit, its postcards, an optional photo walk)
+      ▼
+The resident's request, in the scene: who, what and why, in a sentence
+      │  a new job gets a one-line card the first time it appears
+      ▼
+PUT IT RIGHT — tap each job; the bar along the top counts them down
+      │  stuck? the free loupe is offered; tomorrow's work gets a friendly word
+      ▼  every fix is saved at once
+The last fix: the result is SAVED, then the reveal
+      │  the whole scene wipes from how it was to how it is now;
+      │  the visit's permanent work arrives live (paint, flowers, bunting, warmer light)
+      ▼
+The shutter: the postcard's border forms around the picture
+      │  a shallow rail: the resident's reaction, what improved,
+      │  "4 of 8 places restored", and one big named Next button
+      ▼
+Next visit (or the map when a new place has opened)
 ```
 
-A play is a complete, satisfying unit, so it doesn't need an energy timer to end
-the session. It ends on a *payoff* (the postcard) followed by a *pull* (the next
-thing you can nearly afford).
+The play screen is the full-screen scene with small overlays:
 
-### 3.1 Faults (what you fix)
+- a thin bar of **jobs** along the top, each with its tool and a count (Sweep up
+  3, Repaint 2…). It names what to *do*, never which object;
+- pause in the top-left corner (with the request and what's left to do);
+- the **loupe** in the bottom-right, once it has been offered;
+- on a photo walk only: score and clock top-right, and the flashbulb.
 
-Each fault type is a code transform applied to the clean plate. Fixing it
-reverses the transform with an animation. Fault types are defined in
-`content/common/faults.json`.
+`content/common/hud.json` lists these areas as fractions of the scene. Nothing
+to find is ever placed under them, and the bot checks it. A story visit's hint
+corner is narrower than a walk's (`hud.story`).
+
+### 3.1 Visits
+
+A visit is authored in `content/villages/<id>/visits.json`:
+
+| Field | Meaning |
+|---|---|
+| `id`, `scene`, `kind` | stable id; the place; `restoration`, `committee` (a Committee request) or `incident` (e.g. after a storm) |
+| `after` | the visits that must be done first: the story is a small graph |
+| `villager`, `title`, `goal`, `brief` | who asks, the visit's name, the phrase for "Return to the Halt: *plant the tubs*", and the request in their words |
+| `condition` / `incident` | the light it's played in; an incident names an entry in `content/common/story.json` |
+| `tasks` | the jobs: `{id, op, target}` for a stable prop/region/lamp, or `{id, op, count, zones/edges, items}` for litter and weeds |
+| `effects` | the permanent restoration layers it completes (scene `restoration[].effect`) |
+| `restores` | this visit marks its place restored |
+| `todo`, `stage` | what the map says is still to do here, and the place's stage after it ("First tidy complete") |
+| `improved`, `reaction` | the rail's "what improved" line and the resident's reaction |
+| `tutorial`, `finale` | the coached first visit; the last visit before the judging |
+
+Operations (`story.json` `ops`) are the existing jobs plus **plant**. Seeded
+variation is limited to where litter and weeds land, chosen from the task's
+own items and ground. There is no random fallback: a storm brings only storm
+work, a colour request only its planting.
+
+### 3.2 Jobs (what you fix)
+
+Each job is a code transform applied to the clean plate. Fixing it reverses
+the transform with an animation. Jobs are defined in
+`content/common/faults.json` (the code calls them faults).
 
 | Fault | Mess (code) | Fix (animation) | Target |
 |---|---|---|---|
@@ -104,6 +136,7 @@ reverses the transform with an animation. Fault types are defined in
 | **Unlit lamp** | (dusk/fog only) glass dark, no glow | the glow blooms and flickers warm | lamp points |
 | **Cobweb** | procedural web in a corner | swept away in a swirl | window/door corners |
 | **Pigeon** | bird sitting on a perch | flaps off out of frame | perch points |
+| **Plant** | (story only) an empty planter: fresh soil and a seed packet | the flowers grow up out of the soil; with a colour, the old ones sink and the new colour rises | planter props |
 
 **Marmalade the cat** hides somewhere in every scene. She is optional: finding her
 is a bonus and a small delight (meow, hop away).
@@ -111,108 +144,173 @@ is a bonus and a small delight (meow, hop away).
 **Collectibles** sometimes appear as a glinting object hidden in the scene. They
 are optional, and tapping one collects it for the scrapbook.
 
-### 3.2 Scoring
 
-- **Per fix:** `base(type) × (1 + 0.6 × subtlety) × comboMultiplier`.
-  Subtlety runs from 0 (obvious) to 1 (very subtle), so subtle faults are
-  worth more.
-- **Runs (combos):** each fix within the run window (4.0 s at Tier 1, falling
-  to 3.2 s at Tier 5; 3.4 s in Free Play) makes the run longer. The multiplier
-  is `1 + 0.2 × (run − 1)`, capped at ×3. The HUD says "3 in a row", never
-  "×3", because players aren't gamers. Call-outs appear at 3/4/5/6/8: *Tidy! ·
-  Splendid! · Smashing! · Marvellous! · Spick and span!* The windows are set so
-  the simulated average player reaches 3 in a row in most plays and 8 only
-  rarely, so every word on the ladder is actually seen. The chime climbs a
-  pentatonic scale with each link.
-- **Mis-tap:** −20 points (never below 0) and the combo breaks. Three mis-taps
-  inside 1.5 s trigger **Shaky Hands**: the camera wobbles and taps are ignored
-  for 2 s. This stops tap-spamming without ever blocking progress.
-- **Time bonus:** `max(0, par − seconds) × 8`. Par comes from the bot (§8).
-- **Bonuses:** Marmalade +250, collectible +150, no hint used +10%.
-- **Stamps (1–3), from the fifth postcard on:** finishing always earns 1 stamp.
-  2 and 3 stamps need `score ≥ 0.874 × ref` and `score ≥ 0.966 × ref`, where
-  `ref` is the expected score of a skilled player, computed per play from the
-  actual generated faults, so every play is graded fairly, whatever mess you
-  got. `node tools/bot/tune.mjs` sets these so about 30% of plays by the
-  simulated average player earn 3 stamps.
+**Marmalade the cat** hides in most visits (from the third on). Finding her is
+an optional delight.
 
-### 3.3 Hints: earned, never bought
+### 3.3 Touch that makes sense
 
-- **Loupe** (free, always there): highlights one remaining fault. It recharges
-  within the scene (20 s at Tier 1 → 40 s at Tier 5; photographer perks shorten
-  this).
-- **Flashbulb** (consumable): a camera-flash pop that outlines every remaining
-  fault for 2.5 s. Earned from level-ups, requests, sets and the daily streak.
-- **Idle nudge** (Tiers 1–2 only): after a quiet spell, a faint glint appears
-  near a remaining fault.
+- **No penalties in the story.** A tap on nothing is a quiet ring. There is no
+  lockout ("Shaky hands" is gone) and no score to lose.
+- **Tomorrow's work** (a faded thing whose visit hasn't come) gets a speech
+  bubble from the resident: *"That window's on my list for another day."*
+  (scene `neglect[].later`). Tapping something already fixed is ignored.
+- **Target assistance.** Small things are tappable over at least 44 CSS px
+  (`story.assist.minTargetPx`, converted by the view's scale), and the nearest
+  thing always wins, so a large hit area never steals a neighbour's tap.
+- **Zoom** (pinch or double-tap) is taught the first time something small is
+  left to find, with a spread-fingers cue and a "Whole scene" button to return.
+- **Photo walks** keep their mild score: −20 for a mis-tap, never below 0.
 
-### 3.4 Game feel
+### 3.4 Hints: free, offered, never gating
 
-Every tap has to feel good on a phone, where the scene is drawn small.
+The **loupe** is free in every visit and points at a real remaining job
+(including the last one). It appears the first time it's needed: after
+`story.hints.offerAfter` (12) seconds without progress it is offered gently,
+and after `clearerAfter` (26) seconds more clearly. Its cooldown in a visit is
+four seconds. Tapping a job in the bar shows you one of that kind. Neither
+hints nor speed ever affect the story. On photo walks the loupe recharges more
+slowly by tier, and **flashbulbs** (earned from levels, favours and the daily)
+outline everything left.
 
-- **A fix:** a warm glow and a burst sized for the screen (particles grow as the
-  scene shrinks), a 45 ms hit-stop and a small shake, and a sound with a little
-  random pitch so repeats never sound mechanical. The job's tool icon then
-  flies in an arc to its place in the bar, and the count ticks down as it
-  lands. A finished job gets a stamp and a thump.
-- **The last fix:** a moment's pause, a rising chime, a gold sweep across the
-  scene and sparkles, then the viewfinder, "Hold still…", the shutter and the
-  flash.
-- **The results:** the print slides out and develops while the tally counts
-  beside it; the before/after wipe plays; the stamps land on the finished
-  score; only then does Continue appear. The play's music stops for the print
-  and the gentler map tune follows.
+### 3.5 Completion is the reward
+
+1. The last fix commits the result to the save **before** anything else, so a
+   reload during the ceremony keeps it and a second commit changes nothing.
+2. The HUD leaves; the whole scene is shown at its natural aspect ratio.
+3. A wipe goes from the visit's *before* to *after*; the permanent work arrives
+   live as it passes and the camera holds on the restored place.
+4. The shutter: the picture becomes a postcard, its border forming around it.
+5. The rail: the resident, "The High Street restored!", their reaction, what
+   improved, the eight-dot "places restored" milestone and **Next: Visit the
+   Village Green**. Compare (before/after), Details (jobs, time, hints) and Map
+   are small secondary buttons; keepsakes and level-ups wait as chips.
+
+Any tap skips ahead. The main sequence takes about four seconds. With **Reduce
+motion** (Settings; it starts from the device's preference) the wipe becomes a
+crossfade, the card fades in without moving, and there is no flash, shake or
+confetti. On a phone the rail sits beside the postcard; on a squarer tablet it
+runs beneath it.
+
+### 3.6 Game feel
+
+- **A fix:** a warm glow and a burst sized for the screen, a 45 ms hit-stop and
+  a small shake (not with reduced motion), a sound with a little random pitch,
+  and the job's tool flies in an arc to its place in the bar.
 - **Sound:** every sound is levelled to a target loudness
-  (`tools/qa/scenarios/mix.mjs` measures them offline), so small sounds (taps,
-  ticks) sit under the fixes and the big moments (the finish, a stamp) stand
-  out. Audio unlocks on the first touch, and resumes after a phone call or the
-  lock screen.
+  (`tools/qa/scenarios/mix.mjs`). Audio unlocks on the first touch and resumes
+  after a phone call or the lock screen. Nothing essential is sound-only.
 
-## 4. Difficulty
+## 4. The restoration journey
 
-Difficulty is a vector, and each part is generated by code:
+### 4.1 Places, stages and the next step
 
-| Lever | How it's applied |
-|---|---|
-| Fault count | 7 → 16 |
-| Type mix | new types unlock with tiers (e.g. cobwebs, pigeons from Tier 3) |
-| Subtlety | smaller tilt angles, lighter fade, fainter grime, smaller litter, litter colour close to the ground under it |
-| Condition | fog lowers contrast with depth; dusk darkens and adds unlit lamps; after the storm adds storm debris and toppled props |
-| Target size | tiny targets (needing pinch-zoom) are only allowed from Tier 4 |
-| Help | idle nudges only at Tiers 1–2; the loupe recharges more slowly as tiers rise |
+Each place has a **stage** (the latest finished visit's `stage`, e.g. "First
+tidy complete") and a **to-do** (the next unfinished visit's `todo`, e.g.
+"Flowers to plant, tubs to water"). It is **restored** when its visit marked
+`restores` is done. "3 of 8 places restored" is the village's progress, on the
+map, the rail and the journal. A storm never lowers it.
 
-### 4.1 Five postcards per scene
+The **next step** is always the first available visit in `visits.json` order,
+named concretely: "Visit the Village Green", "Return to the Halt: plant the
+tubs", "Committee request: Dress the street for the fête". It is the map's
+ribbon and the rail's big button. Other available visits can be played from
+their place on the map; any order reaches the finale (the tests check).
 
-Each scene has five postcards to take, one per weather, each a step harder.
-(In the code and below, a postcard's number is its *tier*.)
-Taking one fills its album slot and moves the scene on to the next. There is no
-separate prize to earn: a new postcard *is* the progress, and it always comes
-from *finishing*, never from stamps, so a cosy player is never stuck. Stamps are
-the optional mastery layer: they raise more for the Fund and make the album
-shinier.
+Places open because the story reaches them: the first visit at a place is
+available when its prerequisites are done. Nobody pays to walk up a public
+street.
 
-| Postcard | Name | Weather | Faults | Subtlety | Target time |
-|---|---|---|---|---|---|
-| 1 | Snapshot | Clear Day | 6–7 | 0.00–0.25 | ~40 s |
-| 2 | Holiday Snap | Golden Hour | 9–10 | 0.10–0.40 | ~55 s |
-| 3 | Portrait | Misty Morning | 8–10 | 0.10–0.40 | ~70 s |
-| 4 | Exhibition | Dusk | 12–13 | 0.24–0.59 | ~85 s |
-| 5 | Picture Perfect | After the Storm | 14–15 | 0.47–0.82 | ~100 s |
-| ∞ | Free Play | any | 12–16 | 0.08–0.53 | ~90 s |
+### 4.2 Honeycombe's route
 
-The third postcard has the same count and subtlety as the second: mist is the
-hardest weather to see through, so the weather itself is that step.
+| # | Visit | Place | Kind | What changes, visibly |
+|---|---|---|---|---|
+| 1 | Tidy the platform | Halt | restoration | litter gone, signs and clock straight (coached) |
+| 2 | Brighten the High Street | High Street | restoration | the faded kiosk and pillar box repainted Post Office red |
+| 3 | Spruce up the Green | Village Green | restoration | the Market Cross scrubbed, a bench painted, litter gone |
+| 4 | Plant the station tubs | Halt | restoration | shelter painted, window polished, three tubs planted, pots, baskets and trolley |
+| 5 | Paint the Weavers' doors | Weavers' Row | restoration | doors painted, window boxes, a trough planted, bunting |
+| 6 | Clear the mill race | Old Mill | restoration | doors painted, ford cleared, a garden with bench and hive |
+| 7 | Dress the street for the fête | High Street | committee | basket and trough planted, the board reads FÊTE TODAY, bunting |
+| 8 | Spruce up the pub garden | Bee & Bramble | restoration | door and gate varnished, baskets planted, festoon lights |
+| 9 | Make the Green flourish | Village Green | restoration | tubs watered and planted, duck house, bird bath, bunting |
+| 10 | Restore the churchyard | St Aldhelm's | restoration | clock gleaming, door and gate painted, trough, bench |
+| 11 | Clear up after the storm | Old Mill | incident | branches, twigs and slates cleared, sacks and barrel righted; paint untouched |
+| 12 | Nan's cottage garden | Rose Cottage | restoration | hives painted, greenhouse cleaned, gate painted, set for tea |
+| 13 | Red, white and blue tubs | Halt | committee | the tubs replanted in the celebration's colours, bunting |
+| 14 | Final preparations | Village Green | committee (finale) | the board reads JUDGING TODAY; then the judging |
 
-A scene with all five postcards is **Mastered**: its album page gets a gold
-frame, and replays become Free Play, which still raises money and XP and still
-counts for requests and the daily.
+The Halt and the Green have three visits; the High Street and the Mill two;
+four places one. Visits run five to seven jobs.
 
-The difficulty ramp within a village comes from each scene's `difficultyOffset`
-(later scenes add up to +1 fault and +0.08 subtlety). The ramp across packs
-comes from each village's `difficultyBase`, so pack two starts a notch above
-pack one.
+### 4.3 Permanent, current, incident and historical state
 
-### 4.2 Conditions
+- **Permanent** (`villages[vid].effects`, `.fixed`): restoration layers done,
+  and things a story task restored for good. Never regresses.
+- **Current visit** (`villages[vid].progress[visit]`): its plan (seed, content),
+  the tasks done, the cat, keepsake, hints and time. Saved after every fix, so a
+  reload carries on exactly; `save.active` says what was on screen.
+- **Incident**: disposable mess named by `story.json` `incidents`, with its
+  allowed operations and debris. Completing it leaves no permanent change.
+- **Historical postcards**: an immutable render description of that moment
+  (the faults, and the permanent state before and after). See §6.1.
+
+Photo walks and the daily are generated with the permanent state and never
+spoil it: anything restored for good is protected (`protectedTargets`), and a
+storm walk excludes paint.
+
+### 4.4 Weather and Committee requests
+
+Weather is an authored incident layered on the restored village, triggered at
+a story milestone and explained in a sentence ("What a night! … Don't worry,
+dear: the paint held."). It uses cheap props (branches, twigs, leaves, slates,
+knocked-over things) and never touches permanent work. Offline time never
+decays the village.
+
+Committee requests have a resident, a place, a reason, visible requested work
+and a visible result; they're pinned on the noticeboard (with their postcard
+once done). The colour request uses the existing tubs: `plant` with a `colour`
+recolours only the flowers (`story.json` `planters` separates flowers from
+container), and a text label ("Red!") names each colour so it is never
+colour-only.
+
+### 4.5 The finale
+
+The final visit leads to **Judging Day**: the judges tour all eight places,
+each shown as it was when you arrived (the first visit's own before-picture)
+wiping to how it stands now, drawn from the actual restored state, with a word
+from its resident. Then the rosette, the Colonel's letter and the Editor's.
+The screen ends on **Stay in Honeycombe**, with the Travel Office as a quieter
+second choice. The village keeps its finished state; the journal can replay
+the judging.
+
+## 5. Optional activities (never required)
+
+Nothing here gates the story; the route simulator plays to the judging with
+none of it.
+
+### 5.1 Photo walks and weather postcards
+
+From the third visit, any visited place can be photographed on a **photo walk**:
+a generated mess (the original tier system) scored with stamps, in one of five
+weathers, filling that place's five weather-postcard slots in the album. They
+are tuned with `node tools/bot/tune.mjs`:
+
+| Postcard | Name | Weather | Target time (simulated average player) |
+|---|---|---|---|
+| 1 | Snapshot | Clear Day | ~40 s |
+| 2 | Holiday Snap | Golden Hour | ~55 s |
+| 3 | Portrait | Misty Morning | ~70 s |
+| 4 | Exhibition | Dusk | ~85 s |
+| 5 | Picture Perfect | After the Storm | ~100 s |
+| ∞ | Free Play | any | ~90 s |
+
+Walks only use jobs the story has taught, plus weather jobs it doesn't teach
+(cobwebs, pigeons, unlit lamps). Scoring: `base × (1 + 0.6 × subtlety) ×
+comboMultiplier`, runs of quick fixes ("3 in a row"), a time bonus against par,
+and 1–3 stamps set so about 30% of simulated average plays earn three.
+
+### 5.2 Weather
 
 Conditions are defined in `content/common/conditions.json`. Each one is a colour
 grade, an overlay effect, ambient life, and changes to the fault mix.
@@ -226,116 +324,25 @@ grade, an overlay effect, ambient life, and changes to the fault mix.
   faults.
 - **After the Storm:** wet, saturated grade with puddle glints and drips. Storm
   debris joins the litter, and toppled and crooked props become more common.
+  A storm never brings faded paint (`exclude` in `conditions.json`).
 
 Each (scene × condition) pair is an **album slot**, so conditions are also a
 collection.
 
-## 5. Progression: the hook
 
-These are proven hidden-object-game hooks, each adapted to the cosy,
-energy-free format.
+### 5.3 The Daily Postcard
 
-| Proven hook (source) | Postcard Perfect version |
-|---|---|
-| Scene mastery stars (June's Journey) | 5 **postcards** per scene, one per weather |
-| Meta-decoration (Homescapes, June's Journey island) | **Restoration projects** that permanently beautify scenes and the map |
-| Chapter/star gates | Scenes unlock via an **access project** paid from the Fund |
-| Collections with set bonuses | **Scrapbook** sets with flavour text; set rewards are cosmetics |
-| Task list / "what's next" | **The Committee Letter**: always one clear next goal |
-| Orders from characters (Township) | **Noticeboard requests** from recurring villagers |
-| Daily login calendar and streaks | **Daily Postcard**: a seeded, same-for-everyone scene, plus a 7-day stamp card |
-| Account level | **Photographer level**: perks, cosmetics and titles that carry across villages |
-| Completionism | **Album** slots per scene × condition, plus Mastered gold editions |
-| Variable reward | collectible drops, Marmalade, combo peaks |
-| Energy timers (**removed**) | replaced by natural session ends: every play finishes on a payoff |
+One photo walk a day, the same for everyone (seeded by date), at a place you've
+visited. Each day played adds a stamp to a 7-day card (experience, a flashbulb,
+a keepsake). **There is no streak to lose**: a missed day costs nothing.
 
-### 5.1 Currencies (deliberately few)
+### 5.4 Favours and friends
 
-- **The Village Fund** (soft currency). Every postcard raises money for it, as
-  do requests, sets and the daily. The Committee spends it on restoration
-  projects, which is the only real sink. The Fund is never sold. It has no coin
-  name: it is shown as a jar and a number.
-- **Postcards** (progress, not spendable). Five per scene, 40 per village. They
-  fill the album; the Fund, not postcards, pays for new scenes.
-- **Flashbulbs** (consumable hint). Earned only.
-- **XP → photographer level**, account-wide.
+Three optional favours from the neighbours at a time on the noticeboard, for
+experience and sometimes a flashbulb or keepsake; friendship hearts bring
+letters (kept in the journal).
 
-### 5.2 Restoration: "mess is temporary, restoration is permanent"
-
-Each scene starts in a slightly *tired* state:
-
-- a cool, desaturated grade;
-- a few "neglected" regions (a faded door, a bare planter spot).
-
-Neglect uses the same transforms as faults, but it is persistent and can't be
-tapped away.
-
-**Restoration projects** (defined in `village.json`) are paid for from the Village Fund. Each one:
-
-- removes neglect (the same fix animation plays, but this time it is
-  permanent);
-- adds restoration props (hanging baskets, bunting, a bench, a bird bath,
-  window boxes) that appear in every future play of that scene;
-- warms the scene's grade (the scene's `bloom` rises);
-- adds a sticker to the village map and raises **Village Bloom %**.
-
-Every scene also has an **access project** ("Clear the lane to the High Street")
-that unlocks it. Its cost forms the village's pacing curve.
-
-The restoration moment is staged. The camera pans to the scene, the change
-happens live with sparkles and a chime, and the Colonel reacts. It's the "I built
-this" beat.
-
-### 5.3 Honeycombe pacing
-
-| # | Scene | Access project | Cost |
-|---|---|---|---|
-| 1 | Honeycombe Halt | (start) | 0 |
-| 2 | The High Street | Sweep the Station Lane | 80 |
-| 3 | The Village Green | Mend the Green's Gate | 280 |
-| 4 | Weavers' Row | Clear the Riverside Path | 420 |
-| 5 | The Old Mill | Free the Mill Race | 590 |
-| 6 | The Bee & Bramble | Clear the Brambles on Pub Lane | 730 |
-| 7 | St Aldhelm's | Oil the Lychgate | 870 |
-| 8 | Rose Cottage | Prune the Rose Arch | 830 |
-
-There are two beautification projects per scene (16 in all, 170–860 each).
-**Best-Kept Village judging** opens when every project is done (100% "ready for
-the judges"). The economy sim (`npm run economy`) puts a typical player at
-about 70 plays, or about 2 hours, to the ceremony, never more than about 6
-plays between projects. By then they have taken every postcard. That's
-generous for a free village and short enough to finish.
-
-The Fund raised per postcard is `[60, 75, 95, 115, 140]` by postcard number,
-× `[1, 1.2, 1.5]` for stamps once they are introduced, plus bonuses. The
-Committee Letter on the map always names one next step: a project the Fund can
-pay for ("tap it on the map"), or how much more to raise and which postcard to
-take next.
-
-### 5.4 Villagers and the Noticeboard
-
-Seven recurring villagers each have a portrait, a voice and a home scene.
-
-- **Colonel Rupert Whitby**, chair of the Best-Kept Village committee.
-  Pompous, kind, owns a lot of tweed. Gives the Committee Letter goals.
-- **Mrs Edna Pemberton**, postmistress. Knows everything first.
-- **Albert Figg**, stationmaster. Loves his milk churns.
-- **Mabel Tuck**, landlady of the Bee & Bramble. Loud laugh, big heart.
-- **The Reverend Hollis**, vicar. Cyclist, cake enthusiast.
-- **Nan Honeysett**, beekeeper at Rose Cottage. Talks to her bees.
-- **Percy Budd**, postman. Always cycling past, always late.
-
-Requests are **self-contained** (no serialised plot) and are *generated* from
-templates in `content/common/requests.json` against what the player has
-unlocked. Examples: "Polish 6 windows on the High Street", "Find Marmalade
-twice", "Take a Dusk postcard anywhere", "Fix 5 in a quick row", "Get 3 stamps at
-the Old Mill". Three slots are always active, and a fresh request arrives
-the moment one is finished (no timers). Rewards are money for the Fund, XP and sometimes a
-flashbulb or a guaranteed collectible. Each villager has **friendship hearts**
-(5 levels). Levelling up unlocks a short letter from them (a flavour vignette)
-and a villager-themed postage-stamp cosmetic.
-
-### 5.5 Scrapbook collectibles
+### 6.2 Scrapbook keepsakes
 
 Honeycombe has six sets of five items (30 in all), each with a line of flavour
 text:
@@ -347,156 +354,104 @@ text:
 - *Honeybee Treasures*
 - *Curios from the Attic*
 
-**Drops:** each play has a 35% chance of spawning a hidden collectible, rising by
+**Drops:** each visit (after the first few) and each photo walk has a 35% chance of spawning a hidden collectible, rising by
 20% after each dry play (pity timer). The item is chosen from the scene's
-tagged sets, weighted towards ones you're missing. Duplicates are sold for 15
-for the Fund.
+tagged sets, weighted towards ones you're missing. Duplicates go in the
+scrapbook as spares.
 
-**Set completion:** 250 for the Fund, XP, and a cosmetic (a postcard frame or a
+**Set completion:** experience and a cosmetic (a postcard frame, film or
 postmark design).
 
-### 5.6 Daily Postcard and streak
 
-- Once per day there is a scene with a fixed condition and seed. Everyone gets
-  the same mess on the same date (seed = `YYYY-MM-DD`).
-- It plays at Tier 3 difficulty, adjusted for the player's progress, and only
-  uses scenes they have unlocked.
-- **Stamp card:** a 7-day cycle rewarding 40 → 60 → 80 → 1 flashbulb → 120 →
-  150 → a guaranteed collectible plus 200.
-- Missing a day resets the streak, unless you hold a **Second-Class Stamp**
-  (earned at photographer levels 4, 9, 14…), which spends itself automatically
-  to protect the streak.
-- Daily postcards file into a **Daily Diary** page in the album.
+### 5.5 Photographer level
 
-### 5.7 Photographer level (account-wide)
+Experience from visits (60 + 5 per job), walks (20 + 3 per job, more for
+stamps), favours, sets and the daily. `xpToNext(L) = 100 + 90 × (L − 1)`.
+Rewards: flashbulbs, loupe-recharge perks for walks, and postcard cosmetics
+(films, frames, postmarks). Level-ups wait as a chip on the rail.
 
-XP per play is `30 + 4 × faults + 15 × stamps`, plus requests and sets. The
-curve is `xpToNext(L) = 80 + 45 × (L − 1)`.
+## 6. The journal and the album
 
-Titles: Hobbyist → Keen Amateur → Weekend Snapper → Village Photographer →
-Postcard Maker → County Correspondent → Society Photographer → By Royal
-Appointment.
+The **journal** tells the restoration story: one page per place with its stage,
+to-do and the postcard of every visit (tap for before/after and the note on the
+back), plus the village's letters. The weather postcards, scrapbook and Daily
+Diary are separate tabs, clearly optional. Empty slots say "Still to come",
+never "missing".
 
-Rewards arrive every level:
+### 6.1 Postcards that never change
 
-- flashbulbs;
-- **perks**: loupe recharge −10% (L3, L7, L12) and an extra flashbulb slot;
-- **cosmetics**: film looks for postcards (Sepia L5, Hand-Tinted L8, Kodachrome
-  L11, Cyanotype L15), postcard frames, postmarks and album covers;
-- Second-Class Stamps.
+A postcard is re-rendered, never stored as an image. Every new postcard (render
+version 2) stores its own faults and the permanent state before and after, so
+later restoration can't change it. Album cards from save version 2 keep their
+old description (a seed and a project list) and are redrawn by the legacy
+generator path with the restoration-update layers left out and the frozen
+tier table (`tiers-legacy.json`); `tools/test/legacy.test.mjs` proves they are
+unchanged. The cache key includes the village and a hash of the whole entry.
 
-The level is shared across all villages, so it carries into paid packs as sunk,
-continuing progress.
+## 7. First-time experience: one idea at a time
 
-### 5.8 The album
+`content/common/intro.json` holds the schedule, counted in finished visits and
+walks:
 
-The album is the trophy cabinet, a scrapbook with one page per scene:
+| After | New | How it arrives |
+|---|---|---|
+| 0 | tidying, straightening; the loupe; zoom | the coached first visit; the loupe is offered when you stall; zoom when something small is left |
+| 1+ | each new job (repaint, clean, plant, water, weed, stand up) | a one-line card the first time a visit uses it |
+| 1 | the journal | a card on the map |
+| 2 | Marmalade; runs | she simply appears; a word the first time |
+| 3 | photographer level; photo walks | cards on the map |
+| 4 | keepsakes | the first is guaranteed |
+| 6 | the noticeboard | a card on the map |
+| 8 | flashbulbs (walks) | the coach points at it once |
+| 9 | the Daily Postcard | a card on the map |
+| finale | the Travel Office | after the judging |
 
-- one slot per condition, each holding your best postcard in that condition,
-  with its stamps;
-- a Mastered gold edition slot;
-- set pages for the collectibles;
-- the Daily Diary.
+At most one card per visit to the map. A player coming from save version 2
+sees one "Honeycombe has changed" card instead.
 
-Postcards are stored as *seeds*, not images. The before and after pictures
-re-render deterministically at any time, so the save stays tiny. Tap a postcard
-to flip it: the back has a handwritten note generated from templates ("Dear
-Aunt Vera, the Old Mill was a picture this morning…").
+## 8. Commerce
 
-## 6. First-time experience: one idea at a time
+- **Honeycombe is free and complete**: a whole restoration story, the judging,
+  then photo walks, dailies and favours for as long as you like.
+- **Further villages** will be one-off purchases, offered only after the free
+  village has finished emotionally, with "Stay in Honeycombe" always the first
+  choice. No ads, no energy, nothing sold inside a play.
+- **Today** the Travel Office shows the other villages honestly as *In
+  preparation*, with no buy buttons. Selling one needs finished content and a
+  real purchase/restore/entitlement flow: see `docs/RELEASE_BLOCKERS.md`.
 
-Players are not assumed to know games. The game starts as one easy thing and
-adds one new idea per postcard, each shown at the moment it matters, with one
-obvious next step. Nothing is on screen before it has been introduced.
-`content/common/intro.json` holds the whole schedule (counted in postcards
-taken), so a new pack can change it without code.
+## 9. Systems that check the design
 
-1. **Cold open (≤ 20 s).** Title, then tap. A train whistle, and two short
-   letters set up the fiction: postcards raise money for the Village Fund, and
-   the Committee wants the village fit for the judges.
-2. **The tutorial: Honeycombe Halt, one scripted mess of five things**, and
-   only two jobs: Sweep up and Straighten. No score, no clock, no combo, no hint
-   buttons. A pointing finger shows the first litter, then the crooked sign,
-   then the bar at the top: "Now find the rest!"
-3. **The first postcard.** Shutter, flash, print, before/after wipe, then just
-   one thing: what it raised for the Village Fund, and a jar filling towards
-   the first project.
-4. **The map** shows only the Halt and the next place to open. The Colonel
-   explains where the money goes and points at "Sweep the Station Lane", which
-   the Fund can already pay for. The restoration plays and the High Street
-   opens. The Committee Letter at the bottom always names one next step.
-5. **Then, one per postcard** (the numbers are postcards taken):
+- **Validator** (`npm run validate`): the visit graph (cycles, unreachable
+  visits, anything the finale doesn't require), unknown targets and
+  operations, incident allowlists, every layer made once, every place with one
+  `restores` visit, and every visit generated in route order over 25 seeds.
+- **Tests** (`npm test`): the whole route, random orders (no stranding), resume
+  after reload, idempotent completion, permanent work surviving later visits,
+  the storm and walks, the colour request, save migration from version 2 (fresh,
+  part-restored, judged and collector saves; repeatable), legacy postcards.
+- **Bot** (`npm run bot`): every visit in route order and every walk tier on
+  fresh, half and fully restored villages: tappable, unambiguous, clear of the
+  overlays, nothing protected spoilt; simulated times.
+- **Route simulator** (`npm run economy`): story moments and optional content,
+  reported separately.
 
-   | When | New | How it arrives |
-   |---|---|---|
-   | 1 | Repaint | a "new job" card before the clock starts |
-   | 2 | Clean; the album | job card; a "Something new" card on the map, the Album button appears |
-   | 3 | Water; Marmalade the cat | job card; she simply appears, and a toast names her when found |
-   | 4 | The loupe | the button appears, and the coach points at it once |
-   | 5 | Weed; score, clock and stamps | job card; the coach points at the score, the first stamps are explained |
-   | 6 | Photographer level; zoom | a card on the map; the level badge appears; the coach explains pinch and double-tap once |
-   | 7 | Stand up; combos | job card; the first combo is explained |
-   | 8 | The Noticeboard | a card on the map; its button appears |
-   | 9 | Keepsakes | the first one is guaranteed |
-   | 10 | The Daily Postcard | a card on the map; its button appears |
-   | 11 | Flashbulbs | the button appears, and the coach points at it once |
-   | 12 | The Travel Office | a card on the map; its button appears |
+Starting hypotheses from the handover, to test with 5–8 first-time players:
 
-   Jobs the schedule doesn't list (cobwebs, pigeons, lamps) arrive with their
-   postcard's weather or tier, each with the same "new job" card. At most one
-   "Something new" card is shown per visit to the map.
+| Moment | Target | Simulated (average player) |
+|---|---|---|
+| First meaningful action | 20–30 s | see `tools/bot/economy.md` |
+| First postcard | 1:30–2:30 | 〃 |
+| Third place open | ≤ 8–12 min | 〃 |
+| A later visit | 1–2.5 min | 〃 |
+| Story to the judging | 25–40 min | 〃 |
+| Optional content | 60–90 min+ | 〃 |
 
-## 7. Monetisation and converting the free village
+The simulated players are quicker than real first-timers. If playtests show the
+story is short, give later visits more (data only); don't pad the early ones.
 
-- **Honeycombe is free and complete.** It's roughly 2½ hours to Best-Kept
-  Village, and infinite free play and dailies afterwards. It is never
-  paywalled mid-way.
-- **Further villages are cheap non-consumable packs** (£1.99 each, or a
-  "Grand Tour" bundle). There are no ads, no energy and no consumable
-  purchases, so App Store review is simple and the store is honest.
+## 10. Adding a village
 
-What makes the free village convert:
-
-1. **Emotional payoff first.** The Best-Kept Village ceremony is a real ending
-   (rosette, certificate postcard, the whole village on the green). The ask
-   comes after the player feels good, never before.
-2. **Carry-over progress.** Photographer level, perks, cosmetics and the album
-   continue into the next village. Buying a pack *continues* your game rather
-   than starting a new one.
-3. **Visible, specific desire.** The Travel Office (map corner) shows the next
-   village as a railway poster from day one. The album has its empty pages. At
-   50% Bloom, Percy delivers a postcard *from* Porthkennack Cove.
-4. **Low friction, fair price.** One tap on a ticket-style button showing the
-   price. "Restore Purchases" is always visible.
-5. **The free village stays alive.** Dailies and requests keep going in
-   Honeycombe after the ceremony, so lapsed players keep returning to a place
-   where the next pack is one tap away.
-
-## 8. Systems that guarantee fairness
-
-- **Mess generator** (`src/core/mess.js`): deterministic from
-  `(scene, tier, condition, seed, restoration)`. It places faults in authored
-  *slots*: ground zones, edge zones, perches, props and regions. It enforces
-  spacing, overlap and minimum on-screen size, and scores each fault's
-  **salience** (size × contrast × subtlety × condition visibility).
-- **Headless bot** (`tools/bot`): plays thousands of generated scenes with a
-  perception model. The chance of noticing a fault each second is based on its
-  salience, and taps are imperfect. It verifies that:
-  - every fault is reachable;
-  - no two hit areas overlap ambiguously;
-  - each tier lands in its target time band;
-  - the economy has no walls.
-  
-  It writes `tools/bot/report.md` and the per-tier **par** table that scoring
-  uses.
-
-## 9. Adding a village
-
-See `docs/ADDING_A_VILLAGE.md`. In short, a village is:
-
-- a folder of JSON (village, scenes, villagers, collectibles);
-- an art manifest (prompts) that the art pipeline turns into plates and sprites
-  via OpenRouter;
-- per-scene slot annotations (zones, regions, props, lamps, perches).
-
-No engine code changes. The validator and the bot sign it off.
+See `docs/ADDING_A_VILLAGE.md`. A village is a folder of JSON (village, scenes,
+visits, villagers, collectibles), art made by the pipeline, and per-scene slot
+annotations. No engine code changes; the validator, tests and bot sign it off.

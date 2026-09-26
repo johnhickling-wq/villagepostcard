@@ -3,8 +3,8 @@
   "tier": 1,
   "name": "Snapshot",
   "faults": [
-   4,
-   5
+   6,
+   7
   ],
   "subtlety": [
    0,
@@ -24,7 +24,7 @@
   },
   "nudge": 9,
   "loupe": 20,
-  "combo": 4,
+  "combo": 4.0,
   "fund": 60,
   "xp": 1
  },
@@ -32,12 +32,12 @@
   "tier": 2,
   "name": "Holiday Snap",
   "faults": [
-   7,
-   8
+   9,
+   10
   ],
   "subtlety": [
-   0.06,
-   0.36
+   0.1,
+   0.4
   ],
   "minSize": 62,
   "types": {
@@ -94,12 +94,12 @@
   "tier": 4,
   "name": "Exhibition",
   "faults": [
-   10,
-   11
+   12,
+   13
   ],
   "subtlety": [
-   0.16,
-   0.51
+   0.24,
+   0.59
   ],
   "minSize": 46,
   "types": {

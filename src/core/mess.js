@@ -126,7 +126,7 @@ export function generateMess(content, o) {
   const village = content.village(o.village);
   const scene = village.scenes[o.scene];
   const rng = new Rng(seedOf('mess', o.village, o.scene, o.tier, o.seed));
-  const tier = content.tier(o.tier);
+  const tier = o.legacy ? content.legacyTier(o.tier) : content.tier(o.tier);
   const condId = o.condition || rng.fork('cond').weighted(tier.conditions);
   const cond = content.conditions[condId];
   const done = doneSet(o.projectsDone);

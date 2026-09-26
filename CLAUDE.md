@@ -51,8 +51,8 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
 
 - QA scenarios live in `tools/qa/scenarios/`:
   - smoke, tutorial, ftue, map, screens, gallery, fixes, hints, restore,
-    judging, daily, dialogs, audio;
-  - `rotated` runs at a 390×844 portrait viewport;
+    judging, daily, dialogs, audio, mix (every sound's loudness against its target);
+  - `rotated` needs a portrait viewport: `VW=390 VH=844 node tools/qa/shots.mjs rotated`;
   - `artifact` expects `dist` served on port 5174.
 - Look at the screenshots with Read. It is the only way to judge layout.
 - Before committing gameplay or content changes, run `validate` and `bot`,

@@ -2,11 +2,11 @@
 
 Simulated 5 playthroughs by an **average** player (25s of menus per play, 6 plays a day, Daily Postcard each day).
 
-- Plays to Best-Kept Village judging: **72**
+- Plays to Best-Kept Village judging: **71**
 - Time to judging: **2.0 hours**
-- Longest wait between restoration projects: **5 plays** (worst: 6 before cottage-hives, 5 before church-clock, 5 before open-st-aldhelms, 5 before mill-garden, 6 before cottage-fete)
-- Photographer level at judging: 13
-- Keepsakes found: 22 of 30
+- Longest wait between restoration projects: **5 plays** (worst: 5 before open-st-aldhelms, 5 before church-clock, 5 before open-st-aldhelms, 5 before open-rose-cottage, 6 before church-flowers)
+- Photographer level at judging: 12
+- Keepsakes found: 21 of 30
 - Postcards in the album at judging: 40 of 40
 
 ## Run 1 purchase timeline
@@ -22,17 +22,17 @@ Simulated 5 playthroughs by an **average** player (25s of menus per play, 6 play
 | 14 | open-weavers-row | 87 |
 | 17 | green-benches | 142 |
 | 19 | green-ducks | 44 |
-| 22 | open-old-mill | 92 |
-| 25 | row-paint | 107 |
-| 27 | row-bunting | 20 |
-| 32 | open-bee-and-bramble | 56 |
-| 36 | mill-paint | 14 |
-| 40 | mill-garden | 210 |
-| 43 | open-st-aldhelms | 62 |
-| 48 | pub-door | 89 |
-| 51 | pub-lights | 176 |
-| 53 | church-clock | 7 |
-| 58 | church-flowers | 33 |
-| 62 | open-rose-cottage | 45 |
-| 68 | cottage-hives | 372 |
-| 72 | cottage-fete | 206 |
+| 22 | open-old-mill | 78 |
+| 25 | row-paint | 74 |
+| 27 | row-bunting | 16 |
+| 31 | mill-paint | 46 |
+| 34 | mill-garden | 33 |
+| 38 | open-bee-and-bramble | 70 |
+| 42 | pub-lights | 65 |
+| 44 | pub-door | 122 |
+| 49 | open-st-aldhelms | 386 |
+| 51 | church-clock | 48 |
+| 55 | open-rose-cottage | 11 |
+| 60 | church-flowers | 6 |
+| 65 | cottage-hives | 98 |
+| 70 | cottage-fete | 118 |

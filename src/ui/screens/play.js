@@ -7,6 +7,7 @@ import { h, icon, svg, wait, CONDITION_ICONS } from '../dom.js';
 import { PlaySession } from '../../core/session.js';
 import { Gestures } from '../../engine/input.js';
 import { finishPlay, leavePlay } from '../flows.js';
+import { introduced } from '../../core/progression.js';
 
 const ALL_SHOWN = { score: true, timer: true, combo: true, loupe: true, flash: true };
 
@@ -39,7 +40,7 @@ export class PlayScreen {
       this.show.timer ? h('span.hud-clock', icon('clock'), this.timeEl) : null,
     );
     if (!this.show.score && !this.show.timer) this.scorePill.classList.add('hidden');
-    this.comboEl = h('div.hud-combo.hidden', h('span.hud-combo-x', { text: '×1.2' }), h('i.hud-combo-bar', h('b')));
+    this.comboEl = h('div.hud-combo.hidden', h('span.hud-combo-x', { text: '2 in a row' }), h('i.hud-combo-bar', h('b')));
     this.callout = h('div.hud-callout.display');
     this.loupeRing = h('div.loupe-ring');
     this.loupeBtn = h('button.tool.loupe', { 'aria-label': 'Loupe hint', onclick: () => this.useLoupe() },
@@ -54,6 +55,7 @@ export class PlayScreen {
     this.finger = h('div.finger.hidden', svg('<svg viewBox="0 0 48 48"><path d="M20 44c-4-3-9-9-11-13-1-2 1-4 3-3l4 3V8a3 3 0 0 1 6 0v14l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v9c0 5-3 9-6 11Z" fill="#fffdf7" stroke="#2c2a35" stroke-width="2.4" stroke-linejoin="round"/></svg>'));
     this.viewfinder = h('div.viewfinder.hidden', h('i.vf.tl'), h('i.vf.tr'), h('i.vf.bl'), h('i.vf.br'), h('div.vf-center'), h('div.vf-text.typed', { text: 'Hold still…' }));
     this.flashOverlay = h('div.white-flash');
+    this.sweep = h('div.finish-sweep');
     this.zoomReset = h('button.zoom-reset.chip.hidden', { onclick: () => { this.app.sfx('ui.tap'); const v = this.app.view; v.focus(v.W / 2, v.H / 2, 1, 0.4); } }, icon('eye'), h('span', { text: 'Whole scene' }));
     this.tip = h('div.action-tip.hidden');
     // the place name is announced as you arrive, then gets out of the way
@@ -66,7 +68,7 @@ export class PlayScreen {
       ),
     );
     this.el = h('div.play.passthrough', this.bar, this.tip, this.pauseBtn, this.scorePill, this.comboEl, this.hints, this.tab,
-      this.callout, this.shaky, this.coach, this.finger, this.viewfinder, this.flashOverlay, this.zoomReset);
+      this.callout, this.shaky, this.coach, this.finger, this.sweep, this.viewfinder, this.flashOverlay, this.zoomReset);
     this.renderBar();
   }
 
@@ -125,12 +127,13 @@ export class PlayScreen {
   /** The first play with a new tool on screen points it out once. */
   introduceFeature() {
     const app = this.app, seen = app.save.flags.seen, coach = this.content.intro?.coach || {};
-    const targets = { flash: this.flashBtn, loupe: this.loupeBtn, score: this.scorePill };
-    for (const f of ['flash', 'loupe', 'score']) {
-      if (!this.show[f] || seen[`coach:${f}`] || !coach[f]) continue;
+    const on = { ...this.show, zoom: introduced(app.save, this.content, 'zoom') };
+    const targets = { flash: this.flashBtn, loupe: this.loupeBtn, score: this.scorePill, zoom: null };
+    for (const f of ['flash', 'loupe', 'score', 'zoom']) {
+      if (!on[f] || seen[`coach:${f}`] || !coach[f]) continue;
       seen[`coach:${f}`] = true;
       app.persist();
-      this.setCoach(coach[f], { el: targets[f], below: f === 'score' });
+      this.setCoach(coach[f], targets[f] && { el: targets[f], below: f === 'score' });
       setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent === coach[f]) this.setCoach(null); }, 4200);
       return;
     }
@@ -221,10 +224,36 @@ export class PlayScreen {
     c.chip.classList.remove('bump');
     void c.chip.offsetWidth;
     c.chip.classList.add('bump');
+    const total = this.session.remainingByType()[type]?.total || 1;
+    this.app.sfx('arrive', { step: total - left });
     if (!left) {
-      c.chip.classList.add('done');
-      this.app.sfx('stamp');
+      c.chip.classList.add('done', 'just-done');
+      setTimeout(() => this.app.sfx('stamp'), 120);
+      this.app.haptic('light');
     }
+  }
+
+  /** The job's tool pops out where you tapped and flies up to its place in the bar. */
+  flyToBar(type, left, sx, sy) {
+    const c = this.chips[type];
+    if (!c) return;
+    const f = this.content.faults[type];
+    const r = this.app.localRect(c.chip.querySelector('.act-ico'));
+    const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
+    const art = this.app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
+    const token = h('div.fly-token', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon));
+    this.el.append(token);
+    const dx = tx - sx, dy = ty - sy;
+    // an arc: up and over, a touch of spin, shrinking as it tucks in
+    const lift = Math.min(90, Math.abs(dx) * 0.35 + 40);
+    const anim = token.animate([
+      { transform: `translate(${sx}px, ${sy}px) translate(-50%, -50%) scale(0.4) rotate(-20deg)`, opacity: 0 },
+      { transform: `translate(${sx}px, ${sy - 30}px) translate(-50%, -50%) scale(1.25) rotate(0deg)`, opacity: 1, offset: 0.18 },
+      { transform: `translate(${sx + dx * 0.5}px, ${sy + dy * 0.5 - lift}px) translate(-50%, -50%) scale(1) rotate(12deg)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(${tx}px, ${ty}px) translate(-50%, -50%) scale(0.55) rotate(0deg)`, opacity: 0.9 },
+    ], { duration: 620, easing: 'cubic-bezier(0.45, 0, 0.55, 1)', fill: 'forwards' });
+    setTimeout(() => this.app.sfx('whoosh'), 90);
+    anim.onfinish = () => { token.remove(); this.bumpChip(type, left); };
   }
 
   /** Tapping an action names it, and (if the loupe is charged) shows you one. */
@@ -344,12 +373,12 @@ export class PlayScreen {
     if (ev.chain > 1 && this.show.combo) app.sfx('combo', { step: ev.chain });
     app.haptic(ft.haptic);
     if (this.show.score) view.popup(f.cx, f.cy - 20, `+${ev.points}`, { color: ev.chain > 2 ? '#c9483b' : '#2c2a35', size: 24 + Math.min(12, ev.chain * 1.5) });
-    this.bumpChip(f.type, ev.typeLeft);
+    this.flyToBar(f.type, ev.typeLeft, sx, sy);
     this.scoreBump();
     if (ev.chain > 1 && this.show.combo) {
       this.comboEl.classList.remove('hidden');
       const x = this.comboEl.querySelector('.hud-combo-x');
-      x.textContent = `×${ev.multiplier.toFixed(1)}`;
+      x.textContent = `${ev.chain} in a row`;
       this.comboEl.classList.remove('bump'); void this.comboEl.offsetWidth; this.comboEl.classList.add('bump');
     }
     if (ev.callout && this.show.combo) this.showCallout(ev.callout);
@@ -436,7 +465,15 @@ export class PlayScreen {
     const app = this.app, view = app.view;
     this.comboEl.classList.add('hidden');
     this.setCoach(null);
-    await wait(750);
+    // picture perfect: a warm light passes over the whole scene, with a chime
+    await wait(260);
+    app.sfx('complete');
+    app.haptic('success');
+    this.sweep.classList.add('go');
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => view.particles.burst('sparkle', view.W * (0.15 + 0.175 * i), view.H * (0.35 + 0.25 * Math.sin(i * 2.1)), { n: 8, confetti: 0, color: '#fff4c8' }), 120 + i * 130);
+    }
+    await wait(900);
     view.focus(view.W / 2, view.H / 2, 1, 0.7);
     this.el.classList.add('finishing');
     this.viewfinder.classList.remove('hidden');

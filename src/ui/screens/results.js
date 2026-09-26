@@ -37,27 +37,35 @@ export class ResultsScreen {
   }
 
   async enter() {
+    // the play's music gives way to the print, then the gentler map tune
     this.app.audio.stopMusic();
+    this.musicTimer = setTimeout(() => this.app.audio.startMusic('map'), 1600);
     this.run();
   }
 
+  exit() { clearTimeout(this.musicTimer); }
+
+  /** The print comes out while the tally counts beside it: evidence first
+   *  (the score, what it raised), then the verdict (stamps), then Continue. */
   async run() {
     const app = this.app, d = this.d, r = d.result;
     const W = (ms) => wait(this.fast ? ms * 0.35 : ms);
     app.sfx('print');
     await W(80);
     this.pc.classList.add('out');
-    await W(1100);
-    this.pc.classList.add('developed');
-    await W(900);
-    // before / after
-    const ba = beforeAfter(app, this.pc, d.stills.before);
-    app.sfx('page');
-    await ba.play();
-    // stamps, once they've been introduced
+    await W(320);
+    this.renderPanel();
+    this.panel.classList.remove('hidden');
+    this.panel.classList.add('pop-in');
+    // the photo develops and shows its before/after while the numbers count
+    setTimeout(() => this.pc.classList.add('developed'), this.fast ? 300 : 800);
+    setTimeout(() => { const ba = beforeAfter(app, this.pc, d.stills.before); app.sfx('page'); ba.play(); }, this.fast ? 600 : 1700);
+    await W(250);
+    await this.tally(W);
+    // stamps, once they've been introduced, land on the finished score
     if (this.stamps) {
       this.stampsRow.classList.add('show');
-      await W(250);
+      await W(200);
       for (let i = 1; i <= r.stamps; i++) {
         const st = gradeStamp(i, STAMP_WORDS[i - 1]);
         st.style.setProperty('--r', `${[-10, 6, -4][i - 1]}deg`);
@@ -66,22 +74,17 @@ export class ResultsScreen {
         this.stampSlots[i - 1].classList.add('filled');
         app.sfx('stamp');
         app.haptic(i === 3 ? 'heavy' : 'medium');
-        await W(380);
+        await W(340);
       }
       if (r.stamps === 3) app.audio.jingle();
     }
-    // the tally
-    this.renderPanel();
-    this.panel.classList.remove('hidden');
-    this.panel.classList.add('pop-in');
-    await W(300);
-    await this.tally(W);
     this.buttons.classList.remove('hidden');
     this.buttons.classList.add('fade-in');
     if (this.stamps && !app.save.flags.seen.stamps) {
-      // explained once, beside the stamps rather than over them
+      // explained once, beside the stamps rather than over them (and without
+      // pushing Continue off a phone screen)
       app.save.flags.seen.stamps = true;
-      this.panel.prepend(h('div.stamps-note.hand.pop-in', { text: 'Stamps show how well you did. Quick, careful tidying earns all three, and raises more.' }));
+      this.stampsRow.append(h('div.stamps-note.hand.pop-in', { text: 'Stamps show how well you did. Quick, careful tidying earns all three.' }));
     }
     await showRewardsQueue(app, d.out, { play: d.play });
   }
@@ -132,10 +135,10 @@ export class ResultsScreen {
     for (const v of vals) {
       const to = +v.dataset.to;
       app.sfx('tick');
-      await countUp(v, to, { from: 0, dur: this.fast ? 150 : 420, format: (n) => (n < 0 ? '−' : '') + Math.abs(n).toLocaleString('en-GB') });
+      await countUp(v, to, { from: 0, dur: this.fast ? 120 : 280, format: (n) => (n < 0 ? '−' : '') + Math.abs(n).toLocaleString('en-GB') });
     }
     app.sfx('coin');
-    await countUp(this.fundEl, this.d.out.fund, { from: 0, dur: this.fast ? 250 : 900, tick: () => app.sfx('tick') });
+    await countUp(this.fundEl, this.d.out.fund, { from: 0, dur: this.fast ? 250 : 700, tick: () => app.sfx('tick') });
     this.jarFill.style.width = `${this.jarTarget}%`;
     if (this.level) {
       await countUp(this.xpEl, this.d.out.xp, { from: 0, dur: this.fast ? 200 : 700 });

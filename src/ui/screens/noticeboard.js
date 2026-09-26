@@ -1,7 +1,7 @@
 // The village noticeboard: three pinned requests from the villagers, plus
 // everyone's friendship hearts and the letters they've written you.
 
-import { h, icon } from '../dom.js';
+import { h, icon, wait } from '../dom.js';
 import { topBar } from '../components/topbar.js';
 import { goMap } from '../flows.js';
 import { claimRequest, friendshipLevel, refillRequests } from '../../core/progression.js';
@@ -62,6 +62,8 @@ export class NoticeboardScreen {
     app.toast([h('img', { src: app.assets.spriteUrl(vg.portrait, app.village, 0.3) }), `“${vg.thanks[r.id.length % vg.thanks.length]}”`], { ms: 2600 });
     this.render();
     this.top.animateFund(before, app.save.player.fund);
+    // let the thanks be read before a level-up (which clears it) takes over
+    if (out.levelUps.length || out.events.length) await wait(1400);
     await showRewardsQueue(app, out);
     this.render();
   }

@@ -24,7 +24,7 @@
   },
   "nudge": 9,
   "loupe": 20,
-  "combo": 3,
+  "combo": 4.0,
   "fund": 60,
   "xp": 1
  },
@@ -54,7 +54,7 @@
   },
   "nudge": 16,
   "loupe": 25,
-  "combo": 2.8,
+  "combo": 3.8,
   "fund": 75,
   "xp": 1.1
  },
@@ -86,7 +86,7 @@
   },
   "nudge": 0,
   "loupe": 30,
-  "combo": 2.6,
+  "combo": 3.6,
   "fund": 95,
   "xp": 1.2
  },
@@ -119,7 +119,7 @@
   },
   "nudge": 0,
   "loupe": 35,
-  "combo": 2.4,
+  "combo": 3.4,
   "fund": 115,
   "xp": 1.35
  },
@@ -152,7 +152,7 @@
   },
   "nudge": 0,
   "loupe": 40,
-  "combo": 2.2,
+  "combo": 3.2,
   "fund": 140,
   "xp": 1.5
  },
@@ -190,7 +190,7 @@
   },
   "nudge": 0,
   "loupe": 35,
-  "combo": 2.4,
+  "combo": 3.4,
   "fund": 120,
   "xp": 1.3
  }

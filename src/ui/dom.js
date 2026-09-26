@@ -46,14 +46,16 @@ export function countUp(el, to, { dur = 900, from = null, tick, format = (n) => 
   const start = from ?? (parseInt(el.dataset.value || el.textContent.replace(/\D/g, '')) || 0);
   el.dataset.value = to;
   const t0 = performance.now();
-  let last = start;
+  let last = start, lastTick = 0;
   return new Promise((res) => {
     const step = (now) => {
       const k = Math.min(1, (now - t0) / dur);
       const e = 1 - Math.pow(1 - k, 3);
       const v = Math.round(start + (to - start) * e);
       el.textContent = format(v);
-      if (v !== last) { tick?.(v); last = v; }
+      // ticks like a till: steady, not one per number
+      if (v !== last && now - lastTick > 55) { tick?.(v); lastTick = now; }
+      last = v;
       if (k < 1) requestAnimationFrame(step); else res();
     };
     requestAnimationFrame(step);

@@ -7,12 +7,12 @@ Each mess is checked for fairness (every fault tappable at its centre with no am
 
 | Tier | Target | Novice | Average | Skilled | 3 stamps | 2 stamps |
 |---|---|---|---|---|---|---|
-| 1 | 40s | 50s | **42s** | 36s | 30% | 36% |
-| 2 | 55s | 73s | **59s** | 50s | 26% | 38% |
-| 3 | 70s | 95s | **75s** | 67s | 39% | 46% |
-| 4 | 85s | 114s | **91s** | 80s | 31% | 52% |
-| 5 | 100s | 126s | **100s** | 82s | 27% | 51% |
-| 6 | 90s | 113s | **88s** | 77s | 27% | 48% |
+| 1 | 40s | 50s | **42s** | 36s | 31% | 38% |
+| 2 | 55s | 73s | **59s** | 50s | 25% | 38% |
+| 3 | 70s | 95s | **75s** | 67s | 40% | 46% |
+| 4 | 85s | 114s | **91s** | 80s | 32% | 49% |
+| 5 | 100s | 126s | **100s** | 82s | 26% | 46% |
+| 6 | 90s | 113s | **88s** | 77s | 27% | 44% |
 
 ## Fault mix
 
@@ -36,50 +36,50 @@ None: every generated mess was solvable and unambiguous.
 | Scene | Tier | Faults | Salience | Avg time | p90 | Novice | Skilled | 3★ |
 |---|---|---|---|---|---|---|---|---|
 | railway-halt | 1 | 6.5 | 0.72 | 35s | 54s | 45s | 32s | 36% |
-| railway-halt | 2 | 9.5 | 0.61 | 51s | 76s | 64s | 44s | 29% |
+| railway-halt | 2 | 9.5 | 0.61 | 51s | 76s | 64s | 44s | 26% |
 | railway-halt | 3 | 9.1 | 0.43 | 68s | 98s | 91s | 62s | 41% |
-| railway-halt | 4 | 12.4 | 0.49 | 78s | 112s | 106s | 71s | 23% |
-| railway-halt | 5 | 14.5 | 0.48 | 88s | 125s | 119s | 72s | 27% |
+| railway-halt | 4 | 12.4 | 0.49 | 78s | 112s | 106s | 71s | 26% |
+| railway-halt | 5 | 14.5 | 0.48 | 88s | 125s | 119s | 72s | 25% |
 | railway-halt | 6 | 14.1 | 0.52 | 77s | 114s | 104s | 70s | 25% |
-| high-street | 1 | 6.5 | 0.71 | 39s | 54s | 47s | 34s | 29% |
-| high-street | 2 | 9.5 | 0.58 | 57s | 81s | 66s | 46s | 23% |
-| high-street | 3 | 9.1 | 0.4 | 70s | 100s | 91s | 65s | 42% |
-| high-street | 4 | 12.5 | 0.41 | 84s | 121s | 109s | 76s | 30% |
-| high-street | 5 | 14.5 | 0.43 | 97s | 133s | 122s | 79s | 34% |
-| high-street | 6 | 13.9 | 0.47 | 85s | 113s | 107s | 73s | 27% |
-| village-green | 1 | 6.5 | 0.66 | 43s | 58s | 46s | 35s | 30% |
+| high-street | 1 | 6.5 | 0.71 | 39s | 54s | 47s | 34s | 30% |
+| high-street | 2 | 9.5 | 0.58 | 57s | 81s | 66s | 46s | 25% |
+| high-street | 3 | 9.1 | 0.4 | 70s | 100s | 91s | 65s | 41% |
+| high-street | 4 | 12.5 | 0.41 | 84s | 121s | 109s | 76s | 31% |
+| high-street | 5 | 14.5 | 0.43 | 97s | 133s | 122s | 79s | 29% |
+| high-street | 6 | 13.9 | 0.47 | 85s | 113s | 107s | 73s | 29% |
+| village-green | 1 | 6.5 | 0.66 | 43s | 58s | 46s | 35s | 27% |
 | village-green | 2 | 9.4 | 0.54 | 59s | 83s | 73s | 50s | 29% |
-| village-green | 3 | 9 | 0.36 | 74s | 106s | 93s | 68s | 41% |
-| village-green | 4 | 12.5 | 0.33 | 101s | 133s | 118s | 86s | 32% |
-| village-green | 5 | 14.5 | 0.36 | 111s | 152s | 132s | 90s | 19% |
-| village-green | 6 | 13.9 | 0.39 | 97s | 130s | 120s | 81s | 29% |
-| weavers-row | 1 | 6.5 | 0.56 | 44s | 62s | 52s | 35s | 25% |
+| village-green | 3 | 9 | 0.36 | 74s | 106s | 93s | 68s | 40% |
+| village-green | 4 | 12.5 | 0.33 | 101s | 133s | 118s | 86s | 31% |
+| village-green | 5 | 14.5 | 0.36 | 111s | 152s | 132s | 90s | 24% |
+| village-green | 6 | 13.9 | 0.39 | 97s | 130s | 120s | 81s | 33% |
+| weavers-row | 1 | 6.5 | 0.56 | 44s | 62s | 52s | 35s | 27% |
 | weavers-row | 2 | 9.5 | 0.46 | 63s | 85s | 76s | 49s | 21% |
-| weavers-row | 3 | 9.1 | 0.31 | 76s | 108s | 97s | 70s | 41% |
-| weavers-row | 4 | 12.5 | 0.31 | 99s | 130s | 116s | 84s | 33% |
-| weavers-row | 5 | 14.5 | 0.34 | 104s | 141s | 129s | 87s | 31% |
-| weavers-row | 6 | 14 | 0.36 | 89s | 129s | 116s | 82s | 28% |
-| old-mill | 1 | 7.5 | 0.56 | 46s | 66s | 55s | 39s | 31% |
+| weavers-row | 3 | 9.1 | 0.31 | 76s | 108s | 97s | 70s | 42% |
+| weavers-row | 4 | 12.5 | 0.31 | 99s | 130s | 116s | 84s | 35% |
+| weavers-row | 5 | 14.5 | 0.34 | 104s | 141s | 129s | 87s | 28% |
+| weavers-row | 6 | 14 | 0.36 | 89s | 129s | 116s | 82s | 30% |
+| old-mill | 1 | 7.5 | 0.56 | 46s | 66s | 55s | 39s | 33% |
 | old-mill | 2 | 10.5 | 0.44 | 66s | 93s | 83s | 55s | 23% |
-| old-mill | 3 | 10 | 0.3 | 87s | 117s | 102s | 77s | 35% |
-| old-mill | 4 | 13.5 | 0.3 | 104s | 137s | 122s | 89s | 33% |
+| old-mill | 3 | 10 | 0.3 | 87s | 117s | 102s | 77s | 37% |
+| old-mill | 4 | 13.5 | 0.3 | 104s | 137s | 122s | 89s | 30% |
 | old-mill | 5 | 15.5 | 0.33 | 110s | 148s | 135s | 86s | 28% |
-| old-mill | 6 | 14.8 | 0.36 | 92s | 130s | 119s | 82s | 28% |
-| bee-and-bramble | 1 | 7.5 | 0.7 | 42s | 59s | 51s | 37s | 29% |
-| bee-and-bramble | 2 | 10.5 | 0.58 | 56s | 79s | 70s | 48s | 29% |
+| old-mill | 6 | 14.8 | 0.36 | 92s | 130s | 119s | 82s | 21% |
+| bee-and-bramble | 1 | 7.5 | 0.7 | 42s | 59s | 51s | 37s | 28% |
+| bee-and-bramble | 2 | 10.5 | 0.58 | 56s | 79s | 70s | 48s | 30% |
 | bee-and-bramble | 3 | 10.1 | 0.4 | 75s | 106s | 92s | 63s | 35% |
-| bee-and-bramble | 4 | 13.5 | 0.42 | 84s | 119s | 109s | 75s | 29% |
-| bee-and-bramble | 5 | 15.5 | 0.46 | 94s | 130s | 121s | 78s | 26% |
+| bee-and-bramble | 4 | 13.5 | 0.42 | 84s | 119s | 109s | 75s | 30% |
+| bee-and-bramble | 5 | 15.5 | 0.46 | 94s | 130s | 121s | 78s | 23% |
 | bee-and-bramble | 6 | 14.9 | 0.48 | 84s | 119s | 109s | 76s | 23% |
-| st-aldhelms | 1 | 7.4 | 0.55 | 46s | 61s | 53s | 39s | 28% |
-| st-aldhelms | 2 | 10.5 | 0.47 | 63s | 88s | 76s | 54s | 27% |
-| st-aldhelms | 3 | 10 | 0.34 | 76s | 107s | 97s | 67s | 34% |
-| st-aldhelms | 4 | 13.5 | 0.37 | 87s | 125s | 117s | 79s | 38% |
-| st-aldhelms | 5 | 15.4 | 0.36 | 100s | 148s | 132s | 83s | 25% |
-| st-aldhelms | 6 | 14.9 | 0.39 | 91s | 130s | 113s | 78s | 26% |
-| rose-cottage | 1 | 7.5 | 0.69 | 44s | 61s | 50s | 37s | 35% |
-| rose-cottage | 2 | 10.5 | 0.56 | 60s | 85s | 73s | 50s | 26% |
-| rose-cottage | 3 | 9.9 | 0.38 | 75s | 103s | 96s | 66s | 41% |
-| rose-cottage | 4 | 13.5 | 0.38 | 92s | 122s | 115s | 79s | 30% |
-| rose-cottage | 5 | 15.4 | 0.41 | 95s | 128s | 116s | 81s | 25% |
-| rose-cottage | 6 | 15.2 | 0.46 | 88s | 127s | 112s | 70s | 29% |
+| st-aldhelms | 1 | 7.4 | 0.55 | 46s | 61s | 53s | 39s | 31% |
+| st-aldhelms | 2 | 10.5 | 0.47 | 63s | 88s | 76s | 54s | 25% |
+| st-aldhelms | 3 | 10 | 0.34 | 76s | 107s | 97s | 67s | 38% |
+| st-aldhelms | 4 | 13.5 | 0.37 | 87s | 125s | 117s | 79s | 40% |
+| st-aldhelms | 5 | 15.4 | 0.36 | 100s | 148s | 132s | 83s | 28% |
+| st-aldhelms | 6 | 14.9 | 0.39 | 91s | 130s | 113s | 78s | 25% |
+| rose-cottage | 1 | 7.5 | 0.69 | 44s | 61s | 50s | 37s | 33% |
+| rose-cottage | 2 | 10.5 | 0.56 | 60s | 85s | 73s | 50s | 23% |
+| rose-cottage | 3 | 9.9 | 0.38 | 75s | 103s | 96s | 66s | 42% |
+| rose-cottage | 4 | 13.5 | 0.38 | 92s | 122s | 115s | 79s | 33% |
+| rose-cottage | 5 | 15.4 | 0.41 | 95s | 128s | 116s | 81s | 23% |
+| rose-cottage | 6 | 15.2 | 0.46 | 88s | 127s | 112s | 70s | 31% |

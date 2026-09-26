@@ -8,10 +8,19 @@ const rng = new Rng(Date.now() % 1e9);
 const TAU = Math.PI * 2;
 
 export class Particles {
-  constructor() { this.list = []; }
+  constructor() {
+    this.list = [];
+    // size multiplier so bursts read at the same on-screen size however far the
+    // camera is from the scene (set by the SceneView from its scale)
+    this.k = 1;
+  }
 
   spawn(p) {
-    this.list.push({ age: 0, life: 1, vx: 0, vy: 0, ax: 0, ay: 0, rot: 0, vr: 0, size: 6, grow: 0, alpha: 1, drag: 0, ...p });
+    const k = this.k;
+    const q = { age: 0, life: 1, vx: 0, vy: 0, ax: 0, ay: 0, rot: 0, vr: 0, size: 6, grow: 0, alpha: 1, drag: 0, ...p };
+    q.size *= k; q.grow *= k; q.vx *= k; q.vy *= k; q.ax *= k; q.ay *= k;
+    if (p.width) q.width *= k;
+    this.list.push(q);
     if (this.list.length > 600) this.list.shift();
   }
 

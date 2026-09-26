@@ -1,6 +1,12 @@
 {
  "tutorial": {
-  "script": ["litter", "crooked", "litter", "crooked", "litter"]
+  "script": [
+   "litter",
+   "crooked",
+   "litter",
+   "crooked",
+   "litter"
+  ]
  },
  "jobs": {
   "litter": 0,
@@ -17,6 +23,7 @@
   "loupe": 4,
   "score": 5,
   "level": 6,
+  "zoom": 6,
   "combo": 7,
   "requests": 8,
   "collectibles": 9,
@@ -54,7 +61,8 @@
  "coach": {
   "loupe": "New! The magnifying glass shows you where to look. It recharges as you tidy.",
   "score": "From now on your postcards earn stamps. Be quick and careful for all three!",
-  "combo": "Quick fixes in a row make a combo, worth more points!",
-  "flash": "New! A flashbulb lights up everything that's left, just for a moment."
+  "combo": "Quick fixes one after another count as a run, and a run earns more!",
+  "flash": "New! A flashbulb lights up everything that's left, just for a moment.",
+  "zoom": "Spread two fingers to zoom in close, or double-tap. Pinch to zoom back out."
  }
 }

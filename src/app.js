@@ -34,9 +34,10 @@ export class App {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { this.persist(true); audio.ctx?.suspend(); } else audio.ctx?.resume();
     });
-    // unlock audio on the first touch anywhere
-    const unlock = () => { audio.unlock(); this.applySettings(); };
-    window.addEventListener('pointerdown', unlock, { once: false, passive: true });
+    // unlock (or, after a phone call or lock screen, resume) audio on any touch.
+    // iOS only lets sound start inside touchend/click, not pointerdown.
+    const unlock = () => { if (audio.ctx?.state !== 'running') { audio.unlock(); this.applySettings(); } };
+    for (const ev of ['pointerdown', 'touchend', 'click']) window.addEventListener(ev, unlock, { passive: true });
   }
 
   async boot() {
@@ -215,6 +216,7 @@ export class App {
   }
 
   modal(content, { cls = '', dismissable = true } = {}) {
+    this.clearToasts();
     const overlay = h('div.overlay');
     const box = h(`div.modal${cls ? '.' + cls : ''}`, {}, content);
     this.ui.append(overlay, box);

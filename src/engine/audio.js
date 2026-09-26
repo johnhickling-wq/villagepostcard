@@ -15,6 +15,8 @@ class AudioEngine {
     this.musicState = null;
     this.ambience = null;
     this.lastPlayed = new Map();
+    this._out = null;
+    this._pitch = 1;
   }
 
   /** Must be called from a user gesture on iOS. Safe to call repeatedly. */
@@ -40,7 +42,7 @@ class AudioEngine {
       this.brownBuf = this._noise(4, 'brown');
       for (const [name, url] of this.pendingSamples) this._loadSample(name, url);
     }
-    if (this.ctx.state === 'suspended') this.ctx.resume();
+    if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {}); // 'suspended', or iOS's 'interrupted' after a call
     // iOS: play a silent buffer inside the gesture
     const b = this.ctx.createBufferSource();
     b.buffer = this.ctx.createBuffer(1, 1, 22050);
@@ -108,8 +110,10 @@ class AudioEngine {
     const t = (o.when ?? ctx.currentTime) + (o.delay || 0);
     const osc = ctx.createOscillator();
     osc.type = o.type || 'sine';
+    const p = o.bus ? 1 : this._pitch; // music and ambience keep their tuning
+    freq *= p;
     osc.frequency.setValueAtTime(freq, t);
-    if (o.glide) osc.frequency.exponentialRampToValueAtTime(Math.max(20, o.glide), t + (o.glideTime ?? dur));
+    if (o.glide) osc.frequency.exponentialRampToValueAtTime(Math.max(20, o.glide * p), t + (o.glideTime ?? dur));
     if (o.detune) osc.detune.value = o.detune;
     const g = ctx.createGain();
     const peak = o.gain ?? 0.3;
@@ -136,7 +140,7 @@ class AudioEngine {
       node = f;
     }
     node.connect(g);
-    g.connect(o.bus || this.sfxBus);
+    g.connect(o.bus || this._out || this.sfxBus);
     if (o.reverb) {
       const s = ctx.createGain();
       s.gain.value = o.reverb;
@@ -156,15 +160,16 @@ class AudioEngine {
     src.loop = true;
     const f = ctx.createBiquadFilter();
     f.type = o.type || 'bandpass';
-    f.frequency.setValueAtTime(o.freq || 1000, t);
-    if (o.to) f.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const p = o.bus ? 1 : this._pitch;
+    f.frequency.setValueAtTime((o.freq || 1000) * p, t);
+    if (o.to) f.frequency.exponentialRampToValueAtTime(o.to * p, t + dur);
     f.Q.value = o.q ?? 1;
     const g = ctx.createGain();
     const peak = o.gain ?? 0.2;
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(peak, t + (o.attack ?? 0.005));
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.connect(f).connect(g).connect(o.bus || this.sfxBus);
+    src.connect(f).connect(g).connect(o.bus || this._out || this.sfxBus);
     if (o.reverb) {
       const s = ctx.createGain();
       s.gain.value = o.reverb;
@@ -192,7 +197,16 @@ class AudioEngine {
       return;
     }
     const fn = SFX[name] || SFX[name.split('.')[0]];
-    if (fn) fn(this, opts);
+    if (!fn) return;
+    // each sound gets its own level from the mix table, and repeated sounds
+    // (every fix, every tap) vary a little in pitch so they never sound canned
+    const out = this.ctx.createGain();
+    out.gain.value = (MIX[name] ?? 1) * (opts.gain ?? 1);
+    out.connect(this.sfxBus);
+    const vary = opts.vary ?? (VARY.has(name) || name.startsWith('fix.') ? 0.05 : 0);
+    this._out = out;
+    this._pitch = vary ? Math.pow(2, ((Math.random() * 2 - 1) * vary * 12) / 12) : 1;
+    try { fn(this, opts); } finally { this._out = null; this._pitch = 1; }
   }
 
   // -------------------------------------------------------------- music ----
@@ -222,7 +236,11 @@ class AudioEngine {
         const tones = chordTones(root, q);
         const beat = state.beat;
         // oom-pah-pah waltz accompaniment
-        if (beat === 0) this.tone(NOTE(root - 12), spb * 1.6, { when: t, type: 'triangle', gain: 0.22, attack: 0.01, bus: this.musicBus, filter: { freq: 900 } });
+        if (beat === 0) {
+          this.tone(NOTE(root - 12), spb * 1.6, { when: t, type: 'triangle', gain: 0.22, attack: 0.01, bus: this.musicBus, filter: { freq: 900 } });
+          // the same note an octave up, so phone speakers carry the bass line
+          this.tone(NOTE(root), spb * 1.2, { when: t, type: 'triangle', gain: 0.07, attack: 0.01, bus: this.musicBus, filter: { freq: 1400 } });
+        }
         else if (mood !== 'quiet') {
           for (const n of tones.slice(1, 3)) this.tone(NOTE(n), spb * 0.5, { when: t, type: 'triangle', gain: 0.05, attack: 0.008, bus: this.musicBus, filter: { freq: 2200 } });
         }
@@ -346,7 +364,8 @@ class AudioEngine {
 
 // ------------------------------------------------------------ sound book ----
 const SFX = {
-  'ui.tap': (a) => { a.noise(0.03, { freq: 2800, q: 2, gain: 0.12 }); a.tone(980, 0.04, { gain: 0.05 }); },
+  // a fingertip on card: a soft papery tick with a little wooden body
+  'ui.tap': (a) => { a.noise(0.035, { freq: 2400, q: 1.4, gain: 0.2 }); a.tone(1300, 0.06, { type: 'triangle', glide: 880, glideTime: 0.05, gain: 0.12 }); },
   'ui.open': (a) => a.noise(0.26, { freq: 700, to: 2600, q: 1.2, gain: 0.12, attack: 0.03 }),
   'ui.close': (a) => a.noise(0.2, { freq: 2400, to: 700, q: 1.2, gain: 0.1, attack: 0.02 }),
   'ui.toggle': (a) => { a.tone(1200, 0.05, { type: 'square', gain: 0.04, filter: { freq: 3000 } }); },
@@ -426,7 +445,13 @@ const SFX = {
     a.tone(92, 1.1, { type: 'sawtooth', gain: 0.05, vibrato: [22, 8], filter: { freq: 600 }, attack: 0.05 });
     for (let i = 0; i < 6; i++) a.tone(2400, 0.015, { delay: 0.1 + i * 0.16, type: 'square', gain: 0.025, filter: { freq: 5000 } });
   },
-  stamp: (a) => { a.tone(120, 0.16, { glide: 60, gain: 0.5 }); a.noise(0.08, { type: 'lowpass', freq: 900, gain: 0.35 }); },
+  // a rubber stamp: the thump, plus a mid knock and a paper slap that phone speakers can actually play
+  stamp: (a) => {
+    a.tone(120, 0.16, { glide: 60, gain: 0.45 });
+    a.tone(420, 0.09, { type: 'triangle', glide: 210, gain: 0.3 });
+    a.noise(0.05, { freq: 1900, q: 0.9, gain: 0.3 });
+    a.noise(0.08, { type: 'lowpass', freq: 900, gain: 0.3 });
+  },
   coin: (a) => {
     a.tone(1318, 0.07, { type: 'square', gain: 0.05, filter: { freq: 4000 } });
     a.tone(1976, 0.18, { delay: 0.07, type: 'square', gain: 0.05, filter: { freq: 4000 }, reverb: 0.3 });
@@ -458,6 +483,62 @@ const SFX = {
   bell: (a) => a._bell(NOTE(64), 0.12),
   hint: (a) => { a.tone(1568, 0.3, { gain: 0.06, reverb: 0.6 }); a.tone(2349, 0.4, { delay: 0.08, gain: 0.05, reverb: 0.6 }); },
   nudge: (a) => a.tone(3136, 0.3, { gain: 0.02, reverb: 0.7 }),
+  // the last fix: a warm rising run, a bell and a shimmer, before the shutter
+  complete: (a) => {
+    [60, 64, 67, 72, 76, 79].forEach((n, i) => a.tone(NOTE(n + 12), 0.9 - i * 0.06, { type: 'triangle', delay: i * 0.055, gain: 0.09, reverb: 0.5 }));
+    a._bell(NOTE(84), 0.08);
+    a.noise(0.9, { type: 'highpass', freq: 6000, gain: 0.03, attack: 0.25, reverb: 0.5 });
+  },
+  // a found thing tucked into its slot in the bar, pitched by how many of that job are done
+  arrive: (a, o) => {
+    const n = NOTE(PENTA[Math.min(PENTA.length - 1, (o.step || 1) + 1)]);
+    a.noise(0.04, { freq: 3000, q: 1.2, gain: 0.12 });
+    a.tone(n, 0.22, { type: 'triangle', gain: 0.1, reverb: 0.3 });
+  },
+  whoosh: (a) => a.noise(0.28, { freq: 900, to: 2600, q: 0.8, gain: 0.07, attack: 0.08 }),
 };
+
+// Mix: each sound's level relative to its synthesis, balanced by rendering every
+// sound offline and matching loudness targets (node tools/qa/shots.mjs mix).
+const MIX = {
+  'fix.pop': 2.29,
+  'fix.pluck': 1.62,
+  'fix.swing': 3.24,
+  'fix.thunk': 1.64,
+  'fix.paint': 1.88,
+  'fix.squeak': 3.16,
+  'fix.bloom': 1.32,
+  'fix.lamp': 1.45,
+  'fix.sweep': 4.22,
+  'fix.flap': 5.31,
+  'combo': 3.13,
+  'callout': 1.53,
+  'miss': 2,
+  'shaky': 1.7,
+  'cat': 8.22,
+  'shutter': 1.74,
+  'flash': 1.08,
+  'print': 1.7,
+  'stamp': 1.48,
+  'coin': 2.43,
+  'levelup': 1.24,
+  'rosette': 2.3,
+  'unlock': 1.51,
+  'restore': 1.08,
+  'collect': 1.68,
+  'whistle': 1.36,
+  'hint': 2.11,
+  'nudge': 3.09,
+  'ui.tap': 6.24,
+  'ui.open': 3.47,
+  'ui.close': 3.13,
+  'page': 3.24,
+  'complete': 1.27,
+  'arrive': 3.27,
+  'whoosh': 2.75,
+  'tick': 5.89,
+};
+// sounds that vary slightly in pitch each time (all fix.* sounds do too)
+const VARY = new Set(['ui.tap', 'miss', 'stamp', 'arrive', 'coin', 'tick', 'page', 'whoosh']);
 
 export const audio = new AudioEngine();

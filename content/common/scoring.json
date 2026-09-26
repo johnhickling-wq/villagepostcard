@@ -14,29 +14,29 @@
  "noHintBonus": 0.1,
  "stamps": [
   0,
-  0.89,
-  0.974
+  0.874,
+  0.966
  ],
  "callouts": [
   [
    3,
-   "Lovely!"
+   "Tidy!"
   ],
   [
-   5,
+   4,
    "Splendid!"
   ],
   [
-   7,
+   5,
    "Smashing!"
   ],
   [
-   10,
+   6,
    "Marvellous!"
   ],
   [
-   13,
-   "Picture Perfect!"
+   8,
+   "Spick and span!"
   ]
  ],
  "tapTolerancePx": 14

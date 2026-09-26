@@ -6,7 +6,7 @@
     {"kind": "cat",       "weight": 1.0, "count": [1, 3],   "reward": {"fund": [50, 80],  "xp": [20, 30]}},
     {"kind": "stamps",    "weight": 1.0, "needsScene": true, "minPlays": 4, "reward": {"fund": [80, 120], "xp": [30, 45], "flashbulbs": 1}},
     {"kind": "condition", "weight": 1.0, "minTierReached": 2, "reward": {"fund": [60, 90], "xp": [25, 35]}},
-    {"kind": "combo",     "weight": 1.0, "count": [5, 8],   "reward": {"fund": [60, 95],  "xp": [25, 35]}},
+    {"kind": "combo",     "weight": 1.0, "count": [4, 6],   "reward": {"fund": [60, 95],  "xp": [25, 35]}},
     {"kind": "nohint",    "weight": 0.7, "minPlays": 5, "reward": {"fund": [60, 90],  "xp": [25, 35]}},
     {"kind": "quick",     "weight": 0.7, "seconds": [50, 75], "minPlays": 5, "reward": {"fund": [70, 100], "xp": [25, 40]}},
     {"kind": "plays",     "weight": 1.2, "needsScene": true, "count": [1, 2], "reward": {"fund": [45, 75],  "xp": [15, 25]}},

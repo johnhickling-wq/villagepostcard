@@ -484,7 +484,7 @@ export function goalLabel(content, vid, r) {
     case 'cat': return `Find Marmalade ${r.count === 1 ? 'once' : `${r.count} times`}`;
     case 'stamps': return `3-stamp postcard of ${sceneName}`;
     case 'condition': return `A postcard in ${content.conditions[r.condition].name}`;
-    case 'combo': return `Reach a ×${r.count} combo`;
+    case 'combo': return `Fix ${r.count} in a quick row`;
     case 'nohint': return 'Finish a scene without hints';
     case 'quick': return `Finish a scene in under ${r.seconds}s`;
     case 'plays': return `${r.count} postcard${r.count > 1 ? 's' : ''} of ${sceneName}`;

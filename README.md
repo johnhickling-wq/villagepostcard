@@ -100,4 +100,6 @@ npm run validate   # content pack integrity
 npm run bot        # fairness + difficulty across thousands of generated messes
 npm run economy    # full-village playthrough simulation
 node tools/qa/shots.mjs tutorial|map|screens|gallery|fixes|hints|restore|judging|dialogs   # 844x390 landscape phone screenshots
+VW=390 VH=844 node tools/qa/shots.mjs rotated   # portrait phone: the stage turns itself
+node tools/qa/shots.mjs mix                     # loudness of every sound against its target
 ```

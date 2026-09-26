@@ -27,7 +27,7 @@ for (const t of c.tiers) for (const cond of Object.keys(t.conditions)) if (!c.co
 // the step-by-step introduction
 for (const t of Object.keys(c.intro.jobs || {})) if (!c.faults[t]) err('intro', `unknown job "${t}"`);
 for (const t of c.intro.tutorial?.script || []) if ((c.intro.jobs?.[t] ?? 0) > 0) err('intro', `tutorial uses "${t}" before it is introduced`);
-const FEATURES = ['album', 'cat', 'loupe', 'score', 'level', 'combo', 'requests', 'collectibles', 'daily', 'flash', 'travel'];
+const FEATURES = ['album', 'cat', 'loupe', 'score', 'level', 'zoom', 'combo', 'requests', 'collectibles', 'daily', 'flash', 'travel'];
 for (const f of Object.keys(c.intro.features || {})) if (!FEATURES.includes(f)) err('intro', `unknown feature "${f}"`);
 for (const f of Object.keys(c.intro.cards || {})) if (!(f in (c.intro.features || {}))) err('intro', `card for "${f}", which has no unlock point`);
 

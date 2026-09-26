@@ -42,7 +42,7 @@ function profile(app) {
       row('Postcards taken', app.save.player.plays),
       row('Things tidied', fixes),
       row('Marmalade spotted', s.cats),
-      row('Best combo', `×${s.bestCombo}`),
+      row('Best run', `${s.bestCombo} in a row`),
       row('Three-stamp cards', s.perfect),
       row('Flashbulbs', app.save.player.flashbulbs),
       row('Second-Class Stamps', app.save.player.secondClass),

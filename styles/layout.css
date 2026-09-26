@@ -313,3 +313,17 @@
 .job-ico svg { width: 28px; height: 28px; }
 .job-name { font-size: 19px; line-height: 1; }
 .job-text { font-size: 13.5px; line-height: 1.25; color: var(--ink-soft); margin-top: 2px; }
+
+/* a found thing's tool flying up to the bar */
+.fly-token { position: absolute; left: 0; top: 0; z-index: 8; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; pointer-events: none;
+  background: radial-gradient(circle, #fffaf0 55%, rgba(255, 250, 240, 0) 72%); filter: drop-shadow(0 2px 4px rgba(40, 30, 20, 0.35)); will-change: transform; }
+.fly-token img { max-width: 30px; max-height: 28px; }
+.fly-token svg { width: 22px; height: 22px; }
+.act.just-done .act-count { animation: doneStamp 0.5s cubic-bezier(0.3, 0, 0.3, 1.6) both; }
+@keyframes doneStamp { 0% { transform: scale(2.2) rotate(-20deg); opacity: 0; } 60% { transform: scale(0.9) rotate(4deg); opacity: 1; } 100% { transform: none; } }
+
+/* the last fix: warm light sweeps across the picture */
+.finish-sweep { position: absolute; inset: 0; z-index: 7; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: linear-gradient(100deg, rgba(255, 236, 190, 0) 38%, rgba(255, 236, 190, 0.55) 50%, rgba(255, 236, 190, 0) 62%) no-repeat; background-size: 280% 100%; background-position: 100% 0; }
+.finish-sweep.go { animation: finishSweep 1.15s cubic-bezier(0.4, 0, 0.3, 1) forwards; }
+@keyframes finishSweep { 0% { opacity: 1; background-position: 100% 0; } 85% { opacity: 1; } 100% { opacity: 0; background-position: 0% 0; } }

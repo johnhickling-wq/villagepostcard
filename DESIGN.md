@@ -116,18 +116,21 @@ are optional, and tapping one collects it for the scrapbook.
 - **Per fix:** `base(type) × (1 + 0.6 × subtlety) × comboMultiplier`.
   Subtlety runs from 0 (obvious) to 1 (very subtle), so subtle faults are
   worth more.
-- **Combo:** each fix within the combo window (3.0 s at Tier 1, falling to
-  2.2 s at Tier 5) raises the chain. The multiplier is `1 + 0.2 × (chain − 1)`,
-  capped at ×3. Call-outs appear at 3/5/7/10/13: *Lovely! · Splendid! ·
-  Smashing! · Marvellous! · Picture Perfect!* The chime climbs a pentatonic
-  scale with each link.
+- **Runs (combos):** each fix within the run window (4.0 s at Tier 1, falling
+  to 3.2 s at Tier 5; 3.4 s in Free Play) makes the run longer. The multiplier
+  is `1 + 0.2 × (run − 1)`, capped at ×3. The HUD says "3 in a row", never
+  "×3", because players aren't gamers. Call-outs appear at 3/4/5/6/8: *Tidy! ·
+  Splendid! · Smashing! · Marvellous! · Spick and span!* The windows are set so
+  the simulated average player reaches 3 in a row in most plays and 8 only
+  rarely, so every word on the ladder is actually seen. The chime climbs a
+  pentatonic scale with each link.
 - **Mis-tap:** −20 points (never below 0) and the combo breaks. Three mis-taps
   inside 1.5 s trigger **Shaky Hands**: the camera wobbles and taps are ignored
   for 2 s. This stops tap-spamming without ever blocking progress.
 - **Time bonus:** `max(0, par − seconds) × 8`. Par comes from the bot (§8).
 - **Bonuses:** Marmalade +250, collectible +150, no hint used +10%.
 - **Stamps (1–3), from the fifth postcard on:** finishing always earns 1 stamp.
-  2 and 3 stamps need `score ≥ 0.89 × ref` and `score ≥ 0.974 × ref`, where
+  2 and 3 stamps need `score ≥ 0.874 × ref` and `score ≥ 0.966 × ref`, where
   `ref` is the expected score of a skilled player, computed per play from the
   actual generated faults, so every play is graded fairly, whatever mess you
   got. `node tools/bot/tune.mjs` sets these so about 30% of plays by the
@@ -142,6 +145,28 @@ are optional, and tapping one collects it for the scrapbook.
   fault for 2.5 s. Earned from level-ups, requests, sets and the daily streak.
 - **Idle nudge** (Tiers 1–2 only): after a quiet spell, a faint glint appears
   near a remaining fault.
+
+### 3.4 Game feel
+
+Every tap has to feel good on a phone, where the scene is drawn small.
+
+- **A fix:** a warm glow and a burst sized for the screen (particles grow as the
+  scene shrinks), a 45 ms hit-stop and a small shake, and a sound with a little
+  random pitch so repeats never sound mechanical. The job's tool icon then
+  flies in an arc to its place in the bar, and the count ticks down as it
+  lands. A finished job gets a stamp and a thump.
+- **The last fix:** a moment's pause, a rising chime, a gold sweep across the
+  scene and sparkles, then the viewfinder, "Hold still…", the shutter and the
+  flash.
+- **The results:** the print slides out and develops while the tally counts
+  beside it; the before/after wipe plays; the stamps land on the finished
+  score; only then does Continue appear. The play's music stops for the print
+  and the gentler map tune follows.
+- **Sound:** every sound is levelled to a target loudness
+  (`tools/qa/scenarios/mix.mjs` measures them offline), so small sounds (taps,
+  ticks) sit under the fixes and the big moments (the finish, a stamp) stand
+  out. Audio unlocks on the first touch, and resumes after a phone call or the
+  lock screen.
 
 ## 4. Difficulty
 
@@ -303,7 +328,7 @@ Seven recurring villagers each have a portrait, a voice and a home scene.
 Requests are **self-contained** (no serialised plot) and are *generated* from
 templates in `content/common/requests.json` against what the player has
 unlocked. Examples: "Polish 6 windows on the High Street", "Find Marmalade
-twice", "Take a Dusk postcard anywhere", "Hit a ×6 combo", "Get 3 stamps at
+twice", "Take a Dusk postcard anywhere", "Fix 5 in a quick row", "Get 3 stamps at
 the Old Mill". Three slots are always active, and a fresh request arrives
 the moment one is finished (no timers). Rewards are money for the Fund, XP and sometimes a
 flashbulb or a guaranteed collectible. Each villager has **friendship hearts**
@@ -409,7 +434,7 @@ taken), so a new pack can change it without code.
    | 3 | Water; Marmalade the cat | job card; she simply appears, and a toast names her when found |
    | 4 | The loupe | the button appears, and the coach points at it once |
    | 5 | Weed; score, clock and stamps | job card; the coach points at the score, the first stamps are explained |
-   | 6 | Photographer level | a card on the map; the level badge appears |
+   | 6 | Photographer level; zoom | a card on the map; the level badge appears; the coach explains pinch and double-tap once |
    | 7 | Stand up; combos | job card; the first combo is explained |
    | 8 | The Noticeboard | a card on the map; its button appears |
    | 9 | Keepsakes | the first one is guaranteed |

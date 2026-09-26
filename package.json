@@ -10,7 +10,8 @@
     "bot": "node tools/bot/bot.mjs",
     "economy": "node tools/bot/economy.mjs",
     "build": "node tools/build.mjs",
-    "shots": "node tools/qa/shots.mjs"
+    "shots": "node tools/qa/shots.mjs",
+    "test": "node --test tools/test/*.test.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

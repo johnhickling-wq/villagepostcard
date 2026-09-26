@@ -37,70 +37,54 @@
  ],
  "rewards": {
   "2": {
-   "flashbulbs": 2,
-   "fund": 40
+   "flashbulbs": 2
   },
   "3": {
-   "perk": "loupe-1",
-   "fund": 50
+   "perk": "loupe-1"
   },
   "4": {
-   "flashbulbs": 1,
-   "secondClass": 1,
-   "fund": 50
+   "flashbulbs": 2
   },
   "5": {
-   "cosmetic": "film-sepia",
-   "fund": 60
+   "cosmetic": "film-sepia"
   },
   "6": {
-   "flashbulbs": 2,
-   "fund": 60
+   "flashbulbs": 2
   },
   "7": {
-   "perk": "loupe-2",
-   "fund": 70
+   "perk": "loupe-2"
   },
   "8": {
    "cosmetic": "frame-kraft",
-   "flashbulbs": 1,
-   "fund": 70
+   "flashbulbs": 1
   },
   "9": {
-   "secondClass": 1,
-   "fund": 80
+   "flashbulbs": 1
   },
   "10": {
    "cosmetic": "postmark-crown",
-   "flashbulbs": 2,
-   "fund": 100
+   "flashbulbs": 2
   },
   "11": {
-   "cosmetic": "film-kodachrome",
-   "fund": 80
+   "cosmetic": "film-kodachrome"
   },
   "12": {
    "perk": "loupe-3",
-   "flashbulbs": 1,
-   "fund": 80
+   "flashbulbs": 1
   },
   "13": {
-   "flashbulbs": 2,
-   "fund": 90
+   "flashbulbs": 2
   },
   "14": {
-   "secondClass": 1,
    "cosmetic": "frame-gilt",
-   "fund": 100
+   "flashbulbs": 1
   },
   "15": {
-   "cosmetic": "film-cyanotype",
-   "fund": 100
+   "cosmetic": "film-cyanotype"
   }
  },
  "defaultReward": {
-  "flashbulbs": 1,
-  "fund": 100
+  "flashbulbs": 1
  },
  "perks": {
   "loupe-1": {

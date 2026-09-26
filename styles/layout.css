@@ -186,17 +186,14 @@
 }
 .map-cartouche { top: calc(var(--safe-t) + 4px); padding: 2px 14px 4px; z-index: 11; }
 .map-name { font-size: 20px; }
-.map-cartouche .bloom .label { font-size: 9px; }
-.map-cartouche .bloom-bar { width: 90px; }
+.map-cartouche .milestone { margin-top: 1px; }
 .pin { width: 96px; transform: translate(-50%, -60%) rotate(var(--rot)); }
 .pin:active { transform: translate(-50%, -60%) rotate(var(--rot)) scale(0.94); }
 .pin-card { width: 90px; height: 64px; padding: 4px; }
 .pin-lock svg { width: 26px; height: 26px; }
 .pin-stickers { left: -18px; bottom: 22px; }
 .pin-stickers img { width: 26px; height: 26px; }
-.goal { left: calc(var(--safe-l) + 10px); right: auto; bottom: calc(var(--safe-b) + 8px); width: min(470px, calc(100vw - var(--safe-l) - var(--safe-r) - 120px)); padding: 6px 12px; }
-.goal-portrait { width: 38px; height: 44px; }
-.goal-text .hand { font-size: 18px; }
+.next-ribbon { left: calc(var(--safe-l) + 10px); bottom: calc(var(--safe-b) + 8px); width: min(520px, calc(100vw - var(--safe-l) - var(--safe-r) - 110px)); }
 .nav {
   left: auto; right: calc(var(--safe-r) + 6px); top: calc(var(--safe-t) + 56px); bottom: calc(var(--safe-b) + 6px);
   width: 76px; padding: 0; flex-direction: column; justify-content: center; gap: 6px; background: none;

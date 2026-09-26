@@ -8,9 +8,9 @@
   "intro": "Litter spoils the picture. Tap it to tidy it away.",
   "icon": "litter/crisp-packet",
   "points": 100,
-  "weight": 3.0,
+  "weight": 3,
   "minTier": 1,
-  "salience": 1.0,
+  "salience": 1,
   "strategy": "spawn",
   "slot": "zones",
   "pool": "litter",
@@ -19,7 +19,7 @@
    0.85
   ],
   "camouflage": [
-   0.0,
+   0,
    0.85
   ],
   "spacing": 60,
@@ -38,7 +38,7 @@
   "intro": "Weeds have sprung up by walls and paths. Tap one to pull it up.",
   "icon": "critters/dandelion",
   "points": 110,
-  "weight": 1.0,
+  "weight": 1,
   "minTier": 1,
   "salience": 0.85,
   "strategy": "spawn",
@@ -49,7 +49,7 @@
    0.85
   ],
   "camouflage": [
-   0.0,
+   0,
    0.5
   ],
   "spacing": 70,
@@ -70,7 +70,7 @@
   "points": 120,
   "weight": 1.6,
   "minTier": 1,
-  "salience": 1.0,
+  "salience": 1,
   "strategy": "prop",
   "tag": "tiltable",
   "angle": [
@@ -149,7 +149,7 @@
    "grime"
   ],
   "amount": [
-   1.0,
+   1,
    0.55
   ],
   "fix": "wipe",
@@ -173,7 +173,7 @@
   "strategy": "prop",
   "tag": "flowers",
   "amount": [
-   1.0,
+   1,
    0.6
   ],
   "fix": "bloom",
@@ -191,7 +191,7 @@
   "intro": "At dusk the lamps should glow. Tap a dark lamp to light it.",
   "icon": "ui/lamp",
   "points": 150,
-  "weight": 2.0,
+  "weight": 2,
   "minTier": 1,
   "salience": 1.2,
   "requires": "dark",
@@ -237,7 +237,7 @@
   "points": 120,
   "weight": 0.8,
   "minTier": 3,
-  "salience": 1.0,
+  "salience": 1,
   "strategy": "perch",
   "pool": "pigeons",
   "sizeMul": [
@@ -249,5 +249,26 @@
   "haptic": "light",
   "particles": "feathers",
   "phrase": "pigeons"
+ },
+ "plant": {
+  "name": "Planting",
+  "label": "Plant",
+  "verb": "Plant the flowers",
+  "action": "Plant",
+  "actionIcon": "plant",
+  "actionArt": "props/flower-tub",
+  "intro": "An empty planter, waiting for flowers. Tap it to plant them.",
+  "icon": "props/flower-tub",
+  "points": 130,
+  "weight": 0,
+  "minTier": 99,
+  "salience": 1.05,
+  "strategy": "plant",
+  "fix": "grow",
+  "sfx": "fix.bloom",
+  "haptic": "light",
+  "particles": "petals",
+  "phrase": "empty planters",
+  "story": true
  }
 }

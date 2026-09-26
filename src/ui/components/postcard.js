@@ -23,7 +23,7 @@ export function postcardEl(app, o) {
     'postmark-crown': ['♛', dateStr, 'ROYAL MAIL'],
   }[postmarkKind] || ['WOLD & VALE', dateStr, ''];
   const stamp = h('div.pc-stamp.stamp', h('div.inner', h('img', { src: app.assets.spriteUrl('ui/postcard-stamp', 'common', 0.45), alt: '' })));
-  const el = h(`div.postcard.${frame}`,
+  const el = h(`div.postcard.${frame}${o.compact ? '.compact' : ''}`,
     h('div.pc-inner',
       photo,
       stamp,

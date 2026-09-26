@@ -6,6 +6,7 @@
  "county": "Gloucestershire",
  "year": 1957,
  "tagline": "A honey-stone village in a green fold of the Wolds.",
+ "opening": "Help Honeycombe look its best before the village judges arrive.",
  "difficultyBase": 0,
  "start": "railway-halt",
  "scenes": [
@@ -63,222 +64,6 @@
    560
   ]
  },
- "projects": [
-  {
-   "id": "open-high-street",
-   "scene": "railway-halt",
-   "unlocks": "high-street",
-   "cost": 80,
-   "villager": "stationmaster",
-   "icon": "broom",
-   "name": "Sweep the Station Lane",
-   "desc": "Clear the lane from the Halt so visitors can find the High Street."
-  },
-  {
-   "id": "halt-paint",
-   "scene": "railway-halt",
-   "cost": 170,
-   "villager": "stationmaster",
-   "icon": "paint",
-   "name": "Repaint the Waiting Shelter",
-   "desc": "Chocolate and cream, just as the Great Western intended. And polish that window!"
-  },
-  {
-   "id": "halt-flowers",
-   "scene": "railway-halt",
-   "cost": 250,
-   "villager": "stationmaster",
-   "icon": "flowers",
-   "name": "Station Flowers",
-   "desc": "Hanging baskets under the canopy and a flower tub by the line. Mr Figg has entered 'Best-Kept Station' too."
-  },
-  {
-   "id": "open-village-green",
-   "scene": "high-street",
-   "unlocks": "village-green",
-   "cost": 280,
-   "villager": "colonel",
-   "icon": "gate",
-   "name": "Mend the Green's Gate",
-   "desc": "The old kissing gate onto the Green has been stuck since the Coronation."
-  },
-  {
-   "id": "hs-paint",
-   "scene": "high-street",
-   "cost": 310,
-   "villager": "postmistress",
-   "icon": "paint",
-   "name": "Repaint Kiosk & Pillar Box",
-   "desc": "Post Office red, two coats. Mrs Pemberton will inspect personally."
-  },
-  {
-   "id": "hs-bunting",
-   "scene": "high-street",
-   "cost": 390,
-   "villager": "postmistress",
-   "icon": "bunting",
-   "name": "Bunting on the High Street",
-   "desc": "Flags from bracket to bracket, a window box for the Post Office and a basket by the tea room."
-  },
-  {
-   "id": "open-weavers-row",
-   "scene": "village-green",
-   "unlocks": "weavers-row",
-   "cost": 420,
-   "villager": "postman",
-   "icon": "path",
-   "name": "Clear the Riverside Path",
-   "desc": "Brambles have swallowed the footpath down to Weavers' Row."
-  },
-  {
-   "id": "green-benches",
-   "scene": "village-green",
-   "cost": 420,
-   "villager": "colonel",
-   "icon": "bench",
-   "name": "Varnish Benches, Scrub the Cross",
-   "desc": "The Market Cross hasn't been scrubbed since 1911. The Colonel has strong feelings."
-  },
-  {
-   "id": "green-ducks",
-   "scene": "village-green",
-   "cost": 500,
-   "villager": "colonel",
-   "icon": "duck",
-   "name": "A Duck House for the Pond",
-   "desc": "A proper house for the ducks, a bird bath and bunting round the Green."
-  },
-  {
-   "id": "open-old-mill",
-   "scene": "weavers-row",
-   "unlocks": "old-mill",
-   "cost": 590,
-   "villager": "beekeeper",
-   "icon": "water",
-   "name": "Free the Mill Race",
-   "desc": "Clear the weed from the mill race so the old wheel can turn again."
-  },
-  {
-   "id": "row-paint",
-   "scene": "weavers-row",
-   "cost": 530,
-   "villager": "postman",
-   "icon": "paint",
-   "name": "Paint the Weavers' Doors",
-   "desc": "A fresh coat for the doors of the Row and window boxes all along."
-  },
-  {
-   "id": "row-bunting",
-   "scene": "weavers-row",
-   "cost": 590,
-   "villager": "postman",
-   "icon": "bunting",
-   "name": "Bunting along the Row",
-   "desc": "Flags along the cottages and a flower trough by the bridge."
-  },
-  {
-   "id": "open-bee-and-bramble",
-   "scene": "old-mill",
-   "unlocks": "bee-and-bramble",
-   "cost": 730,
-   "villager": "landlady",
-   "icon": "path",
-   "name": "Clear the Brambles on Pub Lane",
-   "desc": "Mabel says half her regulars got lost in the brambles last winter."
-  },
-  {
-   "id": "mill-paint",
-   "scene": "old-mill",
-   "cost": 620,
-   "villager": "beekeeper",
-   "icon": "paint",
-   "name": "Paint the Mill Doors",
-   "desc": "Mill-green paint for the mill door and the stable door opposite."
-  },
-  {
-   "id": "mill-garden",
-   "scene": "old-mill",
-   "cost": 670,
-   "villager": "beekeeper",
-   "icon": "flowers",
-   "name": "The Miller's Garden",
-   "desc": "A bench by the ford, a beehive on the bank and a trough of flowers."
-  },
-  {
-   "id": "open-st-aldhelms",
-   "scene": "bee-and-bramble",
-   "unlocks": "st-aldhelms",
-   "cost": 870,
-   "villager": "vicar",
-   "icon": "key",
-   "name": "Oil the Lychgate",
-   "desc": "The lychgate squeals like a bagpipe. The Reverend would like it to stop."
-  },
-  {
-   "id": "pub-door",
-   "scene": "bee-and-bramble",
-   "cost": 730,
-   "villager": "landlady",
-   "icon": "paint",
-   "name": "Strip & Varnish the Pub Door",
-   "desc": "Oak should look like oak. And the garden gate needs doing while we're at it."
-  },
-  {
-   "id": "pub-lights",
-   "scene": "bee-and-bramble",
-   "cost": 660,
-   "villager": "landlady",
-   "icon": "lights",
-   "name": "Festoon Lights for the Garden",
-   "desc": "Strings of lights along the eaves, baskets by the door and a bird bath on the lawn."
-  },
-  {
-   "id": "open-rose-cottage",
-   "scene": "st-aldhelms",
-   "unlocks": "rose-cottage",
-   "cost": 830,
-   "villager": "beekeeper",
-   "icon": "rose",
-   "name": "Prune the Rose Arch",
-   "desc": "Nan Honeysett's gate is lost somewhere behind her roses."
-  },
-  {
-   "id": "church-clock",
-   "scene": "st-aldhelms",
-   "cost": 710,
-   "villager": "vicar",
-   "icon": "clock",
-   "name": "Regild the Church Clock",
-   "desc": "Gold leaf for the clock face and a coat of varnish for the church door."
-  },
-  {
-   "id": "church-flowers",
-   "scene": "st-aldhelms",
-   "cost": 760,
-   "villager": "vicar",
-   "icon": "flowers",
-   "name": "Churchyard Flowers",
-   "desc": "A bench for weary bell-ringers and flowers along the path."
-  },
-  {
-   "id": "cottage-hives",
-   "scene": "rose-cottage",
-   "cost": 780,
-   "villager": "beekeeper",
-   "icon": "bee",
-   "name": "Freshen the Hives",
-   "desc": "A lick of white paint for the hives and a scrub for the greenhouse."
-  },
-  {
-   "id": "cottage-fete",
-   "scene": "rose-cottage",
-   "cost": 860,
-   "villager": "beekeeper",
-   "icon": "bunting",
-   "name": "Fête Day at Rose Cottage",
-   "desc": "Bunting, a bird bath and a picnic hamper. The judges are coming for tea."
-  }
- ],
  "finale": {
   "title": "Best-Kept Village",
   "award": "Gloucestershire Best-Kept Village, 1957",
@@ -305,5 +90,35 @@
    "title": "Your next assignment",
    "body": "Dear Photographer,\n\nBest-Kept Village! The whole company is thrilled, and the Honeycombe postcards are our best-sellers of the year.\n\nWhich brings me to Porthkennack Cove in Cornwall. A fishing village on a harbour, with storms, sea mist and gulls with opinions. They've entered the Coastal Village Prize and they're asking for you by name.\n\nThe sleeper leaves Paddington on Friday. Say the word and I'll book your ticket.\n\nYours, very proudly,\nClementine Ashby"
   }
+ },
+ "legacy": {
+  "note": "Save migration from version 2: access projects that opened a place, and the restoration projects that are now effects.",
+  "access": {
+   "open-high-street": "high-street",
+   "open-village-green": "village-green",
+   "open-weavers-row": "weavers-row",
+   "open-old-mill": "old-mill",
+   "open-bee-and-bramble": "bee-and-bramble",
+   "open-st-aldhelms": "st-aldhelms",
+   "open-rose-cottage": "rose-cottage"
+  },
+  "effects": [
+   "halt-paint",
+   "halt-flowers",
+   "hs-paint",
+   "hs-bunting",
+   "green-benches",
+   "green-ducks",
+   "row-paint",
+   "row-bunting",
+   "mill-paint",
+   "mill-garden",
+   "pub-door",
+   "pub-lights",
+   "church-clock",
+   "church-flowers",
+   "cottage-hives",
+   "cottage-fete"
+  ]
  }
 }

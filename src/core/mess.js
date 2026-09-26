@@ -22,33 +22,61 @@ export function depthScale(scene, y) {
 /** Tag match where the wanted tag may be a string or a list of alternatives. */
 export const hasTag = (tags, want) => (Array.isArray(want) ? want.some((w) => (tags || []).includes(w)) : (tags || []).includes(want));
 
-const doneSet = (projects) => (projects instanceof Set ? projects : new Set(projects || []));
+const doneSet = (effects) => (effects instanceof Set ? effects : new Set(effects || []));
 
-/** Props present in the clean scene for the current restoration state. */
-export function activeProps(scene, projectsDone) {
-  const done = doneSet(projectsDone);
+/** Restoration layers in force. Layers marked "added" arrived with the
+ *  restoration update (save v3); legacy postcards (album entries without a
+ *  render version) are drawn without them, so they look as they always did. */
+function layers(scene, opts = {}) {
+  return (scene.restoration || []).filter((r) => !(opts.legacy && r.added));
+}
+
+/**
+ * Props present in the clean scene for a restoration state.
+ * @param effects  the permanent effects done (a Set or list of effect ids)
+ * @param opts     {legacy, staged: prop ids from not-yet-done layers to show anyway (a visit's planting targets)}
+ */
+export function activeProps(scene, effects, opts = {}) {
+  const done = doneSet(effects);
+  const staged = new Set(opts.staged || []);
   const removed = new Set();
+  const labels = {}, tints = {};
   const props = [...(scene.props || [])];
-  for (const r of scene.restoration || []) {
-    if (!done.has(r.project)) continue;
+  for (const r of layers(scene, opts)) {
+    if (!done.has(r.effect)) {
+      for (const p of r.props || []) if (staged.has(p.id)) props.push({ ...p, staged: true });
+      continue;
+    }
     props.push(...(r.props || []));
     for (const id of r.removes || []) removed.add(id);
+    Object.assign(labels, r.labels || {});
+    Object.assign(tints, r.tints || {});
   }
-  return props.filter((p) => !removed.has(p.id));
+  return props.filter((p) => !removed.has(p.id)).map((p) => {
+    if (!(p.id in labels) && !(p.id in tints)) return p;
+    return { ...p, ...(p.id in labels ? { label: labels[p.id] } : {}), ...(p.id in tints ? { tint: tints[p.id] } : {}) };
+  });
 }
 
-/** Persistent neglect (faded/grimy regions, wilted props) not yet restored. */
-export function activeNeglect(scene, projectsDone) {
-  const done = doneSet(projectsDone);
-  return (scene.neglect || []).filter((n) => !done.has(n.project));
+/** Every prop the scene can ever have, whatever the restoration state. */
+export function allProps(scene) {
+  return [...(scene.props || []), ...(scene.restoration || []).flatMap((r) => r.props || [])];
 }
 
-/** 0..1 how restored (and therefore how lovely) this scene currently is. */
-export function sceneBloom(scene, projectsDone) {
-  const done = doneSet(projectsDone);
-  const projects = scene.bloomProjects || (scene.restoration || []).map((r) => r.project);
-  if (!projects.length) return 1;
-  return projects.filter((p) => done.has(p)).length / projects.length;
+/** Persistent neglect (faded/grimy regions, wilted props) not yet restored,
+ *  either by its effect or by a story task that fixed that thing for good. */
+export function activeNeglect(scene, effects, opts = {}) {
+  const done = doneSet(effects);
+  const fixed = doneSet(opts.fixed);
+  return (scene.neglect || []).filter((n) => !(opts.legacy && n.added) && !done.has(n.effect) && !fixed.has(n.target));
+}
+
+/** 0..1 how restored (and therefore how lovely) a legacy postcard's scene was. */
+export function sceneBloom(scene, effects, opts = {}) {
+  const done = doneSet(effects);
+  const effectIds = scene.bloomProjects || layers(scene, opts).map((r) => r.effect);
+  if (!effectIds.length) return 1;
+  return effectIds.filter((p) => done.has(p)).length / effectIds.length;
 }
 
 /** Geometry of a prop in the clean scene: rect centre, size, pivot. */
@@ -68,10 +96,13 @@ export function propPoly(g, angle = 0, pivot = null) {
   return pts.map(([x, y]) => [ox + (x - ox) * c - (y - oy) * s, oy + (x - ox) * s + (y - oy) * c]);
 }
 
-/** The play screen's overlays (action bar, buttons, phone edges) in scene units. */
-export function keepOutBoxes(content, scene) {
+/** The play screen's overlays (action bar, buttons, phone edges) in scene units.
+ *  mode 'story': a visit's screen, which has only the loupe in its corner. */
+export function keepOutBoxes(content, scene, mode = null) {
   const [W, H] = scene.size;
-  return (content.hud?.keepOut || []).map((k) => ({ id: k.id, x: k.x * W, y: k.y * H, w: k.w * W, h: k.h * H }));
+  const over = (mode && content.hud?.[mode]) || {};
+  return (content.hud?.keepOut || []).map((k) => ({ ...k, ...(over[k.id] || {}) }))
+    .map((k) => ({ id: k.id, x: k.x * W, y: k.y * H, w: k.w * W, h: k.h * H }));
 }
 
 /** Inside the scene and not even partly under an overlay. */
@@ -83,9 +114,13 @@ function inScene(ctx, shape) {
 }
 
 /**
+ * The generated mess of a photo walk, Daily Postcard or (legacy) album postcard.
  * @param {Content} content
- * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, collectible?, script?, types?, cat?}
- *   types: the jobs allowed (the rest aren't introduced yet); cat: false keeps Marmalade away
+ * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, fixed?, collectible?, script?, types?, cat?, legacy?, protect?, policy?}
+ *   projectsDone: the permanent effects done; types: the jobs allowed (the rest aren't introduced yet);
+ *   cat: false keeps Marmalade away; legacy: draw as a save-v2 postcard (no restoration-update layers);
+ *   protect: things restored for good, which a walk must never spoil; policy: apply the weather's
+ *   "exclude" list (a storm doesn't strip paint)
  */
 export function generateMess(content, o) {
   const village = content.village(o.village);
@@ -95,13 +130,14 @@ export function generateMess(content, o) {
   const condId = o.condition || rng.fork('cond').weighted(tier.conditions);
   const cond = content.conditions[condId];
   const done = doneSet(o.projectsDone);
-  const props = activeProps(scene, done);
-  const neglect = activeNeglect(scene, done);
+  const layerOpts = { legacy: !!o.legacy, fixed: o.fixed };
+  const props = activeProps(scene, done, layerOpts);
+  const neglect = activeNeglect(scene, done, layerOpts);
   const offset = (scene.difficultyOffset || 0) + (village.difficultyBase || 0);
 
   const ctx = {
     content, scene, village, rng, tier, cond, condId, props,
-    neglected: new Set(neglect.map((n) => n.target)),
+    neglected: new Set([...neglect.map((n) => n.target), ...(o.protect || [])]),
     used: new Set(), faults: [], minSize: tier.minSize, keepOut: keepOutBoxes(content, scene),
   };
 
@@ -115,6 +151,7 @@ export function generateMess(content, o) {
     if (!f || !capacity[type]) continue;
     if (o.types && !o.types.includes(type)) continue; // not introduced yet
     if (f.requires === 'dark' && !cond.dark) continue;
+    if (o.policy && (cond.exclude || []).includes(type)) continue;
     weights[type] = w * f.weight * (cond.faultMods?.[type] ?? 1) * (scene.mess?.types?.[type] ?? 1);
   }
 
@@ -261,15 +298,17 @@ function itemWeights(ctx, pool) {
   return w;
 }
 
-function spawnItem(ctx, type, f, subtlety) {
+/** o (story tasks only): {items: allowed item ids, slots: zones/edges to use, visible: pick the clearest spot} */
+function spawnItem(ctx, type, f, subtlety, o = {}) {
   const { content, scene, rng } = ctx;
-  const pool = content.items[f.pool];
-  const weights = itemWeights(ctx, pool);
+  let pool = content.items[f.pool];
+  if (o.items) pool = Object.fromEntries(o.items.filter((id) => pool[id]).map((id) => [id, pool[id]]));
+  const weights = o.items ? Object.fromEntries(Object.keys(pool).map((id) => [id, 1])) : itemWeights(ctx, pool);
   // already-used items are less likely, for variety
   for (const flt of ctx.faults) if (flt.item && weights[flt.item]) weights[flt.item] *= 0.35;
   const camo = bySubtlety(f.camouflage, subtlety);
-  const want = 1 + Math.round(camo * 6);
-  const slots = f.slot === 'edges' ? scene.edges : scene.zones;
+  const want = o.visible ? 4 : 1 + Math.round(camo * 6);
+  const slots = o.slots || (f.slot === 'edges' ? scene.edges : scene.zones);
   if (!slots?.length) return null;
   const slotWeights = Object.fromEntries(slots.map((s, i) => [i, (s.weight ?? 1) * (s.poly ? Math.sqrt(G.polyArea(s.poly)) : 300)]));
   const valid = [];
@@ -301,7 +340,8 @@ function spawnItem(ctx, type, f, subtlety) {
     valid.push({ itemId, item, x, y, cx, cy, w, h, rot, shape, contrast });
   }
   if (!valid.length) return null;
-  const pick = camo > 0.05 ? valid.reduce((a, b) => (a.contrast <= b.contrast ? a : b)) : valid[0];
+  const pick = o.visible ? valid.reduce((a, b) => (a.contrast >= b.contrast ? a : b))
+    : camo > 0.05 ? valid.reduce((a, b) => (a.contrast <= b.contrast ? a : b)) : valid[0];
   return {
     type, subtlety, item: pick.itemId, sprite: pick.item.sprite,
     x: pick.x, y: pick.y, cx: pick.cx, cy: pick.cy, w: pick.w, h: pick.h, rot: pick.rot,
@@ -310,13 +350,14 @@ function spawnItem(ctx, type, f, subtlety) {
   };
 }
 
-function propFault(ctx, type, f, subtlety) {
+/** pin (story tasks): {prop, amount?} the exact prop to use */
+function propFault(ctx, type, f, subtlety, pin = null) {
   const { content, scene, rng } = ctx;
-  let candidates = ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id) && propClear(ctx, p));
+  let candidates = pin ? [pin.prop] : ctx.props.filter((p) => hasTag(p.tags, f.tag) && !ctx.used.has(p.id) && !ctx.neglected.has(p.id) && propClear(ctx, p));
   const free = candidates.filter((p) => { const g = propGeom(content, scene, p); return !overlapsFaults(ctx, { x: g.cx - g.w / 2, y: g.cy - g.h / 2, w: g.w, h: g.h }); });
   if (free.length) candidates = free;
   if (!candidates.length) return null;
-  const p = rng.pick(candidates);
+  const p = pin ? pin.prop : rng.pick(candidates);
   ctx.used.add(p.id);
   const g = propGeom(content, scene, p);
   const fault = { type, subtlety, prop: p.id, sprite: p.sprite, z: p.y, cx: g.cx, cy: g.cy, w: g.w, h: g.h };
@@ -331,7 +372,7 @@ function propFault(ctx, type, f, subtlety) {
     fault.pivot = [g.px + sign * g.w / 2, g.py];
     fault.shape = { kind: 'poly', pts: propPoly(g, fault.angle, fault.pivot) };
   } else {
-    fault.amount = bySubtlety(f.amount, subtlety);
+    fault.amount = pin?.amount ?? bySubtlety(f.amount, subtlety);
     fault.shape = { kind: 'poly', pts: propPoly(g, 0) };
   }
   if (type === 'toppled' && (!inScene(ctx, fault.shape) || overlapsFaults(ctx, G.shapeBounds(fault.shape)))) {
@@ -349,27 +390,28 @@ function propFault(ctx, type, f, subtlety) {
   return fault;
 }
 
-function regionFault(ctx, type, f, subtlety) {
+/** pin (story tasks): {region, amount?} the exact region to use */
+function regionFault(ctx, type, f, subtlety, pin = null) {
   const { scene, rng } = ctx;
-  let candidates = (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r) && inScene(ctx, regionShape(r)));
+  let candidates = pin ? [pin.region] : (scene.regions || []).filter((r) => hasTag(r.tags, f.tag) && !ctx.used.has(r.id) && !ctx.neglected.has(r.id) && regionBigEnough(ctx, r) && inScene(ctx, regionShape(r)));
   const free = candidates.filter((r) => !overlapsFaults(ctx, G.bbox(r.poly)));
   if (free.length) candidates = free;
   if (!candidates.length) return null;
-  const r = rng.pick(candidates);
+  const r = pin ? pin.region : rng.pick(candidates);
   ctx.used.add(r.id);
   const shape = { kind: 'poly', pts: r.poly };
   const [cx, cy] = G.shapeCenter(shape);
   return {
-    type, subtlety, region: r.id, amount: bySubtlety(f.amount, subtlety), pattern: rng.int(0, 1e6),
+    type, subtlety, region: r.id, amount: pin?.amount ?? bySubtlety(f.amount, subtlety), pattern: rng.int(0, 1e6),
     shape, cx, cy, size: G.shapeSize(shape), z: -1,
   };
 }
 
-function lampFault(ctx, type, f, subtlety) {
+function lampFault(ctx, type, f, subtlety, pin = null) {
   const { scene, rng } = ctx;
-  const candidates = (scene.lamps || []).filter((l) => !ctx.used.has(l.id) && inScene(ctx, lampShape(l)));
+  const candidates = pin ? [pin.lamp] : (scene.lamps || []).filter((l) => !ctx.used.has(l.id) && inScene(ctx, lampShape(l)));
   if (!candidates.length) return null;
-  const l = rng.pick(candidates);
+  const l = pin ? pin.lamp : rng.pick(candidates);
   ctx.used.add(l.id);
   const shape = lampShape(l);
   return { type, subtlety, lamp: l.id, shape, cx: l.x, cy: l.y, size: G.shapeSize(shape), z: -1 };
@@ -479,3 +521,130 @@ function salience(ctx, f) {
   const central = 1 - clamp(dc, 0, 0.6) * 0.25;
   return +(sizeTerm * contrast * vis * (type.salience ?? 1) * central).toFixed(3);
 }
+
+// ------------------------------------------------------------- visits ---
+// A story visit's work is authored (content/villages/<id>/visits.json), not
+// rolled from a tier: each task names a stable thing in the scene and a job
+// (an operation from content/common/story.json). Only litter and weeds are
+// placed by the seed, from the task's own items and ground. Nothing is ever
+// added as a fallback, so a storm only ever brings storm work.
+
+const PERSISTENT = ['faded', 'grimy', 'wilted'];
+
+/** The planting targets of a visit that belong to restoration layers still to come. */
+export function stagedProps(scene, visit, effects) {
+  const present = new Set(activeProps(scene, effects).map((p) => p.id));
+  return visit.tasks.filter((t) => t.op === 'plant' && !present.has(t.target)).map((t) => t.target);
+}
+
+/**
+ * @param {Content} content
+ * @param {object} o  {village, visit (id or object), seed, effectsDone, fixed, collectible?, cat?}
+ *   effectsDone: permanent effects before this visit; fixed: things story tasks fixed for good in this scene
+ * @returns a mess like generateMess's, plus {visit, staged, skipped, problems}
+ */
+export function generateVisit(content, o) {
+  const village = content.village(o.village);
+  const visit = typeof o.visit === 'string' ? content.visit(o.village, o.visit) : o.visit;
+  const scene = village.scenes[visit.scene];
+  const incident = visit.incident ? content.story.incidents[visit.incident] : null;
+  const condId = visit.condition || incident?.condition || 'clear';
+  const rng = new Rng(seedOf('visit', o.village, visit.id, o.seed));
+  const done = doneSet(o.effectsDone);
+  const fixed = doneSet(o.fixed);
+  const staged = stagedProps(scene, visit, done);
+  const props = activeProps(scene, done, { staged });
+  const neglect = activeNeglect(scene, done, { fixed });
+  const look = {
+    props: new Map(props.map((p) => [p.id, p])),
+    active: new Map(neglect.map((n) => [n.target, n])),
+    ever: new Map((scene.neglect || []).map((n) => [n.target, n])),
+  };
+  const ctx = {
+    content, scene, village, rng, tier: content.tier(1), cond: content.conditions[condId], condId, props,
+    neglected: new Set(neglect.map((n) => n.target)),
+    used: new Set(), faults: [], minSize: 36, keepOut: keepOutBoxes(content, scene, 'story'),
+  };
+  const subtlety = clamp(visit.subtlety ?? 0.1, 0, 1);
+  const skipped = [], problems = [];
+  // things with a place first, so litter and weeds keep clear of them
+  const ordered = [...visit.tasks.filter((t) => t.target), ...visit.tasks.filter((t) => !t.target)];
+  for (const task of ordered) {
+    const f = content.faults[task.op];
+    if (task.target) {
+      const fault = pinnedFault(ctx, task, f, subtlety, look);
+      if (fault === 'done') { skipped.push(task.id); continue; }
+      if (!fault) { problems.push(`${task.id}: can't ${task.op} "${task.target}" here`); continue; }
+      Object.assign(fault, { id: task.id, task: task.id });
+      ctx.faults.push(fault);
+      continue;
+    }
+    const slots = f.slot === 'edges'
+      ? (scene.edges || []).filter((e) => !task.edges || task.edges.includes(e.id))
+      : (scene.zones || []).filter((z) => !task.zones || task.zones.includes(z.id));
+    const n = task.count || 1;
+    for (let i = 0; i < n; i++) {
+      const fault = spawnItem(ctx, task.op, f, subtlety, { items: task.items, slots, visible: true });
+      if (!fault) { problems.push(`${task.id}: no room for ${task.op} ${i + 1} of ${n}`); continue; }
+      Object.assign(fault, { id: n > 1 ? `${task.id}.${i + 1}` : task.id, task: task.id });
+      ctx.faults.push(fault);
+    }
+  }
+  // the bar and the tally follow the visit's own order
+  const rank = new Map(visit.tasks.map((t, i) => [t.id, i]));
+  ctx.faults.sort((a, b) => rank.get(a.task) - rank.get(b.task));
+  for (const f of ctx.faults) f.salience = salience(ctx, f);
+  const mess = {
+    village: o.village, scene: visit.scene, visit: visit.id, tier: null, condition: condId, seed: o.seed,
+    faults: ctx.faults,
+    cat: o.cat === false ? null : placeCat(ctx),
+    collectible: o.collectible ? placeCollectible(ctx, o.collectible) : null,
+    neglect, props: props.map((p) => p.id), staged, skipped, problems,
+  };
+  Object.assign(mess, calibrate(content, mess, seedOf('cal', o.seed, visit.id)));
+  return mess;
+}
+
+function pinnedFault(ctx, task, f, subtlety, look) {
+  const { scene } = ctx;
+  const ever = look.ever.get(task.target);
+  const active = look.active.get(task.target);
+  // a job that restores something for good is already done if that thing was restored
+  if (PERSISTENT.includes(task.op) && ever?.type === task.op && !active) return 'done';
+  const amount = active?.type === task.op ? active.amount : undefined;
+  switch (f.strategy) {
+    case 'prop': {
+      const prop = look.props.get(task.target);
+      return prop && propClear(ctx, prop) ? propFault(ctx, task.op, f, subtlety, { prop, amount }) : null;
+    }
+    case 'region': {
+      const region = (scene.regions || []).find((r) => r.id === task.target);
+      return region && inScene(ctx, regionShape(region)) ? regionFault(ctx, task.op, f, subtlety, { region, amount }) : null;
+    }
+    case 'lamp': {
+      const lamp = (scene.lamps || []).find((l) => l.id === task.target);
+      return lamp && inScene(ctx, lampShape(lamp)) ? lampFault(ctx, task.op, f, subtlety, { lamp }) : null;
+    }
+    case 'plant': return plantFault(ctx, task, look.props.get(task.target));
+  }
+  return null;
+}
+
+/** An empty planter (or, with a colour, one to replant) waiting for flowers. */
+function plantFault(ctx, task, prop) {
+  if (!prop) return null;
+  // already flowering, in the colour asked for
+  if (!prop.staged && (!task.colour || prop.tint === task.colour)) return 'done';
+  const g = propGeom(ctx.content, ctx.scene, prop);
+  const shape = { kind: 'poly', pts: propPoly(g, 0) };
+  if (!inScene(ctx, shape)) return null;
+  ctx.used.add(prop.id);
+  return {
+    type: 'plant', subtlety: 0, prop: prop.id, sprite: prop.sprite, colour: task.colour || null,
+    replant: !prop.staged, from: prop.tint || null,
+    z: prop.pivot === 'top' ? prop.y + prop.h : prop.y, cx: g.cx, cy: g.cy, w: g.w, h: g.h, shape, size: G.shapeSize(shape),
+  };
+}
+
+/** What a fault is done to: the stable content id of its prop, region or lamp (spawned litter has none). */
+export const faultTarget = (f) => f.prop || f.region || f.lamp || null;

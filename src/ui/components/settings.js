@@ -3,10 +3,11 @@ import { storage } from '../../engine/storage.js';
 
 export function openSettings(app, onChange) {
   const s = app.save.settings;
+  const value = (key) => (key === 'reducedMotion' ? app.reducedMotion : !!s[key]);
   const toggle = (key, label, ico) => {
-    const sw = h('button.switch' + (s[key] ? '.on' : ''), { role: 'switch', 'aria-checked': String(!!s[key]) }, h('i'));
+    const sw = h('button.switch' + (value(key) ? '.on' : ''), { role: 'switch', 'aria-checked': String(value(key)), 'aria-label': label }, h('i'));
     sw.addEventListener('click', () => {
-      s[key] = !s[key];
+      s[key] = !value(key);
       sw.classList.toggle('on', s[key]);
       sw.setAttribute('aria-checked', String(s[key]));
       app.applySettings();
@@ -44,13 +45,14 @@ export function openSettings(app, onChange) {
     toggle('sfx', 'Sound effects', 'sound'),
     toggle('music', 'Music', 'music'),
     toggle('haptics', 'Haptics', 'vibrate'),
+    toggle('reducedMotion', 'Reduce motion', 'eye'),
     h('div.display.sheet-sub', { text: 'Your postcards' }),
     group('frames', 'Frames'),
     group('films', 'Film'),
     group('postmarks', 'Postmarks'),
     h('div.about.card',
       h('div.script', { text: 'Postcard Perfect' }),
-      h('p', { text: 'A cosy tidy-up game. Hand-made collage art, synthesised sound, no ads and no energy meters. Your progress is saved on this device.' }),
+      h('p', { text: 'A cosy restoration game. Cut-paper collage art, synthesised sound, no ads, no energy meters and nothing to buy while you play. Your progress is saved on this device.' }),
       h('button.btn.ink.small', { onclick: () => resetProgress(app) }, h('span', { text: 'Start again' })),
     ),
   );
@@ -60,7 +62,7 @@ export function openSettings(app, onChange) {
 function resetProgress(app) {
   const yes = h('button.btn', { text: 'Yes, start again' });
   const no = h('button.btn.teal.small', { text: 'Keep my village' });
-  const m = app.modal(h('div.celebrate.card.paper', h('div.display.celebrate-title', { text: 'Start again?' }), h('p', { text: 'This erases your postcards, restoration and scrapbook on this device.' }), h('div.col', yes, no)));
+  const m = app.modal(h('div.celebrate.card.paper', h('div.display.celebrate-title', { text: 'Start again?' }), h('p', { text: 'This starts a new village on this device. Your current one is kept as a backup, but the game won’t show it.' }), h('div.col', yes, no)));
   no.addEventListener('click', () => m.close());
   yes.addEventListener('click', () => { storage.clear(); location.reload(); });
 }

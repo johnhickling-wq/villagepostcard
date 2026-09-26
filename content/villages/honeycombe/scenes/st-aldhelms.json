@@ -574,22 +574,29 @@
    "target": "clock",
    "type": "grimy",
    "amount": 0.6,
-   "project": "church-clock"
+   "effect": "church-clock"
   },
   {
    "target": "church-door",
    "type": "faded",
    "amount": 0.5,
-   "project": "church-clock"
+   "effect": "church-clock"
+  },
+  {
+   "target": "gate",
+   "type": "faded",
+   "amount": 0.55,
+   "effect": "church-clock",
+   "added": 3
   }
  ],
  "restoration": [
   {
-   "project": "church-clock",
+   "effect": "church-clock",
    "props": []
   },
   {
-   "project": "church-flowers",
+   "effect": "church-flowers",
    "props": [
     {
      "id": "bench",

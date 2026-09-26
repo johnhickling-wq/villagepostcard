@@ -7,12 +7,12 @@ import { drawCobweb, flakes, peeling, sootScrap } from './textures.js';
 import { Particles } from './particles.js';
 import { Ambient } from './ambient.js';
 import { Ease, springDecay, clamp01, lerp } from '../engine/tween.js';
-import { activeProps, activeNeglect, sceneBloom, propGeom, depthScale } from '../core/mess.js';
+import { activeProps, activeNeglect, sceneBloom, propGeom, depthScale, propPoly, faultTarget } from '../core/mess.js';
 import { bbox, pointInPoly, shapeBounds, shapeCenter } from '../core/geometry.js';
 import { Rng } from '../core/rng.js';
 
 const TAU = Math.PI * 2;
-const FIX_DUR = { pop: 0.55, pluck: 0.6, swing: 1.1, hop: 0.7, paint: 0.75, wipe: 0.8, bloom: 0.8, light: 0.9, sweep: 0.6, flap: 1.3 };
+const FIX_DUR = { pop: 0.55, pluck: 0.6, swing: 1.1, hop: 0.7, paint: 0.75, wipe: 0.8, bloom: 0.8, light: 0.9, sweep: 0.6, flap: 1.3, grow: 1.0, done: 1 };
 
 export class SceneView {
   constructor(canvas, app) {
@@ -35,7 +35,9 @@ export class SceneView {
 
   // ------------------------------------------------------------ loading ---
   /**
-   * @param o {village, scene, mess?, projects?, condition?, bloom?}
+   * @param o {village, scene, mess?, effects?, fixed?, legacy?, staged?, condition?, bloom?, thumb?}
+   *   effects: the permanent restoration layers done; fixed: things story tasks restored for good;
+   *   legacy: draw as a save-v2 postcard; staged: planters of layers still to come, shown bare
    */
   async load(o) {
     const content = this.content;
@@ -43,11 +45,14 @@ export class SceneView {
     this.village = o.village;
     this.scene = scene;
     this.mess = o.mess || null;
-    this.projects = new Set(o.projects || []);
+    this.effects = new Set(o.effects || []);
+    this.fixed = new Set(o.fixed || []);
+    this.legacy = !!o.legacy;
+    this.staged = o.staged || o.mess?.staged || [];
     this.condId = o.mess?.condition || o.condition || 'clear';
     this.cond = content.conditions[this.condId];
     this.dark = !!this.cond.dark;
-    this.bloom = o.bloom ?? sceneBloom(scene, this.projects);
+    this.bloom = o.bloom ?? sceneBloom(scene, this.effects, { legacy: this.legacy });
     this.gradeCache = new Map();
     this.W = scene.size[0];
     this.H = scene.size[1];
@@ -55,8 +60,9 @@ export class SceneView {
     this.base = bakePlate(this.plateImg, this.cond, this.bloom, this.W, this.H);
     this.oldBase = null;
     this.baseFade = 1;
+    this.faults = this.mess ? this.mess.faults : [];
     this._buildProps();
-    this.neglect = activeNeglect(scene, this.projects);
+    this.neglect = this._neglect();
     this.regionCache = new Map();
     this.restoring = null;
     this.camTween = null;
@@ -64,7 +70,6 @@ export class SceneView {
     this.particles.list = [];
     this.screenFx = [];
     this.overlays = [];
-    this.faults = this.mess ? this.mess.faults : [];
     this.faultByProp = new Map();
     for (const f of this.faults) if (f.prop) this.faultByProp.set(f.prop, f);
     this.water = scene.water || [];
@@ -103,21 +108,53 @@ export class SceneView {
   }
 
   _buildProps() {
-    this.props = activeProps(this.scene, this.projects).map((p) => this._propRuntime(p));
+    this.props = activeProps(this.scene, this.effects, { legacy: this.legacy, staged: this.staged }).map((p) => this._propRuntime(p));
+  }
+
+  /** Neglect still showing; a task's own target is drawn by its task instead. */
+  _neglect() {
+    const tasks = new Set(this.faults.map(faultTarget).filter(Boolean));
+    return activeNeglect(this.scene, this.effects, { legacy: this.legacy, fixed: this.fixed }).filter((n) => !tasks.has(n.target));
+  }
+
+  /** Mark tasks finished before a reload as done, with no animation. */
+  markDone(ids) {
+    for (const id of ids) this.fx.set(id, { t0: -1e9, kind: 'done', glinted: true });
+  }
+
+  /** Neglect that isn't today's work, under a tap (for a friendly "another day"). */
+  laterAt(x, y, tol) {
+    for (const n of this.neglect) {
+      const region = (this.scene.regions || []).find((r) => r.id === n.target);
+      if (region) {
+        const b = bbox(region.poly);
+        if (x >= b.x - tol && x <= b.x + b.w + tol && y >= b.y - tol && y <= b.y + b.h + tol && (pointInPoly(x, y, region.poly) || tol > 0)) return n;
+        continue;
+      }
+      const p = this.props.find((q) => q.id === n.target);
+      if (p) {
+        const g = p.geom;
+        if (Math.abs(x - g.cx) <= g.w / 2 + tol && Math.abs(y - g.cy) <= g.h / 2 + tol) return n;
+      }
+    }
+    return null;
   }
 
   _propRuntime(p) {
     const g = propGeom(this.content, this.scene, p);
     let spr = this.assets.sprite(p.sprite, this.village);
+    const raw = spr;
+    const pdef = this.content.story?.planters?.[p.sprite];
+    if (spr && p.tint && pdef) spr = this.assets.planterTint(spr, pdef, p.tint, this.content.story.colours[p.tint]).full;
     if (spr && p.label) spr = this._labelled(spr, p);
-    return { ...p, geom: g, spr: spr ? this.graded(spr) : null, rawSpr: spr, appear: null };
+    return { ...p, geom: g, spr: spr ? this.graded(spr) : null, rawSpr: raw, pdef, appear: null };
   }
 
   _activeDecor() {
     const out = [];
     for (const r of this.scene.restoration || []) {
-      if (!this.projects.has(r.project)) continue;
-      for (const d of r.decor || []) out.push({ ...d, project: r.project, appear: null });
+      if (!this.effects.has(r.effect) || (this.legacy && r.added)) continue;
+      for (const d of r.decor || []) out.push({ ...d, effect: r.effect, appear: null });
     }
     return out;
   }
@@ -207,8 +244,10 @@ export class SceneView {
     const P = this.particles;
     // impact: a warm glow, a heartbeat's pause, and the lightest nudge of the camera
     this.overlays.push({ kind: 'glow', x: cx, y: cy, r: Math.max(fault.size * 0.75, 34 / this.scale), t0: this.time, life: 0.45 });
-    this.hitstop = 0.045;
-    this.shake = Math.max(this.shake, 2.2);
+    if (!this.reduced) {
+      this.hitstop = 0.045;
+      this.shake = Math.max(this.shake, 2.2);
+    }
     switch (fault.type) {
       case 'litter': P.burst('sparkle', cx, cy, { scale: 1 }); break;
       case 'weeds': P.burst('dirt', fault.x, fault.y); break;
@@ -220,7 +259,19 @@ export class SceneView {
       case 'unlit': P.burst('embers', cx, cy); break;
       case 'cobweb': P.burst('dust', cx, cy, { n: 7, color: 'rgba(255,255,255,0.8)' }); break;
       case 'pigeon': P.burst('feathers', cx, cy); break;
+      case 'plant': {
+        const def = this.content.story?.planters?.[fault.sprite];
+        const rimY = cy - fault.h / 2 + (def?.rim ?? 0.5) * fault.h;
+        P.burst('dirt', cx, rimY, { n: 6 });
+        setTimeout(() => P.burst('petals', cx, cy - fault.h * 0.15, fault.colour ? { colors: [this.tone(this._colourHex(fault.colour))] } : {}), 380);
+        break;
+      }
     }
+  }
+
+  _colourHex(name) {
+    const c = this.content.story.colours[name];
+    return c ? hslHex(c.hue, c.sat, c.light) : '#e06a8a';
   }
 
   catFound() {
@@ -265,43 +316,65 @@ export class SceneView {
     this.overlays.push({ kind: 'nudge', x: fault.cx, y: fault.cy, t0: this.time, life: 1.4 });
   }
 
-  shakeScreen(amount = 8) { this.shake = amount; }
+  shakeScreen(amount = 8) { if (!this.reduced) this.shake = amount; }
+
+  /** Reduced motion: no shake or hit-stop, fewer particles, gentle flashes. */
+  set reduced(on) { this._reduced = !!on; this.particles.reduced = !!on; }
+  get reduced() { return !!this._reduced; }
 
   // ------------------------------------------------ restoration staging ---
-  /** Animate a restoration project arriving: fresh paint, props pop in, grade warms. */
-  async playRestore(projectId) {
+  /** Animate a visit's permanent work arriving: neglect lifts, props pop in, the grade warms.
+   *  @param effects new effect ids; fixed: targets fixed for good; bloom: the new warmth */
+  playRestore(effects, { fixed = [], bloom = null, delay = 0 } = {}) {
     const prevBase = this.base;
-    this.projects.add(projectId);
-    this.bloom = sceneBloom(this.scene, this.projects);
+    for (const e of effects) this.effects.add(e);
+    for (const t of fixed) this.fixed.add(t);
+    this.staged = [];
+    const prevBloom = this.bloom;
+    this.bloom = bloom ?? sceneBloom(this.scene, this.effects);
     const oldNeglect = this.neglect;
-    this.neglect = activeNeglect(this.scene, this.projects);
-    const removed = oldNeglect.filter((n) => n.project === projectId);
+    this.neglect = this._neglect();
+    const still = new Set(this.neglect.map((n) => n.target));
+    const removed = oldNeglect.filter((n) => !still.has(n.target));
     // neglect lifts using the same fix animations as a player fix
+    const t0 = this.time + delay;
     removed.forEach((n, i) => {
       const fake = this._neglectFault(n);
       if (!fake) return;
       this.restoring ||= [];
-      this.restoring.push({ ...fake, t0: this.time + 0.4 + i * 0.5 });
-      this.fx.set(fake.id, { t0: this.time + 0.4 + i * 0.5, kind: this.content.faults[fake.type].fix });
+      this.restoring.push({ ...fake, t0: t0 + 0.4 + i * 0.5 });
+      this.fx.set(fake.id, { t0: t0 + 0.4 + i * 0.5, kind: this.content.faults[fake.type].fix });
     });
-    const before = new Set(this.props.map((p) => p.id));
+    const before = new Map(this.props.map((p) => [p.id, p]));
     this._buildProps();
     let k = 0;
+    const appeared = [];
     for (const p of this.props) {
-      if (!before.has(p.id)) {
-        p.appear = this.time + 0.8 + k * 0.35;
+      const old = before.get(p.id);
+      // new things pop in; relabelled or recoloured things get a little bounce
+      if (!old || old.label !== p.label || (old.tint !== p.tint && !this.faultByProp.has(p.id))) {
+        p.appear = t0 + 0.8 + k * 0.35;
+        appeared.push(p);
+        const at = (0.8 + delay + k * 0.35) * 1000;
+        setTimeout(() => this.particles.burst('sparkle', p.geom.cx, p.geom.cy, { scale: 1.2 }), at);
         k++;
-        setTimeout(() => this.particles.burst('sparkle', p.geom.cx, p.geom.cy, { scale: 1.2 }), (0.8 + (k - 1) * 0.35) * 1000);
+      } else if (old) {
+        p.appear = old.appear;
       }
     }
     const oldDecor = new Set(this.decor.map((d) => JSON.stringify(d.points)));
     this.decor = this._activeDecor();
-    for (const d of this.decor) if (!oldDecor.has(JSON.stringify(d.points))) d.appear = this.time + 0.6;
+    for (const d of this.decor) if (!oldDecor.has(JSON.stringify(d.points))) { d.appear = t0 + 0.6; appeared.push(d); }
     // crossfade to the warmer grade
-    this.oldBase = prevBase;
-    this.base = bakePlate(this.plateImg, this.cond, this.bloom, this.W, this.H);
-    this.baseFade = 0;
-    this.baseFadeStart = this.time + 0.3;
+    if (Math.abs(prevBloom - this.bloom) > 0.001) {
+      this.oldBase = prevBase;
+      this.base = bakePlate(this.plateImg, this.cond, this.bloom, this.W, this.H);
+      this.baseFade = 0;
+      this.baseFadeStart = t0 + 0.3;
+      this.gradeCache = new Map();
+      for (const p of this.props) p.spr = p.spr && this._propRuntime(p).spr;
+    }
+    return { removed: removed.length, appeared: appeared.length, warmed: this.bloom > prevBloom + 0.001 };
   }
 
   _neglectFault(n) {
@@ -364,7 +437,10 @@ export class SceneView {
     }
     g.save();
     g.beginPath();
-    g.rect(this.view.x, this.view.y, this.view.w, this.view.h);
+    // never draw past the picture itself (smoke and particles stay inside a letterboxed scene)
+    const cx0 = Math.max(this.view.x, ox - sh[0]), cy0 = Math.max(this.view.y, oy - sh[1]);
+    const cx1 = Math.min(this.view.x + this.view.w, ox - sh[0] + this.W * s), cy1 = Math.min(this.view.y + this.view.h, oy - sh[1] + this.H * s);
+    g.rect(cx0, cy0, cx1 - cx0, cy1 - cy0);
     g.clip();
     g.setTransform(dpr * s, 0, 0, dpr * s, dpr * ox, dpr * oy);
     this.drawWorld(g, 'live');
@@ -648,7 +724,9 @@ export class SceneView {
   // ---- props ---------------------------------------------------------------
   drawProp(g, p, state) {
     if (!p.spr) return;
-    const f = state === 'after' ? null : this.faultByProp.get(p.id);
+    const pf = this.faultByProp.get(p.id);
+    if (pf?.type === 'plant' && p.pdef) return this.drawPlanter(g, p, pf, state);
+    const f = state === 'after' ? null : pf;
     const fx = f && state === 'live' ? this.fx.get(f.id) : null;
     const k = fx ? clamp01((this.time - fx.t0) / FIX_DUR[fx.kind]) : 0;
     const geo = p.geom;
@@ -696,6 +774,84 @@ export class SceneView {
       g.globalAlpha *= overA;
       this.assets.drawSprite(g, over, w, h, p.flip);
     }
+    g.restore();
+  }
+
+  /** A planting job: a bare pot with a seed packet, then the flowers grow (or,
+   *  replanting, the old ones sink and the new colour comes up). */
+  drawPlanter(g, p, f, state) {
+    const raw = p.rawSpr, def = p.pdef;
+    const parts = this.assets.planter(raw, def);
+    const colours = this.content.story.colours;
+    const tintOf = (name) => (name ? this.assets.planterTint(raw, def, name, colours[name]) : null);
+    const fresh = tintOf(f.colour);
+    const fx = state === 'live' ? this.fx.get(f.id) : null;
+    let k = state === 'after' ? 1 : 0;
+    if (fx && this.time >= fx.t0) k = clamp01((this.time - fx.t0) / FIX_DUR.grow);
+    const geo = p.geom, w = geo.w, h = geo.h;
+    let appear = 1;
+    if (p.appear != null && state === 'live') {
+      if (this.time < p.appear) return;
+      appear = clamp01((this.time - p.appear) / 0.6);
+    }
+    g.save();
+    g.translate(geo.px, geo.py);
+    if (appear < 1) { const b = Ease.outBack(appear, 2.5); g.scale(b, b); }
+    g.translate(0, geo.top ? h / 2 : -h / 2);
+    const rim = -h / 2 + def.rim * h;
+    const drawAbout = (spr, sx, sy) => {
+      if (sy <= 0.001) return;
+      g.save();
+      g.translate(0, rim);
+      g.scale(sx, sy);
+      g.translate(0, -rim);
+      this.assets.drawSprite(g, this.graded(spr), w, h, p.flip);
+      g.restore();
+    };
+    if (k >= 1) {
+      this.assets.drawSprite(g, fresh ? this.graded(fresh.full) : p.spr, w, h, p.flip);
+    } else {
+      this.assets.drawSprite(g, this.graded(parts.bare), w, h, p.flip);
+      if (f.replant) {
+        // the old flowers sink into the soil
+        const out = 1 - Ease.inCubic(clamp01(k / 0.4));
+        const old = tintOf(f.from);
+        drawAbout(old ? old.plant : parts.plant, 0.7 + 0.3 * out, out);
+      }
+      const grow = Ease.outBack(clamp01((k - (f.replant ? 0.35 : 0.05)) / 0.6), 1.8);
+      if (k > 0) drawAbout(fresh ? fresh.plant : parts.plant, 0.55 + 0.45 * grow, grow);
+      if (k === 0) this.drawSeedPacket(g, w, h, rim, f);
+    }
+    g.restore();
+  }
+
+  /** A little paper seed packet on a stick: "plant me here". */
+  drawSeedPacket(g, w, h, rim, f) {
+    const pw = Math.max(15, w * 0.2), ph = pw * 1.25;
+    const x = w * 0.2 * (f.replant ? -1 : 1), top = rim - ph * 1.35;
+    const bob = Math.sin(this.time * 2.4 + x) * ph * 0.04;
+    g.save();
+    g.translate(x, bob);
+    g.rotate(f.replant ? -0.12 : 0.1);
+    g.strokeStyle = this.tone('#7a5234');
+    g.lineWidth = Math.max(2, pw * 0.1);
+    g.beginPath(); g.moveTo(0, rim + ph * 0.1); g.lineTo(0, top + ph * 0.5); g.stroke();
+    g.fillStyle = this.tone('#f6efdc');
+    g.strokeStyle = 'rgba(60,45,30,0.55)';
+    g.lineWidth = Math.max(1, pw * 0.05);
+    g.beginPath(); g.rect(-pw / 2, top, pw, ph); g.fill(); g.stroke();
+    // the flower on the packet shows the colour
+    const col = this.tone(f.colour ? this._colourHex(f.colour) : '#e0607e');
+    g.fillStyle = col;
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * TAU;
+      g.beginPath(); g.arc(Math.cos(a) * pw * 0.16, top + ph * 0.42 + Math.sin(a) * pw * 0.16, pw * 0.13, 0, TAU); g.fill();
+    }
+    if (f.colour === 'white') { g.strokeStyle = 'rgba(60,45,30,0.5)'; g.lineWidth = Math.max(0.8, pw * 0.03); for (let i = 0; i < 5; i++) { const a = (i / 5) * TAU; g.beginPath(); g.arc(Math.cos(a) * pw * 0.16, top + ph * 0.42 + Math.sin(a) * pw * 0.16, pw * 0.13, 0, TAU); g.stroke(); } }
+    g.fillStyle = this.tone('#e3a72f');
+    g.beginPath(); g.arc(0, top + ph * 0.42, pw * 0.09, 0, TAU); g.fill();
+    g.fillStyle = this.tone('#6ea96a');
+    g.fillRect(-pw * 0.3, top + ph * 0.78, pw * 0.6, ph * 0.08);
     g.restore();
   }
 
@@ -934,7 +1090,7 @@ export class SceneView {
         g.restore();
         if (k < 0.12) {
           g.save();
-          g.globalAlpha = 0.85 * (1 - k / 0.12);
+          g.globalAlpha = (this.reduced ? 0.25 : 0.85) * (1 - k / 0.12);
           g.fillStyle = '#fffdf4';
           g.fillRect(0, 0, this.W, this.H);
           g.restore();
@@ -970,7 +1126,16 @@ export class SceneView {
   drawScreenFx(g) {
     for (const f of this.screenFx) {
       const age = this.time - f.t0;
-      if (f.kind === 'ripple') {
+      if (f.kind === 'ripple' && f.ok === 'soft') {
+        // an exploratory tap: just a quiet ring, no cross
+        const k = age / 0.6;
+        g.save();
+        g.globalAlpha = (1 - k) * 0.8;
+        g.strokeStyle = '#fffaf0';
+        g.lineWidth = 2;
+        g.beginPath(); g.arc(f.x, f.y, 8 + Ease.outCubic(k) * 16, 0, TAU); g.stroke();
+        g.restore();
+      } else if (f.kind === 'ripple') {
         const k = age / 0.6;
         g.save();
         g.globalAlpha = 1 - k;
@@ -1030,6 +1195,12 @@ export class SceneView {
     this.restoring = savedRestoring;
     return c;
   }
+}
+
+function hslHex(h, s, l) {
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => { const k = (n + h / 30) % 12; const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(255 * c).toString(16).padStart(2, '0'); };
+  return `#${f(0)}${f(8)}${f(4)}`;
 }
 
 /** Points along a sagging string through the given anchor points. */

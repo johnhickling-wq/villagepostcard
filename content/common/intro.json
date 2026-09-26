@@ -1,41 +1,30 @@
 {
- "tutorial": {
-  "script": [
-   "litter",
-   "crooked",
-   "litter",
-   "crooked",
-   "litter"
-  ]
- },
- "jobs": {
-  "litter": 0,
-  "crooked": 0,
-  "faded": 1,
-  "grimy": 2,
-  "wilted": 3,
-  "weeds": 5,
-  "toppled": 7
- },
+ "note": "One idea at a time. Features arrive after this many finished visits and photo walks (save.player.plays). Jobs are taught by the story's visits the first time they appear; photo walks only use jobs the player has met, plus the weather jobs that aren't in storyJobs.",
+ "storyJobs": ["litter", "crooked", "faded", "grimy", "wilted", "weeds", "toppled", "plant"],
  "features": {
-  "album": 2,
-  "cat": 3,
-  "loupe": 4,
-  "score": 5,
-  "level": 6,
-  "zoom": 6,
-  "combo": 7,
-  "requests": 8,
-  "collectibles": 9,
-  "daily": 10,
-  "flash": 11,
-  "travel": 12
+  "loupe": 0,
+  "zoom": 0,
+  "journal": 1,
+  "cat": 2,
+  "combo": 2,
+  "level": 3,
+  "walks": 3,
+  "collectibles": 4,
+  "requests": 6,
+  "flash": 8,
+  "daily": 9
  },
+ "afterFinale": ["travel"],
  "cards": {
-  "album": {
+  "journal": {
    "icon": "album",
-   "title": "Your postcard album",
-   "text": "Every place can be snapped in five kinds of weather, from a clear day to after the storm. Each one is a new postcard for your album, and raises more for the Village Fund."
+   "title": "Your journal",
+   "text": "Every visit's postcard goes into your journal, with how far each place has come. Letters from the village are kept there too."
+  },
+  "walks": {
+   "icon": "camera",
+   "title": "Weather postcards",
+   "text": "Any place you've visited can be photographed in five kinds of weather. Take a photo walk whenever you like. It's entirely optional."
   },
   "level": {
    "icon": "camera",
@@ -45,12 +34,12 @@
   "requests": {
    "icon": "notice",
    "title": "The Noticeboard",
-   "text": "The villagers have pinned up little favours. Do them while you tidy for extra money for the Fund."
+   "text": "Committee requests are pinned here as they arrive. The neighbours leave little favours too; those are optional."
   },
   "daily": {
    "icon": "calendar",
    "title": "The Daily Postcard",
-   "text": "A new postcard every day, the same for everyone. Come back each day to fill your stamp card."
+   "text": "A new photo walk every day, the same for everyone. Just for fun: there's no streak to keep."
   },
   "travel": {
    "icon": "train",
@@ -59,10 +48,11 @@
   }
  },
  "coach": {
-  "loupe": "New! The magnifying glass shows you where to look. It recharges as you tidy.",
-  "score": "From now on your postcards earn stamps. Be quick and careful for all three!",
-  "combo": "Quick fixes one after another count as a run, and a run earns more!",
-  "flash": "New! A flashbulb lights up everything that's left, just for a moment.",
-  "zoom": "Spread two fingers to zoom in close, or double-tap. Pinch to zoom back out."
+  "loupe": "Stuck? The magnifying glass shows you where to look.",
+  "loupeClearer": "Tap the magnifying glass for a free hint.",
+  "zoom": "Spread two fingers to look closer, or double-tap. “Whole scene” takes you back.",
+  "score": "Photo walks are scored, just for fun. Quick, careful tidying earns three stamps.",
+  "combo": "Quick fixes one after another make a run!",
+  "flash": "New! A flashbulb lights up everything that's left, just for a moment."
  }
 }

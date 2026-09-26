@@ -37,6 +37,15 @@
   }
  ],
  "fit": {
-  "coverMaxCrop": 0.12
+  "coverMaxCrop": 0.08
+ },
+ "note": "Play-screen overlays as fractions of the scene. Nothing to find may sit under them (the generators keep clear and the bot checks). Story visits show only the loupe in the corner, so their hint box is narrower; photo walks add the flashbulb.",
+ "story": {
+  "hint-buttons": {
+   "x": 0.875,
+   "y": 0.8,
+   "w": 0.125,
+   "h": 0.2
+  }
  }
 }

@@ -573,18 +573,18 @@
    "target": "door",
    "type": "faded",
    "amount": 0.55,
-   "project": "pub-door"
+   "effect": "pub-door"
   },
   {
    "target": "gate",
    "type": "faded",
    "amount": 0.5,
-   "project": "pub-door"
+   "effect": "pub-door"
   }
  ],
  "restoration": [
   {
-   "project": "pub-door",
+   "effect": "pub-door",
    "props": [
     {
      "id": "box-upper",
@@ -599,7 +599,7 @@
    ]
   },
   {
-   "project": "pub-lights",
+   "effect": "pub-lights",
    "props": [
     {
      "id": "basket-a",

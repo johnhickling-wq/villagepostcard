@@ -1,0 +1,33 @@
+{
+ "note": "Rules shared by every village's restoration route (content/villages/<id>/visits.json).",
+ "ops": ["litter", "weeds", "crooked", "toppled", "faded", "grimy", "wilted", "unlit", "cobweb", "pigeon", "plant"],
+ "incidents": {
+  "storm": {
+   "name": "After the storm",
+   "condition": "storm",
+   "ops": ["litter", "toppled", "crooked", "weeds"],
+   "items": ["branch", "twigs", "leaf-clump", "roof-slate", "umbrella", "flat-cap", "bunting-scrap"]
+  }
+ },
+ "hints": {
+  "offerAfter": 12,
+  "clearerAfter": 26,
+  "cooldown": 4,
+  "nudgeEvery": 10
+ },
+ "xp": { "visit": 60, "perTask": 5 },
+ "assist": { "minTargetPx": 44 },
+ "colours": {
+  "red": { "name": "Red", "hue": 356, "sat": 0.78, "light": 0.5 },
+  "white": { "name": "White", "hue": 45, "sat": 0.25, "light": 0.94 },
+  "blue": { "name": "Blue", "hue": 222, "sat": 0.7, "light": 0.52 }
+ },
+ "planters": {
+  "props/flower-tub": { "rim": 0.45, "soilW": 0.84, "soilH": 0.1 },
+  "props/window-box": { "rim": 0.5, "soilW": 0.8, "soilH": 0.1 },
+  "props/stone-trough": { "rim": 0.43, "soilW": 0.84, "soilH": 0.1 },
+  "props/hanging-basket": { "rim": 0.72, "soilW": 0.72, "soilH": 0.08, "keepDark": true },
+  "props/geranium-pot": { "rim": 0.62, "soilW": 0.62, "soilH": 0.08 },
+  "props/lavender-pot": { "rim": 0.56, "soilW": 0.62, "soilH": 0.08 }
+ }
+}

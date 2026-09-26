@@ -879,7 +879,15 @@
    "h": 92,
    "tags": [
     "tiltable"
-   ]
+   ],
+   "labelBox": [
+    0.16,
+    0.12,
+    0.84,
+    0.5
+   ],
+   "labelColor": "#2c2a35",
+   "labelFont": "hand"
   },
   {
    "id": "bin",
@@ -941,7 +949,7 @@
   {
    "x": 480,
    "y": 657,
-   "s": 1.0
+   "s": 1
   }
  ],
  "cats": [
@@ -1049,18 +1057,26 @@
    "target": "bench",
    "type": "faded",
    "amount": 0.6,
-   "project": "green-benches"
+   "effect": "green-benches"
   },
   {
    "target": "cross",
    "type": "grimy",
    "amount": 0.55,
-   "project": "green-benches"
+   "effect": "green-benches"
+  },
+  {
+   "target": "tub",
+   "type": "wilted",
+   "amount": 0.85,
+   "effect": "green-benches",
+   "added": 3,
+   "later": "Those flowers want water. We’ll see to them another day."
   }
  ],
  "restoration": [
   {
-   "project": "green-benches",
+   "effect": "green-benches",
    "props": [
     {
      "id": "tub-2",
@@ -1075,7 +1091,7 @@
    ]
   },
   {
-   "project": "green-ducks",
+   "effect": "green-ducks",
    "props": [
     {
      "id": "duck-house",
@@ -1116,6 +1132,17 @@
      "sag": 30
     }
    ]
+  },
+  {
+   "effect": "green-tidy",
+   "added": 3
+  },
+  {
+   "effect": "green-finale",
+   "added": 3,
+   "labels": {
+    "noticeboard": "JUDGING\nTODAY"
+   }
   }
  ]
 }

@@ -210,6 +210,4 @@ img { -webkit-user-drag: none; }
 }
 .coin-ico { display: inline-block; width: 20px; height: 20px; vertical-align: -4px; }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
+/* reduced motion is a setting (it starts from the device's preference): see html.reduced-motion in screens.css */

@@ -2,7 +2,7 @@
 // the screen router, sheets/modals/toasts and the main loop.
 
 import { loadContent } from './core/content.js';
-import { newSave, migrate, levelInfo, refillRequests } from './core/progression.js';
+import { newSave, migrate, levelInfo, refillRequests, SAVE_VERSION } from './core/progression.js';
 import { Assets } from './engine/assets.js';
 import { audio } from './engine/audio.js';
 import { haptics } from './engine/haptics.js';
@@ -34,6 +34,8 @@ export class App {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { this.persist(true); audio.ctx?.suspend(); } else audio.ctx?.resume();
     });
+    window.addEventListener('pagehide', () => this.persist(true));
+    storage.onError = () => this.toast('Your progress couldn’t be saved on this device just now.', { ms: 4200, cls: 'warn' });
     // unlock (or, after a phone call or lock screen, resume) audio on any touch.
     // iOS only lets sound start inside touchend/click, not pointerdown.
     const unlock = () => { if (audio.ctx?.state !== 'running') { audio.unlock(); this.applySettings(); } };
@@ -54,8 +56,7 @@ export class App {
     this.content = await loadContent(readJson);
     this.assets = new Assets(this.content);
     this.view = new SceneView(this.canvas, this);
-    this.save = migrate(storage.load(), this.content);
-    if (!storage.load()) this.save.player.fund = 40; // the Committee's float
+    this.saveNotice = this.loadSave();
     refillRequests(this.save, this.content, this.village);
     this.applySettings();
     boot.progress(0.15, 'Unpacking the collage box…');
@@ -72,7 +73,51 @@ export class App {
     ]);
     boot.progress(1, 'Ready!');
     await wait(250);
+    if (this.saveNotice === 'corrupt') await this.recoverSave();
     this.show(new TitleScreen(this));
+    if (this.saveNotice === 'unavailable') setTimeout(() => this.toast('This device isn’t keeping saves (private browsing?), so progress will be lost when you close the game.', { ms: 6000, cls: 'warn' }), 1600);
+  }
+
+  /** Read and, if it's from an older version, migrate the save (keeping a backup). */
+  loadSave() {
+    const r = storage.read();
+    if (r.status === 'ok') {
+      const from = r.data.v;
+      const save = migrate(r.data, this.content);
+      if (save) {
+        this.save = save;
+        // the old version is kept as a backup before the new one replaces it
+        if (from < SAVE_VERSION) { storage.backup(r.raw); this.persist(true); }
+        return 'ok';
+      }
+    }
+    this.save = newSave(this.content);
+    if (r.status === 'ok' || r.status === 'corrupt') {
+      // never quietly replace a save we couldn't read: nothing is written until the player chooses
+      this.holdSaves = true;
+      this.badSave = r.raw;
+      return 'corrupt';
+    }
+    return r.status === 'unavailable' ? 'unavailable' : 'new';
+  }
+
+  /** A save we couldn't read: offer the backup, or a fresh start with the old one kept aside. */
+  async recoverSave() {
+    const b = storage.readBackup();
+    const backup = b.status === 'ok' ? migrate(b.data, this.content) : null;
+    const choose = await new Promise((res) => {
+      const tryBackup = backup ? h('button.btn.teal', { text: 'Use the backup', onclick: () => res('backup') }) : null;
+      const fresh = h('button.btn' + (backup ? '.ink.small' : '.teal'), { text: 'Start a new village', onclick: () => res('new') });
+      this.modal(h('div.celebrate.card.paper', h('div.display.celebrate-title', { text: 'We couldn’t read your saved village' }),
+        h('p', { text: backup ? 'There is an earlier backup on this device. Your unreadable save is kept aside either way.' : 'Your unreadable save is kept aside on this device, and a new village will begin.' }),
+        h('div.col', tryBackup, fresh)), { dismissable: false });
+    });
+    document.querySelector('.modal')?.remove();
+    document.querySelector('.overlay')?.remove();
+    storage.setAside(this.badSave);
+    if (choose === 'backup' && backup) this.save = backup;
+    this.holdSaves = false;
+    this.persist(true);
   }
 
   get village() { return this.save?.current || 'honeycombe'; }
@@ -80,7 +125,17 @@ export class App {
   get vs() { return this.save.villages[this.village]; }
   get level() { return levelInfo(this.content, this.save.player.xp); }
 
-  persist(now = false) { if (this.save) storage.save(this.save, now); }
+  /** Save now (or shortly). Returns false if the device refused. */
+  persist(now = false) {
+    if (!this.save || this.holdSaves) return false;
+    return storage.save(this.save, now);
+  }
+
+  /** Reduced motion: the player's choice, or the device's setting until they choose. */
+  get reducedMotion() {
+    const pref = this.save?.settings.reducedMotion;
+    return pref ?? !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  }
 
   applySettings() {
     if (!this.save) return;
@@ -88,6 +143,9 @@ export class App {
     audio.setEnabled('sfx', s.sfx);
     audio.setEnabled('music', s.music);
     haptics.enabled = s.haptics;
+    const reduced = this.reducedMotion;
+    document.documentElement.classList.toggle('reduced-motion', reduced);
+    if (this.view) this.view.reduced = reduced;
   }
 
   sfx(name, opts) { audio.play(name, opts); }
@@ -118,6 +176,13 @@ export class App {
 
   /** Camera-aperture transition. closing=true covers the screen. */
   iris(closing) {
+    if (this.reducedMotion) {
+      // a plain fade instead of the aperture
+      let el = this.fadeEl;
+      if (!el) { el = this.fadeEl = h('div.fade-cover'); this.ui.append(el); }
+      el.classList.toggle('on', closing);
+      return wait(closing ? 260 : 300);
+    }
     let el = this.irisEl;
     if (!el) {
       el = this.irisEl = h('div.iris', {}, h('div.iris-hole'));

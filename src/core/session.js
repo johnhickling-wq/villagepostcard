@@ -1,6 +1,10 @@
 // A single play of a scene: hit-testing taps against the generated faults,
-// combos, mis-tap protection, hints and the final tally. DOM-free so the bot
-// can drive exactly the same rules the player experiences.
+// combos, hints and the final tally. DOM-free so the bot can drive exactly
+// the same rules the player experiences.
+//
+// Exploring is never a failure. A story visit has no penalties at all; a
+// photo walk's score loses a little for a mis-tap, but never for tapping
+// something already fixed, and nothing ever locks the player out.
 
 import { distToShape, shapeBounds } from './geometry.js';
 import { fixPoints, calloutFor, finalScore, stampsFor, comboMultiplier } from './scoring.js';
@@ -21,14 +25,14 @@ export class PlaySession {
     this.maxChain = 0;
     this.lastFix = -Infinity;
     this.lastProgress = 0;
-    this.missTimes = [];
-    this.lockedUntil = 0;
     this.misses = 0;
     this.hints = 0;
     this.flashes = 0;
+    this.story = play.mode === 'visit';
+    this.minTarget = 0; // scene units: small things are tappable over at least this size (set from the view)
     this.flashbulbs = opts.flashbulbs ?? 0;
     this.loupeCooldown = play.loupe ?? this.tier.loupe;
-    this.loupeReadyAt = Math.min(8, this.loupeCooldown);
+    this.loupeReadyAt = this.story ? 0 : Math.min(8, this.loupeCooldown);
     this.nudgeEvery = play.nudge ?? this.tier.nudge;
     this.nextNudge = this.nudgeEvery || Infinity;
     this.catFound = false;
@@ -36,7 +40,27 @@ export class PlaySession {
     this.fixes = {};
     this.done = false;
     this.byId = new Map(mess.faults.map((f) => [f.id, f]));
+    // carrying on after a reload: what was already done stays done
+    const r = opts.resume;
+    if (r) {
+      for (const id of r.done || []) {
+        const f = this.byId.get(id);
+        if (!f || !this.remaining.has(id)) continue;
+        this.remaining.delete(id);
+        this.fixed.push(id);
+        this.fixes[f.type] = (this.fixes[f.type] || 0) + 1;
+        this.fixPoints += fixPoints(this.scoring, this.content.faults[f.type], f.subtlety, 1);
+      }
+      this.catFound = !!r.cat && !!mess.cat;
+      this.collectibleFound = !!r.collectible && !!mess.collectible;
+      this.hints = r.hints || 0;
+      this.t = r.t || 0;
+      this.lastProgress = this.t;
+    }
   }
+
+  /** Seconds since the last thing was fixed (for offering a hint). */
+  get stall() { return this.t - this.lastProgress; }
 
   get total() { return this.mess.faults.length; }
   get left() { return this.remaining.size; }
@@ -44,7 +68,6 @@ export class PlaySession {
   get multiplier() { return comboMultiplier(this.scoring, this.chain); }
   get loupeReady() { return this.t >= this.loupeReadyAt; }
   get loupeProgress() { return Math.min(1, 1 - (this.loupeReadyAt - this.t) / this.loupeCooldown); }
-  get locked() { return this.t < this.lockedUntil; }
   get score() { return Math.max(0, this.fixPoints - this.penalties); }
 
   remainingByType() {
@@ -76,7 +99,6 @@ export class PlaySession {
   /** @param tol hit tolerance in scene units */
   tap(x, y, tol = 20) {
     if (this.done) return { kind: 'done' };
-    if (this.locked) return { kind: 'locked' };
     const hit = this._hitTest(x, y, tol);
     if (hit) this.lastMiss = null;
     if (hit?.kind === 'fault') return this._fix(hit.target, x, y);
@@ -95,8 +117,11 @@ export class PlaySession {
     let best = null;
     const consider = (kind, target, shape, z) => {
       const d = distToShape(x, y, shape);
-      if (d > tol) return;
       const b = shapeBounds(shape);
+      // a small thing is tappable over at least minTarget; the nearest thing
+      // still wins, so this never steals a tap that lands on something else
+      const reach = Math.max(tol, (this.minTarget - Math.min(b.w, b.h)) / 2);
+      if (d > reach) return;
       const key = d * 1000 + Math.sqrt(b.w * b.h) - (z || 0) * 1e-6;
       if (!best || key < best.key) best = { kind, target, key };
     };
@@ -134,35 +159,36 @@ export class PlaySession {
   }
 
   _miss(x, y) {
+    // tapping something already put right is never a mistake
+    const tol = Math.max(this.minTarget / 2, 12);
+    const again = this.fixed.map((id) => this.byId.get(id)).find((f) => distToShape(x, y, f.shape) <= tol);
+    if (again) return { kind: 'already', fault: again, x, y };
     this.misses++;
-    this.penalties += this.scoring.missPenalty;
     const brokeChain = this.chain;
-    this.chain = 0;
-    const cfg = this.scoring.shaky;
-    this.missTimes = this.missTimes.filter((t) => this.t - t < cfg.window);
-    this.missTimes.push(this.t);
-    if (this.missTimes.length >= cfg.misses) {
-      this.lockedUntil = this.t + cfg.duration;
-      this.missTimes = [];
-      this.lastMiss = null;
-      return { kind: 'shaky', x, y, duration: cfg.duration, brokeChain };
+    if (!this.story) {
+      this.penalties += this.scoring.missPenalty;
+      this.chain = 0;
     }
-    this.lastMiss = { chain: brokeChain };
-    return { kind: 'miss', x, y, brokeChain };
+    this.lastMiss = { chain: brokeChain, penalty: !this.story };
+    return { kind: 'miss', x, y, brokeChain: this.story ? 0 : brokeChain, gentle: this.story };
   }
 
   /** What a tap here would hit, without counting the tap. */
-  peek(x, y, tol = 20) { return this.locked || this.done ? null : this._hitTest(x, y, tol); }
+  peek(x, y, tol = 20) { return this.done ? null : this._hitTest(x, y, tol); }
 
   /** Take back the last mis-tap (it turned out to be the first half of a double-tap zoom). */
   forgiveLastMiss() {
     if (!this.lastMiss) return false;
     this.misses--;
-    this.penalties -= this.scoring.missPenalty;
-    this.missTimes.pop();
+    if (this.lastMiss.penalty) this.penalties -= this.scoring.missPenalty;
     this.chain = this.lastMiss.chain;
     this.lastMiss = null;
     return true;
+  }
+
+  /** A snapshot of progress for the save (a checkpoint after every fix). */
+  progress() {
+    return { done: [...this.fixed], cat: this.catFound, collectible: this.collectibleFound, hints: this.hints, t: Math.round(this.t * 10) / 10 };
   }
 
   _hardestRemaining(hardest = true) {

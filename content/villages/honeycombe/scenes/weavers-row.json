@@ -828,18 +828,25 @@
    "target": "door-teal",
    "type": "faded",
    "amount": 0.6,
-   "project": "row-paint"
+   "effect": "row-paint"
   },
   {
    "target": "win-front",
    "type": "grimy",
    "amount": 0.5,
-   "project": "row-paint"
+   "effect": "row-paint"
+  },
+  {
+   "target": "door-sage",
+   "type": "faded",
+   "amount": 0.6,
+   "effect": "row-paint",
+   "added": 3
   }
  ],
  "restoration": [
   {
-   "project": "row-paint",
+   "effect": "row-paint",
    "props": [
     {
      "id": "box-2",
@@ -864,7 +871,7 @@
    ]
   },
   {
-   "project": "row-bunting",
+   "effect": "row-bunting",
    "props": [
     {
      "id": "trough",

@@ -782,7 +782,7 @@
    "x": 1512,
    "y": 790,
    "pose": "cat-sit",
-   "s": 1.0
+   "s": 1
   },
   {
    "x": 950,
@@ -794,7 +794,7 @@
    "x": 312,
    "y": 752,
    "pose": "cat-loaf",
-   "s": 1.0
+   "s": 1
   }
  ],
  "chimneys": [
@@ -828,22 +828,22 @@
    "target": "kiosk",
    "type": "faded",
    "amount": 0.55,
-   "project": "hs-paint"
+   "effect": "hs-paint"
   },
   {
    "target": "postbox",
    "type": "faded",
    "amount": 0.5,
-   "project": "hs-paint"
+   "effect": "hs-paint"
   }
  ],
  "restoration": [
   {
-   "project": "hs-paint",
+   "effect": "hs-paint",
    "props": []
   },
   {
-   "project": "hs-bunting",
+   "effect": "hs-bunting",
    "props": [
     {
      "id": "window-box",
@@ -886,6 +886,25 @@
       ]
      ],
      "sag": 55
+    }
+   ]
+  },
+  {
+   "effect": "hs-fete",
+   "added": 3,
+   "labels": {
+    "a-board": "FÊTE\nTODAY"
+   },
+   "props": [
+    {
+     "id": "fete-trough",
+     "sprite": "props/stone-trough",
+     "x": 1330,
+     "y": 772,
+     "h": 64,
+     "tags": [
+      "flowers"
+     ]
     }
    ]
   }

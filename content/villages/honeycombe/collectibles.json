@@ -1,7 +1,7 @@
 {
   "sets": [
     {"id": "flowers", "name": "Pressed Flowers of the Wold", "color": "#9a6fb0",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "frame-pressed"},
+     "reward": {"xp": 120, "cosmetic": "frame-pressed"},
      "items": [
        {"id": "cowslip", "name": "Cowslip", "sprite": "collectibles/cowslip", "text": "Pressed in a hymn book in 1931. The hymn was 'All Things Bright and Beautiful', which seems right."},
        {"id": "dog-rose", "name": "Dog Rose", "sprite": "collectibles/dog-rose", "text": "From the hedge by the Halt. Mr Figg swears it flowers when the train is on time. It rarely flowers."},
@@ -10,7 +10,7 @@
        {"id": "oxeye-daisy", "name": "Ox-eye Daisy", "sprite": "collectibles/oxeye-daisy", "text": "Loves me, loves me not. The last petal is missing, so we'll never know."}
      ]},
     {"id": "railway", "name": "Railway Ephemera", "color": "#3f5b6b",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "postmark-rail"},
+     "reward": {"xp": 120, "cosmetic": "postmark-rail"},
      "items": [
        {"id": "platform-ticket", "name": "Platform Ticket", "sprite": "collectibles/platform-ticket", "text": "One penny to stand on the platform and wave. The best-value ticket on the Great Western."},
        {"id": "luggage-label", "name": "Luggage Label", "sprite": "collectibles/luggage-label", "text": "'Honeycombe Halt, via Kemble.' The trunk it came off went to Kemble, then Aberdeen, then back."},
@@ -19,7 +19,7 @@
        {"id": "railway-lamp", "name": "Hand Lamp", "sprite": "collectibles/railway-lamp", "text": "Red for stop, white for go, green for Mr Figg's cucumber frames."}
      ]},
     {"id": "fete", "name": "Village Fête", "color": "#c0463a",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "frame-scalloped"},
+     "reward": {"xp": 120, "cosmetic": "frame-scalloped"},
      "items": [
        {"id": "rosette", "name": "First Prize Rosette", "sprite": "collectibles/rosette", "text": "Awarded to Mabel's marrow, 1954. The marrow was later eaten, to general regret."},
        {"id": "jam-jar", "name": "Strawberry Jam", "sprite": "collectibles/jam-jar", "text": "Mrs Pemberton's. Highly commended. She was expecting 'first' and has not forgotten."},
@@ -28,7 +28,7 @@
        {"id": "victoria-sponge", "name": "Victoria Sponge", "sprite": "collectibles/victoria-sponge", "text": "Jam, cream, a dusting of sugar and forty years of village rivalry."}
      ]},
     {"id": "wildlife", "name": "Wold Wildlife Cards", "color": "#6b7f3a",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "film-handtinted"},
+     "reward": {"xp": 120, "cosmetic": "film-handtinted"},
      "items": [
        {"id": "card-hedgehog", "name": "Hedgehog", "sprite": "collectibles/card-hedgehog", "text": "Card 1 of 5. 'Fond of beetles, slugs and the Colonel's saucer of milk.'"},
        {"id": "card-hare", "name": "Brown Hare", "sprite": "collectibles/card-hare", "text": "Card 2 of 5. 'Boxes in March and outruns the postman all year round.'"},
@@ -37,7 +37,7 @@
        {"id": "card-dormouse", "name": "Dormouse", "sprite": "collectibles/card-dormouse", "text": "Card 5 of 5. 'Sleeps from October to April. Sensible creature.'"}
      ]},
     {"id": "honey", "name": "Honeybee Treasures", "color": "#c28a1e",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "postmark-bee"},
+     "reward": {"xp": 120, "cosmetic": "postmark-bee"},
      "items": [
        {"id": "honey-jar", "name": "Wold Honey", "sprite": "collectibles/honey-jar", "text": "Clover, lime and rose. Nan Honeysett's bees have excellent taste."},
        {"id": "bee-brooch", "name": "Bee Brooch", "sprite": "collectibles/bee-brooch", "text": "A wedding gift to Nan from her Walter, 1901. 'Busy as a bee, sweet as honey,' the card said."},
@@ -46,7 +46,7 @@
        {"id": "toy-skep", "name": "Toy Skep", "sprite": "collectibles/toy-skep", "text": "Woven for a grandchild. The bees were not consulted and remain doubtful."}
      ]},
     {"id": "curios", "name": "Curios from the Attic", "color": "#7a5b3a",
-     "reward": {"fund": 250, "xp": 80, "cosmetic": "frame-airmail"},
+     "reward": {"xp": 120, "cosmetic": "frame-airmail"},
      "items": [
        {"id": "brass-key", "name": "Brass Key", "sprite": "collectibles/brass-key", "text": "Fits no lock in the village. The Colonel is convinced it opens something important."},
        {"id": "thimble", "name": "Silver Thimble", "sprite": "collectibles/thimble", "text": "Lost at the Women's Institute in 1948. Found in the Christmas pudding in 1949."},

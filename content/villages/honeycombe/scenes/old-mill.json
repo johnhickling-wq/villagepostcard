@@ -748,18 +748,18 @@
    "target": "mill-door",
    "type": "faded",
    "amount": 0.6,
-   "project": "mill-paint"
+   "effect": "mill-paint"
   },
   {
    "target": "stable-door",
    "type": "faded",
    "amount": 0.5,
-   "project": "mill-paint"
+   "effect": "mill-paint"
   }
  ],
  "restoration": [
   {
-   "project": "mill-paint",
+   "effect": "mill-paint",
    "props": [
     {
      "id": "tub",
@@ -774,7 +774,7 @@
    ]
   },
   {
-   "project": "mill-garden",
+   "effect": "mill-garden",
    "props": [
     {
      "id": "bench",

@@ -527,18 +527,25 @@
    "target": "hive",
    "type": "faded",
    "amount": 0.6,
-   "project": "cottage-hives"
+   "effect": "cottage-hives"
   },
   {
    "target": "greenhouse",
    "type": "grimy",
    "amount": 0.6,
-   "project": "cottage-hives"
+   "effect": "cottage-hives"
+  },
+  {
+   "target": "gate",
+   "type": "faded",
+   "amount": 0.55,
+   "effect": "cottage-hives",
+   "added": 3
   }
  ],
  "restoration": [
   {
-   "project": "cottage-hives",
+   "effect": "cottage-hives",
    "props": [
     {
      "id": "basket",
@@ -555,7 +562,7 @@
    ]
   },
   {
-   "project": "cottage-fete",
+   "effect": "cottage-fete",
    "props": [
     {
      "id": "bird-bath",

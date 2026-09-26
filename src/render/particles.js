@@ -16,6 +16,8 @@ export class Particles {
   }
 
   spawn(p) {
+    // reduced motion: no confetti, and half as much of everything else
+    if (this.reduced && (p.kind === 'confetti' || (this._skip = !this._skip))) return;
     const k = this.k;
     const q = { age: 0, life: 1, vx: 0, vy: 0, ax: 0, ay: 0, rot: 0, vr: 0, size: 6, grow: 0, alpha: 1, drag: 0, ...p };
     q.size *= k; q.grow *= k; q.vx *= k; q.vy *= k; q.ax *= k; q.ay *= k;

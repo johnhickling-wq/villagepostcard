@@ -1,0 +1,811 @@
+{
+ "note": "The restoration route. Visits are listed in story order: the first available one is always the player's next step. See docs/ADDING_A_VILLAGE.md.",
+ "visits": [
+  {
+   "id": "halt-tidy",
+   "scene": "railway-halt",
+   "kind": "restoration",
+   "after": [],
+   "villager": "stationmaster",
+   "title": "Tidy the platform",
+   "goal": "tidy the platform",
+   "brief": "Morning! You'll be the photographer. The 11:40 is due and look at my platform! Would you help me tidy up?",
+   "condition": "clear",
+   "subtlety": 0,
+   "tutorial": true,
+   "tasks": [
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 3,
+     "zones": [
+      "platform"
+     ],
+     "items": [
+      "newspaper",
+      "umbrella",
+      "milk-bottle",
+      "paper-bag",
+      "cardboard-box",
+      "tin-can"
+     ]
+    },
+    {
+     "id": "nameboard",
+     "op": "crooked",
+     "target": "nameboard"
+    },
+    {
+     "id": "clock",
+     "op": "crooked",
+     "target": "clock"
+    }
+   ],
+   "effects": [
+    "halt-tidy"
+   ],
+   "todo": "Litter on the platform",
+   "stage": "Tidied up",
+   "improved": "A tidy, welcoming platform",
+   "reaction": "Shipshape! Now, Mrs Pemberton has been asking after you. Pop up the lane to the High Street."
+  },
+  {
+   "id": "hs-refresh",
+   "scene": "high-street",
+   "kind": "restoration",
+   "after": [
+    "halt-tidy"
+   ],
+   "villager": "postmistress",
+   "title": "Brighten the High Street",
+   "goal": "brighten the High Street",
+   "brief": "Hello, dear! Our telephone kiosk and pillar box have gone ever so pale. A fresh coat of Post Office red, and a tidy while you're here?",
+   "condition": "clear",
+   "subtlety": 0.05,
+   "tasks": [
+    {
+     "id": "kiosk",
+     "op": "faded",
+     "target": "kiosk"
+    },
+    {
+     "id": "postbox",
+     "op": "faded",
+     "target": "postbox"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "street"
+     ],
+     "items": [
+      "newspaper",
+      "paper-bag",
+      "tin-can",
+      "ice-cream",
+      "cardboard-box",
+      "crisp-packet"
+     ]
+    },
+    {
+     "id": "sign-po",
+     "op": "crooked",
+     "target": "sign-po"
+    },
+    {
+     "id": "a-board",
+     "op": "crooked",
+     "target": "a-board"
+    }
+   ],
+   "effects": [
+    "hs-paint"
+   ],
+   "restores": true,
+   "todo": "A faded kiosk and pillar box",
+   "stage": "Restored",
+   "improved": "Post Office red on the kiosk and pillar box",
+   "reaction": "Oh, that red! Now do go and see the Colonel on the Green. He's been pacing since breakfast."
+  },
+  {
+   "id": "green-tidy",
+   "scene": "village-green",
+   "kind": "restoration",
+   "after": [
+    "hs-refresh"
+   ],
+   "villager": "colonel",
+   "title": "Spruce up the Green",
+   "goal": "spruce up the Green",
+   "brief": "Ah, the photographer! The judges come in the spring, and the Green is the heart of the village. Help me make it shine.",
+   "condition": "golden",
+   "subtlety": 0.1,
+   "tasks": [
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 3,
+     "zones": [
+      "lawn",
+      "path",
+      "lawn-left"
+     ],
+     "items": [
+      "newspaper",
+      "paper-bag",
+      "crisp-packet",
+      "ice-cream",
+      "banana-peel",
+      "tin-can",
+      "paper-plate"
+     ]
+    },
+    {
+     "id": "cross",
+     "op": "grimy",
+     "target": "cross"
+    },
+    {
+     "id": "bench",
+     "op": "faded",
+     "target": "bench"
+    },
+    {
+     "id": "noticeboard",
+     "op": "crooked",
+     "target": "noticeboard"
+    }
+   ],
+   "effects": [
+    "green-tidy"
+   ],
+   "todo": "Litter and a grubby Market Cross",
+   "stage": "First tidy complete",
+   "improved": "A clean Market Cross and a fresh bench",
+   "reaction": "Capital! That's the spirit. Every corner of Honeycombe, mind, before the judges arrive. Mr Figg and Percy the postman both want you next."
+  },
+  {
+   "id": "halt-refresh",
+   "scene": "railway-halt",
+   "kind": "restoration",
+   "after": [
+    "green-tidy"
+   ],
+   "villager": "stationmaster",
+   "title": "Plant the station tubs",
+   "goal": "plant the tubs",
+   "brief": "Welcome back! The shelter wants a lick of paint, that window's a disgrace, and I've three tubs waiting for flowers.",
+   "condition": "clear",
+   "subtlety": 0.1,
+   "tasks": [
+    {
+     "id": "valance",
+     "op": "faded",
+     "target": "valance"
+    },
+    {
+     "id": "win-left",
+     "op": "grimy",
+     "target": "win-left"
+    },
+    {
+     "id": "tub",
+     "op": "plant",
+     "target": "tub"
+    },
+    {
+     "id": "tub-b",
+     "op": "plant",
+     "target": "tub-b"
+    },
+    {
+     "id": "tub-c",
+     "op": "plant",
+     "target": "tub-c"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 1,
+     "zones": [
+      "platform"
+     ],
+     "items": [
+      "newspaper",
+      "paper-bag",
+      "orange-peel",
+      "tin-can"
+     ]
+    }
+   ],
+   "effects": [
+    "halt-paint",
+    "halt-flowers",
+    "halt-tubs"
+   ],
+   "restores": true,
+   "todo": "A shelter to paint and tubs to plant",
+   "stage": "Restored",
+   "improved": "A painted shelter, a clean window and flower tubs",
+   "reaction": "Best-Kept Station, here we come! The porters have even brought out the old luggage trolley."
+  },
+  {
+   "id": "row-restore",
+   "scene": "weavers-row",
+   "kind": "restoration",
+   "after": [
+    "green-tidy"
+   ],
+   "villager": "postman",
+   "title": "Paint the Weavers' doors",
+   "goal": "paint the doors",
+   "brief": "Percy Budd, postman. Sorry I'm late! The Row's doors have seen better days, and there are weeds all along the path.",
+   "condition": "clear",
+   "subtlety": 0.15,
+   "tasks": [
+    {
+     "id": "door-teal",
+     "op": "faded",
+     "target": "door-teal"
+    },
+    {
+     "id": "door-sage",
+     "op": "faded",
+     "target": "door-sage"
+    },
+    {
+     "id": "win-front",
+     "op": "grimy",
+     "target": "win-front"
+    },
+    {
+     "id": "trough",
+     "op": "plant",
+     "target": "trough"
+    },
+    {
+     "id": "weeds",
+     "op": "weeds",
+     "count": 2,
+     "edges": [
+      "cottage-base",
+      "path-edge"
+     ]
+    }
+   ],
+   "effects": [
+    "row-paint",
+    "row-bunting"
+   ],
+   "restores": true,
+   "todo": "Tired doors and a weedy path",
+   "stage": "Restored",
+   "improved": "Fresh doors, window boxes and bunting along the Row",
+   "reaction": "Look at that! I'll never find the right door now. Nan Honeysett wants you down at the Old Mill."
+  },
+  {
+   "id": "mill-race",
+   "scene": "old-mill",
+   "kind": "restoration",
+   "after": [
+    "row-restore"
+   ],
+   "villager": "beekeeper",
+   "title": "Clear the mill race",
+   "goal": "clear the mill race",
+   "brief": "Nan Honeysett, dear. The ford's full of rubbish, the doors are peeling and the sacks are all anyhow. My bees are quite ashamed.",
+   "condition": "clear",
+   "subtlety": 0.15,
+   "tasks": [
+    {
+     "id": "mill-door",
+     "op": "faded",
+     "target": "mill-door"
+    },
+    {
+     "id": "stable-door",
+     "op": "faded",
+     "target": "stable-door"
+    },
+    {
+     "id": "cartwheel",
+     "op": "crooked",
+     "target": "cartwheel"
+    },
+    {
+     "id": "sack-a",
+     "op": "toppled",
+     "target": "sack-a"
+    },
+    {
+     "id": "tub",
+     "op": "plant",
+     "target": "tub"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "ford",
+      "ford-front"
+     ],
+     "items": [
+      "old-boot",
+      "tin-can",
+      "newspaper",
+      "ginger-beer-bottle",
+      "paper-bag"
+     ]
+    }
+   ],
+   "effects": [
+    "mill-paint",
+    "mill-garden"
+   ],
+   "restores": true,
+   "todo": "Rubbish in the ford and peeling doors",
+   "stage": "Restored",
+   "improved": "A clear ford, mill-green doors and a garden by the water",
+   "reaction": "Lovely! The miller's put out a bench and I've brought down a hive. Now, I hear the Committee has a job for you on the High Street."
+  },
+  {
+   "id": "hs-fete",
+   "scene": "high-street",
+   "kind": "committee",
+   "after": [
+    "mill-race"
+   ],
+   "villager": "postmistress",
+   "title": "Dress the street for the fête",
+   "goal": "dress the street for the fête",
+   "brief": "Committee business, dear! The village fête is on Saturday. Flowers, a clean shop window and the fête board, if you please. Percy's doing the bunting.",
+   "condition": "golden",
+   "subtlety": 0.15,
+   "tasks": [
+    {
+     "id": "basket-r",
+     "op": "plant",
+     "target": "basket-r"
+    },
+    {
+     "id": "fete-trough",
+     "op": "plant",
+     "target": "fete-trough"
+    },
+    {
+     "id": "bow-window",
+     "op": "grimy",
+     "target": "bow-window"
+    },
+    {
+     "id": "a-board",
+     "op": "crooked",
+     "target": "a-board"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "street"
+     ],
+     "items": [
+      "paper-plate",
+      "balloon",
+      "ice-cream",
+      "sweet-wrapper",
+      "crisp-packet"
+     ]
+    }
+   ],
+   "effects": [
+    "hs-bunting",
+    "hs-fete"
+   ],
+   "todo": "The Committee's fête request",
+   "stage": "Ready for the fête",
+   "improved": "Bunting, flowers and the fête board",
+   "reaction": "It looks like Coronation Day! Mabel says the Bee & Bramble garden is next."
+  },
+  {
+   "id": "pub-garden",
+   "scene": "bee-and-bramble",
+   "kind": "restoration",
+   "after": [
+    "mill-race"
+   ],
+   "villager": "landlady",
+   "title": "Spruce up the pub garden",
+   "goal": "spruce up the pub garden",
+   "brief": "Hello, love! The door's peeling, the gate's grey and my hanging baskets are bare. The judges do like a drink, you know.",
+   "condition": "golden",
+   "subtlety": 0.2,
+   "tasks": [
+    {
+     "id": "door",
+     "op": "faded",
+     "target": "door"
+    },
+    {
+     "id": "gate",
+     "op": "faded",
+     "target": "gate"
+    },
+    {
+     "id": "basket-a",
+     "op": "plant",
+     "target": "basket-a"
+    },
+    {
+     "id": "basket-b",
+     "op": "plant",
+     "target": "basket-b"
+    },
+    {
+     "id": "a-board",
+     "op": "toppled",
+     "target": "a-board"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "forecourt",
+      "lawn"
+     ],
+     "items": [
+      "ginger-beer-bottle",
+      "matchbox",
+      "crisp-packet",
+      "flat-cap",
+      "paper-bag"
+     ]
+    }
+   ],
+   "effects": [
+    "pub-door",
+    "pub-lights"
+   ],
+   "restores": true,
+   "todo": "A peeling door and bare baskets",
+   "stage": "Restored",
+   "improved": "A varnished door, planted baskets and lights in the garden",
+   "reaction": "Ooh, festoon lights! Stan's strung them along the eaves. The Colonel wants the Green finished next."
+  },
+  {
+   "id": "green-flourish",
+   "scene": "village-green",
+   "kind": "restoration",
+   "after": [
+    "pub-garden"
+   ],
+   "villager": "colonel",
+   "title": "Make the Green flourish",
+   "goal": "make the Green flourish",
+   "brief": "The Green wants flowers, and those poor tubs need water. Then the ducks shall have a house of their own.",
+   "condition": "clear",
+   "subtlety": 0.2,
+   "tasks": [
+    {
+     "id": "tub",
+     "op": "wilted",
+     "target": "tub"
+    },
+    {
+     "id": "tub-2",
+     "op": "plant",
+     "target": "tub-2"
+    },
+    {
+     "id": "deckchair",
+     "op": "toppled",
+     "target": "deckchair"
+    },
+    {
+     "id": "weeds",
+     "op": "weeds",
+     "count": 2,
+     "edges": [
+      "cross-base",
+      "pond-stones"
+     ]
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 1,
+     "zones": [
+      "lawn",
+      "lawn-left"
+     ],
+     "items": [
+      "newspaper",
+      "paper-bag",
+      "apple-core",
+      "tin-can"
+     ]
+    }
+   ],
+   "effects": [
+    "green-benches",
+    "green-ducks"
+   ],
+   "restores": true,
+   "todo": "Flowers to plant, tubs to water",
+   "stage": "Restored",
+   "improved": "Flowers, a duck house and bunting round the Green",
+   "reaction": "Magnificent! The ducks have moved in already. The Reverend would like you at St Aldhelm's."
+  },
+  {
+   "id": "church-restore",
+   "scene": "st-aldhelms",
+   "kind": "restoration",
+   "after": [
+    "green-flourish"
+   ],
+   "villager": "vicar",
+   "title": "Restore the churchyard",
+   "goal": "restore the churchyard",
+   "brief": "Bless you for coming. The clock face is grimed over, the door and the lychgate need paint, and the path is all weeds.",
+   "condition": "clear",
+   "subtlety": 0.2,
+   "tasks": [
+    {
+     "id": "clock",
+     "op": "grimy",
+     "target": "clock"
+    },
+    {
+     "id": "church-door",
+     "op": "faded",
+     "target": "church-door"
+    },
+    {
+     "id": "gate",
+     "op": "faded",
+     "target": "gate"
+    },
+    {
+     "id": "trough",
+     "op": "plant",
+     "target": "trough"
+    },
+    {
+     "id": "weeds",
+     "op": "weeds",
+     "count": 2,
+     "edges": [
+      "wall-base",
+      "path-left"
+     ]
+    }
+   ],
+   "effects": [
+    "church-clock",
+    "church-flowers"
+   ],
+   "restores": true,
+   "todo": "A grimy clock and a weedy path",
+   "stage": "Restored",
+   "improved": "A gleaming clock, fresh paint and flowers by the path",
+   "reaction": "The bells shall ring for you! Oh dear. Is that a storm coming over the hill?"
+  },
+  {
+   "id": "mill-storm",
+   "scene": "old-mill",
+   "kind": "incident",
+   "incident": "storm",
+   "after": [
+    "church-restore"
+   ],
+   "villager": "beekeeper",
+   "title": "Clear up after the storm",
+   "goal": "clear up after the storm",
+   "brief": "What a night! The wind's blown branches everywhere and knocked my things flying. Don't worry, dear: the paint held.",
+   "subtlety": 0.2,
+   "tasks": [
+    {
+     "id": "debris",
+     "op": "litter",
+     "count": 3,
+     "zones": [
+      "lane",
+      "yard",
+      "ford-front",
+      "ford"
+     ],
+     "items": [
+      "branch",
+      "twigs",
+      "leaf-clump",
+      "roof-slate"
+     ]
+    },
+    {
+     "id": "sack-b",
+     "op": "toppled",
+     "target": "sack-b"
+    },
+    {
+     "id": "barrel",
+     "op": "toppled",
+     "target": "barrel"
+    }
+   ],
+   "effects": [],
+   "improved": "The Mill, tidy again after the storm",
+   "reaction": "There! You'd never know. My roses at Rose Cottage came through it too. Come and see."
+  },
+  {
+   "id": "cottage-garden",
+   "scene": "rose-cottage",
+   "kind": "restoration",
+   "after": [
+    "church-restore"
+   ],
+   "villager": "beekeeper",
+   "title": "Nan's cottage garden",
+   "goal": "restore Rose Cottage",
+   "brief": "Welcome to Rose Cottage! The hives need painting, the greenhouse is filthy and the gate's gone grey. Shall we make it the prettiest garden in the county?",
+   "condition": "clear",
+   "subtlety": 0.2,
+   "tasks": [
+    {
+     "id": "hive",
+     "op": "faded",
+     "target": "hive"
+    },
+    {
+     "id": "greenhouse",
+     "op": "grimy",
+     "target": "greenhouse"
+    },
+    {
+     "id": "gate",
+     "op": "faded",
+     "target": "gate"
+    },
+    {
+     "id": "basket",
+     "op": "plant",
+     "target": "basket"
+    },
+    {
+     "id": "scarecrow",
+     "op": "crooked",
+     "target": "scarecrow"
+    },
+    {
+     "id": "weeds",
+     "op": "weeds",
+     "count": 2,
+     "edges": [
+      "fence-base",
+      "path-edge"
+     ]
+    }
+   ],
+   "effects": [
+    "cottage-hives",
+    "cottage-fete"
+   ],
+   "restores": true,
+   "todo": "Tired hives and a grimy greenhouse",
+   "stage": "Restored",
+   "improved": "Painted hives, a clean greenhouse and a garden set for tea",
+   "reaction": "Listen to my bees humming! The Committee has one more job for you at the Halt."
+  },
+  {
+   "id": "halt-colours",
+   "scene": "railway-halt",
+   "kind": "committee",
+   "after": [
+    "cottage-garden",
+    "halt-refresh"
+   ],
+   "villager": "stationmaster",
+   "title": "Red, white and blue tubs",
+   "goal": "plant red, white and blue",
+   "brief": "Committee request! There's a village celebration before the judging, and we'd like the station tubs red, white and blue.",
+   "condition": "clear",
+   "subtlety": 0.1,
+   "tasks": [
+    {
+     "id": "tub",
+     "op": "plant",
+     "target": "tub",
+     "colour": "red"
+    },
+    {
+     "id": "tub-b",
+     "op": "plant",
+     "target": "tub-b",
+     "colour": "white"
+    },
+    {
+     "id": "tub-c",
+     "op": "plant",
+     "target": "tub-c",
+     "colour": "blue"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "platform"
+     ],
+     "items": [
+      "paper-plate",
+      "balloon",
+      "newspaper",
+      "orange-peel"
+     ]
+    }
+   ],
+   "effects": [
+    "halt-colours"
+   ],
+   "todo": "The Committee's colour request",
+   "stage": "Celebration colours",
+   "improved": "Red, white and blue tubs and bunting at the Halt",
+   "reaction": "Now that's a welcome! The judges arrive tomorrow. Final preparations on the Green!"
+  },
+  {
+   "id": "green-judging",
+   "scene": "village-green",
+   "kind": "committee",
+   "after": [
+    "halt-colours",
+    "mill-storm",
+    "hs-fete"
+   ],
+   "villager": "colonel",
+   "title": "Final preparations",
+   "goal": "get ready for the judges",
+   "brief": "The judges arrive this afternoon! One last look round the Green, and then Honeycombe is ready.",
+   "condition": "golden",
+   "subtlety": 0.15,
+   "finale": true,
+   "tasks": [
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 3,
+     "zones": [
+      "lawn",
+      "path",
+      "lawn-left"
+     ],
+     "items": [
+      "paper-plate",
+      "balloon",
+      "bunting-scrap",
+      "ice-cream"
+     ]
+    },
+    {
+     "id": "noticeboard",
+     "op": "crooked",
+     "target": "noticeboard"
+    },
+    {
+     "id": "bin",
+     "op": "toppled",
+     "target": "bin"
+    }
+   ],
+   "effects": [
+    "green-finale"
+   ],
+   "todo": "Final preparations",
+   "stage": "Ready for the judges",
+   "improved": "Honeycombe, ready for the judges",
+   "reaction": "Here they come! Stand up straight, everybody."
+  }
+ ]
+}

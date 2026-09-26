@@ -1,6 +1,7 @@
 {
  "id": "railway-halt",
  "name": "Honeycombe Halt",
+ "short": "the Halt",
  "blurb": "Where the branch line stops, eventually. Mr Figg keeps the platform like a parlour.",
  "villager": "stationmaster",
  "plate": "plate/railway-halt",
@@ -540,18 +541,20 @@
    "target": "valance",
    "type": "faded",
    "amount": 0.6,
-   "project": "halt-paint"
+   "effect": "halt-paint",
+   "later": "The shelter’s due a fresh coat. Another day!"
   },
   {
    "target": "win-left",
    "type": "grimy",
    "amount": 0.55,
-   "project": "halt-paint"
+   "effect": "halt-paint",
+   "later": "That window’s on my list for another day."
   }
  ],
  "restoration": [
   {
-   "project": "halt-paint",
+   "effect": "halt-paint",
    "props": [
     {
      "id": "pot-door-l",
@@ -578,7 +581,7 @@
    ]
   },
   {
-   "project": "halt-flowers",
+   "effect": "halt-flowers",
    "props": [
     {
      "id": "basket-2",
@@ -611,6 +614,75 @@
      "tags": [
       "standing"
      ]
+    }
+   ]
+  },
+  {
+   "effect": "halt-tidy",
+   "added": 3
+  },
+  {
+   "effect": "halt-tubs",
+   "added": 3,
+   "props": [
+    {
+     "id": "tub-b",
+     "sprite": "props/flower-tub",
+     "x": 1262,
+     "y": 704,
+     "h": 92,
+     "tags": [
+      "flowers"
+     ]
+    },
+    {
+     "id": "tub-c",
+     "sprite": "props/flower-tub",
+     "x": 925,
+     "y": 712,
+     "h": 84,
+     "tags": [
+      "flowers"
+     ]
+    }
+   ]
+  },
+  {
+   "effect": "halt-colours",
+   "added": 3,
+   "tints": {
+    "tub": "red",
+    "tub-b": "white",
+    "tub-c": "blue"
+   },
+   "decor": [
+    {
+     "kind": "bunting",
+     "points": [
+      [
+       1274,
+       405
+      ],
+      [
+       1525,
+       420
+      ]
+     ],
+     "sag": 30
+    },
+    {
+     "kind": "bunting",
+     "points": [
+      [
+       432,
+       330
+      ],
+      [
+       758,
+       470
+      ]
+     ],
+     "sag": 26
     }
    ]
   }

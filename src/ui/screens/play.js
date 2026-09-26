@@ -1,38 +1,46 @@
 // The tidy-up: the scene fills the screen and everything else floats over it
-// (the way phone hidden-object games do it): a thin bar of actions along the
-// top, pause in the top-left corner, hints in the bottom-right. Taps go to the
-// PlaySession (rules) and the SceneView (animation).
+// (the way phone hidden-object games do it): a thin bar of jobs along the
+// top, pause in the top-left corner, the loupe in the bottom-right. Taps go
+// to the PlaySession (rules) and the SceneView (animation).
+//
+// A story visit opens with its resident's request and has no score, clock or
+// penalty: a stall of a few seconds brings a gentle offer of the (free)
+// loupe, and tapping tomorrow's job gets a friendly word, not a mistake.
+// Every fix is saved at once, so a reload carries on where it left off.
 
 import { h, icon, svg, wait, CONDITION_ICONS } from '../dom.js';
 import { PlaySession } from '../../core/session.js';
 import { Gestures } from '../../engine/input.js';
-import { finishPlay, leavePlay } from '../flows.js';
-import { introduced } from '../../core/progression.js';
-
-const ALL_SHOWN = { score: true, timer: true, combo: true, loupe: true, flash: true };
+import { commitPlay, showReveal, leavePlay } from '../flows.js';
+import { checkpoint, leavePlay as leaveSave } from '../../core/progression.js';
+import { shapeBounds } from '../../core/geometry.js';
 
 export class PlayScreen {
-  constructor(app, play, mess) {
+  constructor(app, play, mess, progress = null) {
     this.app = app;
     this.play = play;
     this.mess = mess;
+    this.progress = progress;
     this.usesCanvas = true;
-    this.session = new PlaySession(app.content, mess, play, { flashbulbs: app.save.player.flashbulbs });
+    this.story = play.mode === 'visit';
+    this.visit = this.story ? app.content.visit(play.village, play.visit) : null;
+    this.session = new PlaySession(app.content, mess, play, { flashbulbs: app.save.player.flashbulbs, resume: progress });
     this.content = app.content;
     this.scene = app.content.scene(play.village, play.scene);
-    this.show = { ...ALL_SHOWN, ...(play.show || {}) };
-    this.tutorial = play.tutorial ? { step: 0, idle: 0 } : null;
+    this.show = { score: false, timer: false, combo: false, loupe: true, flash: false, ...(play.show || {}) };
+    this.tutorial = play.tutorial && !progress?.done?.length ? { step: 0, idle: 0 } : null;
     this.finishing = false;
+    this.offer = 0; // how clearly the loupe has been offered in this stall (0, 1, 2)
+    this.laterSaid = new Set();
     this.build();
   }
 
+  get seen() { return this.app.save.flags.seen; }
+
   build() {
     const app = this.app, c = this.content;
-    const tier = c.tier(this.play.tier);
     const cond = c.conditions[this.play.condition];
-    // the action bar: one chip per kind of job, counting down
     this.bar = h('div.action-bar.card.paper');
-    // score and clock share a small pill in the top-right corner
     this.scoreEl = h('span.hud-score-num', { text: '0' });
     this.timeEl = h('span.hud-time', { text: '0:00' });
     this.scorePill = h('div.hud-stats',
@@ -43,74 +51,108 @@ export class PlayScreen {
     this.comboEl = h('div.hud-combo.hidden', h('span.hud-combo-x', { text: '2 in a row' }), h('i.hud-combo-bar', h('b')));
     this.callout = h('div.hud-callout.display');
     this.loupeRing = h('div.loupe-ring');
-    this.loupeBtn = h('button.tool.loupe', { 'aria-label': 'Loupe hint', onclick: () => this.useLoupe() },
+    this.loupeBtn = h('button.tool.loupe', { 'aria-label': 'Hint: show me where to look', onclick: () => this.useLoupe() },
       this.loupeRing, h('img', { src: app.assets.spriteUrl('ui/magnifier', 'common', 0.5), alt: '' }));
+    // the loupe appears the first time it is offered, and stays from then on
+    if (this.story && !this.seen['coach:loupe']) this.loupeBtn.classList.add('hidden');
     this.flashCount = h('span.badge', { text: String(app.save.player.flashbulbs) });
     this.flashBtn = h('button.tool.flash', { 'aria-label': 'Flashbulb', onclick: () => this.useFlash() },
       h('img', { src: app.assets.spriteUrl('ui/flashbulb', 'common', 0.5), alt: '' }), this.flashCount);
     this.hints = h('div.hud-hints', this.show.flash ? this.flashBtn : null, this.show.loupe ? this.loupeBtn : null);
     this.pauseBtn = h('button.iconbtn.hud-pause', { 'aria-label': 'Pause', onclick: () => this.pause() }, icon('pause'));
-    this.shaky = h('div.hud-shaky.hidden', h('div.display', { text: 'Shaky hands!' }), h('div.hand', { text: 'Steady on… tap with care.' }));
     this.coach = h('div.coach.hidden', h('div.coach-text.hand'));
     this.finger = h('div.finger.hidden', svg('<svg viewBox="0 0 48 48"><path d="M20 44c-4-3-9-9-11-13-1-2 1-4 3-3l4 3V8a3 3 0 0 1 6 0v14l1-1a3 3 0 0 1 5 1 3 3 0 0 1 5 1 3 3 0 0 1 5 2v9c0 5-3 9-6 11Z" fill="#fffdf7" stroke="#2c2a35" stroke-width="2.4" stroke-linejoin="round"/></svg>'));
-    this.viewfinder = h('div.viewfinder.hidden', h('i.vf.tl'), h('i.vf.tr'), h('i.vf.bl'), h('i.vf.br'), h('div.vf-center'), h('div.vf-text.typed', { text: 'Hold still…' }));
+    this.pinch = h('div.pinch-cue.hidden', h('i'), h('i'));
     this.flashOverlay = h('div.white-flash');
     this.sweep = h('div.finish-sweep');
     this.zoomReset = h('button.zoom-reset.chip.hidden', { onclick: () => { this.app.sfx('ui.tap'); const v = this.app.view; v.focus(v.W / 2, v.H / 2, 1, 0.4); } }, icon('eye'), h('span', { text: 'Whole scene' }));
     this.tip = h('div.action-tip.hidden');
-    // the place name is announced as you arrive, then gets out of the way
-    this.tab = h('div.hud-tab.card.paper',
+    this.bubble = h('div.say.hidden');
+    // a photo walk announces its place and weather as you arrive
+    this.tab = this.story ? null : h('div.hud-tab.card.paper',
       h('div.script.hud-scene', { text: this.scene.name }),
       h('div.hud-sub.row',
         h('span.hud-cond', icon(CONDITION_ICONS[this.play.condition]), h('span', { text: cond.name })),
         h('span.dot', { text: '·' }),
-        h('span', { text: this.play.daily ? 'Daily Postcard' : tier.name }),
+        h('span', { text: this.play.daily ? 'Daily Postcard' : c.tier(this.play.tier).free ? 'Photo walk' : 'Weather postcard' }),
       ),
     );
-    this.el = h('div.play.passthrough', this.bar, this.tip, this.pauseBtn, this.scorePill, this.comboEl, this.hints, this.tab,
-      this.callout, this.shaky, this.coach, this.finger, this.sweep, this.viewfinder, this.flashOverlay, this.zoomReset);
+    this.caption = h('div.play-caption.hidden', h('span.script', { text: this.scene.name }),
+      h('span.label', { text: this.visit ? (this.visit.kind === 'committee' ? `Committee request · ${this.visit.title}` : this.visit.title) : `${cond.name} · Photo walk` }));
+    this.el = h('div.play.passthrough', this.caption, this.bar, this.tip, this.pauseBtn, this.scorePill, this.comboEl, this.hints, this.tab,
+      this.callout, this.coach, this.finger, this.pinch, this.bubble, this.sweep, this.flashOverlay, this.zoomReset);
     this.renderBar();
   }
 
   async enter() {
-    const app = this.app;
-    await app.view.load({ village: this.play.village, scene: this.play.scene, mess: this.mess, projects: this.play.projects });
+    const app = this.app, play = this.play;
+    await app.view.load({ village: play.village, scene: play.scene, mess: this.mess, effects: play.effects, fixed: play.fixed, bloom: play.bloom });
+    app.view.reduced = app.reducedMotion;
+    // carrying on: what was done stays done
+    if (this.progress?.done?.length) app.view.markDone(this.progress.done);
+    if (this.session.catFound && app.view.cat) app.view.cat.found = -100;
+    if (this.session.collectibleFound && app.view.collectible) app.view.collectible.found = -100;
     this.layout();
     this.gestures = new Gestures(app.canvas, {
       onTap: (x, y) => this.tap(x, y),
       onPan: (dx, dy) => app.view.pan(dx, dy),
-      onPinch: (f, cx, cy, dx, dy) => { app.view.zoomAt(f, cx, cy); app.view.pan(dx, dy); },
+      onPinch: (f, cx, cy, dx, dy) => { app.view.zoomAt(f, cx, cy); app.view.pan(dx, dy); this.zoomed = true; },
     }, (x, y) => app.toLocal(x, y));
     app.audio.startMusic('play');
     const amb = [...(this.scene.ambience || [])];
-    if (this.play.condition === 'dusk') amb.push('crickets');
-    if (this.play.condition === 'storm') amb.push('drips', 'breeze');
-    app.audio.startAmbience(this.play.condition === 'mist' ? amb.filter((a) => a !== 'birds') : amb);
-    setTimeout(() => this.tab.classList.add('gone'), this.tutorial ? 1800 : 2200);
-    if (this.tutorial) {
-      // the coach teaches the first two jobs
-      for (const t of ['litter', 'crooked']) app.save.flags.seen[`job:${t}`] = true;
-      setTimeout(() => this.tutorialStep(), 1400);
-    } else {
-      setTimeout(() => this.introduceJobs(), 2300);
-    }
+    if (play.condition === 'dusk') amb.push('crickets');
+    if (play.condition === 'storm') amb.push('drips', 'breeze');
+    app.audio.startAmbience(play.condition === 'mist' ? amb.filter((a) => a !== 'birds') : amb);
+    if (this.tab) setTimeout(() => this.tab.classList.add('gone'), 2200);
+    // the resident asks first; then any new job gets its card
+    this.paused = true;
+    setTimeout(() => (this.story ? this.showBrief() : this.introduceJobs()), this.story ? 650 : 2300);
   }
 
-  /** A job never seen before gets a little card before the clock starts. */
+  /** The resident's request, in the scene: who, what and why, in a sentence. */
+  showBrief() {
+    const app = this.app, v = this.visit;
+    const who = app.v.villagers[v.villager];
+    const again = this.progress?.done?.length;
+    const left = this.session.left;
+    const go = h('button.btn.teal', { text: again ? 'Carry on' : this.tutorial ? 'Let’s tidy up!' : 'Let’s start' });
+    const card = h('div.brief.card.paper.pop-in',
+      h('img.brief-portrait', { src: app.assets.spriteUrl(who.portrait, app.village, 0.45), alt: '' }),
+      h('div.brief-body',
+        h('div.label.muted', { text: v.kind === 'committee' ? `Committee request · ${who.short}` : v.kind === 'incident' ? `After the storm · ${who.short}` : `${who.short} · ${this.scene.name}` }),
+        h('p.brief-text', { text: again ? `Welcome back! ${left} thing${left === 1 ? '' : 's'} still to do.` : v.brief }),
+        h('div.brief-foot', go),
+      ),
+    );
+    this.el.append(card);
+    this.placeCard(card);
+    app.sfx('page');
+    const done = () => {
+      app.sfx('ui.tap');
+      card.classList.add('leaving');
+      setTimeout(() => card.remove(), 260);
+      this.introduceJobs();
+    };
+    go.addEventListener('click', done, { once: true });
+  }
+
+  placeCard(card) { card.style.top = `${this.app.localRect(this.bar).bottom + 10}px`; }
+
+  /** A job never seen before gets a little card first. */
   introduceJobs() {
-    const app = this.app, seen = app.save.flags.seen;
+    const app = this.app, seen = this.seen;
     const fresh = Object.keys(this.session.remainingByType()).filter((t) => !seen[`job:${t}`]);
-    if (!fresh.length || this.finishing) return this.introduceFeature();
-    this.paused = true;
+    // the first visit teaches its jobs by pointing, not with cards
+    if (this.tutorial) { for (const t of fresh) seen[`job:${t}`] = true; return this.start(); }
+    if (!fresh.length || this.finishing) return this.start();
+    this.newJobs = fresh;
     const rows = fresh.map((t) => {
       const f = this.content.faults[t];
-      const art = app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
-      return h('div.job-row', h('span.job-ico', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon)),
-        h('div', h('div.display.job-name', { text: f.action }), h('div.job-text', { text: f.intro })));
+      return h('div.job-row', h('span.job-ico', this.jobArt(f)), h('div', h('div.display.job-name', { text: f.action }), h('div.job-text', { text: f.intro })));
     });
     const go = h('button.btn.teal.small', { text: 'Got it' });
     const card = h('div.job-card.card.paper.pop-in', h('div.label.muted', { text: fresh.length > 1 ? 'New jobs' : 'A new job' }), ...rows, go);
-    card.style.top = `${this.app.localRect(this.bar).bottom + 8}px`;
+    this.placeCard(card);
     this.el.append(card);
     app.sfx('unlock');
     go.addEventListener('click', () => {
@@ -118,23 +160,34 @@ export class PlayScreen {
       for (const t of fresh) seen[`job:${t}`] = true;
       app.persist();
       card.remove();
-      this.paused = false;
       for (const t of fresh) { const c = this.chips[t]?.chip; if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); } }
-      this.introduceFeature();
+      this.start();
     });
   }
 
-  /** The first play with a new tool on screen points it out once. */
+  /** The play begins (the clock, if any, starts now). */
+  start() {
+    this.paused = false;
+    this.session.lastProgress = this.session.t;
+    if (this.tutorial) setTimeout(() => this.tutorialStep(), 300);
+    else this.introduceFeature();
+  }
+
+  jobArt(f) {
+    const art = f.actionArt ? this.app.assets.spriteUrl(f.actionArt, 'common', 0.3) : this.app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
+    return art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon);
+  }
+
+  /** The first photo walk explains its score, the first flashbulb points itself out. */
   introduceFeature() {
-    const app = this.app, seen = app.save.flags.seen, coach = this.content.intro?.coach || {};
-    const on = { ...this.show, zoom: introduced(app.save, this.content, 'zoom') };
-    const targets = { flash: this.flashBtn, loupe: this.loupeBtn, score: this.scorePill, zoom: null };
-    for (const f of ['flash', 'loupe', 'score', 'zoom']) {
-      if (!on[f] || seen[`coach:${f}`] || !coach[f]) continue;
+    const app = this.app, seen = this.seen, coach = this.content.intro?.coach || {};
+    const targets = { flash: this.flashBtn, score: this.scorePill };
+    for (const f of ['score', 'flash']) {
+      if (!this.show[f] || seen[`coach:${f}`] || !coach[f]) continue;
       seen[`coach:${f}`] = true;
       app.persist();
-      this.setCoach(coach[f], targets[f] && { el: targets[f], below: f === 'score' });
-      setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent === coach[f]) this.setCoach(null); }, 4200);
+      this.setCoach(coach[f], { el: targets[f], below: f === 'score' });
+      setTimeout(() => { if (this.coachText === coach[f]) this.setCoach(null); }, 4200);
       return;
     }
   }
@@ -157,27 +210,33 @@ export class PlayScreen {
       view.setView(0, 0, W, H, { cover: crop <= (this.content.hud?.fit?.coverMaxCrop ?? 0.1) });
     } else view.setView(0, 0, W, H);
     if (!view.ready) return;
+    // small things are tappable over at least minTargetPx on screen
+    this.session.minTarget = (this.content.story?.assist?.minTargetPx ?? 44) / view.fit;
     const s = view.fit;
     const w = view.W * s, hgt = view.H * s;
     const px = (W - w) / 2, py = (H - hgt) / 2;
     this.print = { x: px, y: py, w, h: hgt };
     const sf = app.safe;
     // overlays stay inside the phone's safe area and inside the picture
-    const top = Math.max(sf.t, py) + 6, left = Math.max(sf.l, px) + 8, right = Math.max(sf.r, W - px - w) + 8, bottom = Math.max(sf.b, H - py - hgt) + 8;
+    const top = Math.max(sf.t, py, 0) + 6, left = Math.max(sf.l, px, 0) + 8, right = Math.max(sf.r, W - px - w, 0) + 8, bottom = Math.max(sf.b, H - py - hgt, 0) + 8;
     const place = (el, css) => Object.assign(el.style, css);
     place(this.pauseBtn, { left: `${left}px`, top: `${top}px` });
     place(this.scorePill, { right: `${right}px`, top: `${top}px` });
     place(this.hints, { right: `${right}px`, bottom: `${bottom}px` });
     this.corners = { left, right };
     place(this.bar, { top: `${top}px` });
-    place(this.tip, { top: `${top + 40}px` });
-    place(this.comboEl, { top: `${top + 42}px` });
-    place(this.coach, { left: `${px + 16}px`, width: `${w - 32}px`, top: `${top + 46}px` });
-    place(this.viewfinder, { left: `${px + 14}px`, top: `${py + 14}px`, width: `${w - 28}px`, height: `${hgt - 28}px` });
-    place(this.zoomReset, { left: `${W / 2}px`, top: `${H - bottom - 38}px` });
-    place(this.callout, { left: `${px}px`, width: `${w}px`, top: `${py + hgt * 0.3}px` });
-    place(this.shaky, { left: `${px}px`, top: `${py}px`, width: `${w}px`, height: `${hgt}px` });
-    place(this.tab, { left: `${W / 2}px`, top: `${py + hgt * 0.36}px` });
+    place(this.tip, { top: `${top + 42}px` });
+    place(this.comboEl, { top: `${top + 44}px` });
+    const cw = Math.min(W - left - right - 100, 560);
+    place(this.coach, { left: `${(W - cw) / 2}px`, width: `${cw}px`, top: `${top + 48}px` });
+    place(this.zoomReset, { left: `${W / 2}px`, top: `${H - bottom - 44}px` });
+    place(this.callout, { left: `${Math.max(px, 0)}px`, width: `${Math.min(w, W)}px`, top: `${py + hgt * 0.3}px` });
+    if (this.tab) place(this.tab, { left: `${W / 2}px`, top: `${py + hgt * 0.36}px` });
+    for (const card of this.el.querySelectorAll('.brief, .job-card')) this.placeCard(card);
+    // a tall screen letterboxes the scene: name the place in the margin below it
+    const margin = H - (py + hgt);
+    this.caption.classList.toggle('hidden', margin < 56);
+    place(this.caption, { top: `${py + hgt}px`, height: `${margin}px` });
     this.placeBar();
   }
 
@@ -199,10 +258,8 @@ export class PlayScreen {
     for (const [type, n] of Object.entries(types)) {
       const f = this.content.faults[type];
       const count = h('span.act-count', { text: String(n.left) });
-      // cut-paper tool art when there is some, the line icon otherwise
-      const art = this.app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
       const chip = h('button.act', { 'aria-label': `${f.action}: ${n.left} left`, onclick: () => this.tapAction(type) },
-        h('span.act-ico', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon)), h('span.act-label', { text: f.action }), count);
+        h('span.act-ico', this.jobArt(f)), h('span.act-label', { text: f.action }), count);
       if (!n.left) chip.classList.add('done');
       this.chips[type] = { chip, count };
       this.bar.append(chip);
@@ -240,9 +297,13 @@ export class PlayScreen {
     const f = this.content.faults[type];
     const r = this.app.localRect(c.chip.querySelector('.act-ico'));
     const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
-    const art = this.app.assets.spriteUrl(`tools/${f.actionIcon}`, 'common');
-    const token = h('div.fly-token', art ? h('img', { src: art, alt: '' }) : icon(f.actionIcon));
+    const token = h('div.fly-token', this.jobArt(f));
     this.el.append(token);
+    if (this.app.reducedMotion) {
+      token.remove();
+      this.bumpChip(type, left);
+      return;
+    }
     const dx = tx - sx, dy = ty - sy;
     // an arc: up and over, a touch of spin, shrinking as it tucks in
     const lift = Math.min(90, Math.abs(dx) * 0.35 + 40);
@@ -256,14 +317,14 @@ export class PlayScreen {
     anim.onfinish = () => { token.remove(); this.bumpChip(type, left); };
   }
 
-  /** Tapping an action names it, and (if the loupe is charged) shows you one. */
+  /** Tapping a job names it and (the loupe being free in a visit) shows you one. */
   tapAction(type) {
-    if (this.finishing) return;
+    if (this.finishing || this.paused) return;
     const f = this.content.faults[type];
     const left = this.session.remainingByType()[type]?.left || 0;
     this.showTip(left ? `${f.verb}: ${left} left` : `${f.action}: all done!`);
     this.app.sfx('ui.tap');
-    if (left && this.show.loupe) this.useLoupe(type, { quiet: true });
+    if (left && this.show.loupe && !this.loupeBtn.classList.contains('hidden')) this.useLoupe(type, { quiet: true });
   }
 
   showTip(text) {
@@ -278,8 +339,8 @@ export class PlayScreen {
 
   // ------------------------------------------------------------- update ---
   update(dt) {
+    if (this.fingerTarget) this.moveFinger();
     if (this.paused) return;
-    if (!this.tutorial && this.fingerTarget) this.moveFinger();
     const s = this.session;
     const events = this.finishing ? [] : s.update(dt);
     for (const ev of events) {
@@ -289,17 +350,54 @@ export class PlayScreen {
     const t = Math.floor(s.t);
     this.timeEl.textContent = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
     this.timeEl.classList.toggle('over', s.t > this.mess.par);
-    // loupe recharge ring
     this.loupeRing.style.setProperty('--k', s.loupeProgress);
     this.loupeBtn.classList.toggle('ready', s.loupeReady && !this.finishing);
-    // combo timer
     if (s.chain > 1) {
       const rem = Math.max(0, 1 - (s.t - s.lastFix) / s.comboWindow);
       this.comboEl.querySelector('b').style.width = `${rem * 100}%`;
     }
-    this.shaky.classList.toggle('hidden', !s.locked);
     this.zoomReset.classList.toggle('hidden', this.app.view.cam.zoom < 1.05 || this.finishing);
-    if (this.tutorial) this.updateTutorial(dt);
+    if (!this.finishing) this.offerHelp();
+    if (this.tutorial) this.tutorial.idle += dt;
+  }
+
+  /** Stuck? After a little while the loupe is offered; after longer, more clearly. */
+  offerHelp() {
+    const cfg = this.content.story?.hints || { offerAfter: 12, clearerAfter: 26 };
+    const stall = this.session.stall;
+    const coach = this.content.intro?.coach || {};
+    const quiet = (this.app.save.stats.hints || 0) >= 3; // they know the loupe by now: just a pulse
+    if (this.tutorial && this.tutorial.step < 2) return;
+    if (this.offer < 1 && stall > cfg.offerAfter) {
+      this.offer = 1;
+      this.revealLoupe();
+      this.loupeBtn.classList.add('offer');
+      if (!quiet && !this.coachText) this.setCoach(coach.loupe, { el: this.loupeBtn });
+      setTimeout(() => { if (this.coachText === coach.loupe) this.setCoach(null); }, 5000);
+    } else if (this.offer < 2 && stall > cfg.clearerAfter) {
+      this.offer = 2;
+      this.revealLoupe();
+      this.loupeBtn.classList.add('offer');
+      if (!this.coachText || this.coachText === coach.loupe) this.setCoach(coach.loupeClearer, { el: this.loupeBtn });
+      this.app.sfx('nudge');
+    }
+  }
+
+  revealLoupe() {
+    if (!this.loupeBtn.classList.contains('hidden')) return;
+    this.loupeBtn.classList.remove('hidden');
+    this.loupeBtn.classList.add('pop-in');
+    this.seen['coach:loupe'] = true;
+    this.app.persist();
+    this.app.sfx('unlock');
+  }
+
+  /** Progress (or a hint) ends the offer. */
+  calmHelp() {
+    this.offer = 0;
+    this.loupeBtn.classList.remove('offer');
+    const coach = this.content.intro?.coach || {};
+    if (this.coachText === coach.loupe || this.coachText === coach.loupeClearer) this.setCoach(null);
   }
 
   // --------------------------------------------------------------- taps ---
@@ -318,6 +416,7 @@ export class PlayScreen {
     if (prev?.miss && now - prev.t < 320 && Math.hypot(sx - prev.x, sy - prev.y) < 30 && !s.peek(wx, wy, tol)) {
       if (s.forgiveLastMiss()) this.scoreBump();
       view.focus(wx, wy, view.cam.zoom > 1.3 ? 1 : 2, 0.35);
+      this.zoomed = true;
       this.lastTap = null;
       return;
     }
@@ -332,36 +431,72 @@ export class PlayScreen {
         app.haptic('success');
         view.tapRipple(sx, sy, true);
         this.scoreBump();
-        if (!app.save.flags.seen.cat) { app.save.flags.seen.cat = true; app.toast([h('img', { src: app.assets.spriteUrl('critters/cat-sit', 'common', 0.3) }), 'You found Marmalade, the village cat! She hides in every scene.'], { ms: 3600 }); }
+        this.save();
+        if (!this.seen.cat) { this.seen.cat = true; app.toast([h('img', { src: app.assets.spriteUrl('critters/cat-sit', 'common', 0.3) }), 'You found Marmalade, the village cat! She hides all over Honeycombe.'], { ms: 3600 }); }
         return;
       case 'collectible': {
-        const target = app.localRect(this.show.score ? this.scorePill : this.bar);
+        const target = app.localRect(this.bar);
         view.collectibleFound([target.left + target.width / 2, target.top + target.height / 2]);
         view.popup(ev.collectible.cx, ev.collectible.cy - 30, `${ev.collectible.name}!`, { color: '#2f4f86', size: 26 });
         app.sfx('collect');
         app.haptic('success');
         this.scoreBump();
+        this.save();
         return;
       }
-      case 'miss':
+      case 'already':
+        view.tapRipple(sx, sy, true);
+        return;
+      case 'miss': {
         this.lastTap.miss = true;
-        view.tapRipple(sx, sy, false);
+        // tomorrow's job: a friendly word, never a mistake
+        const later = view.laterAt(wx, wy, tol);
+        if (later) return this.sayLater(later, sx, sy);
+        view.tapRipple(sx, sy, ev.gentle ? 'soft' : false);
+        if (ev.gentle) { app.sfx('ui.tap', { volume: 0.4 }); return; }
         app.sfx('miss');
         app.haptic('select');
         if (ev.brokeChain > 1) this.comboEl.classList.add('hidden');
         this.scoreEl.textContent = s.score.toLocaleString('en-GB');
         return;
-      case 'shaky':
-        view.tapRipple(sx, sy, false);
-        view.shakeScreen(14);
-        app.sfx('shaky');
-        app.haptic('warning');
-        this.comboEl.classList.add('hidden');
-        return;
-      case 'locked':
-        view.shakeScreen(4);
-        return;
+      }
     }
+  }
+
+  sayLater(n, sx, sy) {
+    const app = this.app;
+    app.view.tapRipple(sx, sy, 'soft');
+    if (this.laterSaid.has(n.target) && performance.now() - (this._laterAt || 0) < 4000) return;
+    this.laterSaid.add(n.target);
+    this._laterAt = performance.now();
+    const who = app.v.villagers[this.scene.villager];
+    const text = n.later || (who ? 'We’ll see to that another day.' : 'That can wait for another day.');
+    app.sfx('ui.tap');
+    this.say(who, text, sx, sy);
+  }
+
+  /** A resident's speech bubble near a spot on screen, for a moment. */
+  say(who, text, sx, sy) {
+    const b = this.bubble;
+    b.innerHTML = '';
+    if (who) b.append(h('img', { src: this.app.assets.spriteUrl(who.portrait, this.app.village, 0.3), alt: '' }));
+    b.append(h('span', { text }));
+    b.classList.remove('hidden', 'pop-in');
+    void b.offsetWidth;
+    b.classList.add('pop-in');
+    const W = this.app.width, H = this.app.height;
+    const bw = Math.min(360, W * 0.6);
+    b.style.width = `${bw}px`;
+    b.style.left = `${Math.max(12, Math.min(W - bw - 12, sx - bw / 2))}px`;
+    b.style.top = `${sy > H * 0.55 ? Math.max(56, sy - 110) : sy + 34}px`;
+    clearTimeout(this._sayTimer);
+    this._sayTimer = setTimeout(() => b.classList.add('hidden'), 3200);
+  }
+
+  /** Checkpoint: every fix and find is saved at once. */
+  save() {
+    checkpoint(this.app.save, this.session.progress());
+    this.app.persist(true);
   }
 
   onFix(ev, sx, sy) {
@@ -373,25 +508,47 @@ export class PlayScreen {
     if (ev.chain > 1 && this.show.combo) app.sfx('combo', { step: ev.chain });
     app.haptic(ft.haptic);
     if (this.show.score) view.popup(f.cx, f.cy - 20, `+${ev.points}`, { color: ev.chain > 2 ? '#c9483b' : '#2c2a35', size: 24 + Math.min(12, ev.chain * 1.5) });
+    else if (f.colour) view.popup(f.cx, f.cy - f.h * 0.5, `${this.content.story.colours[f.colour].name}!`, { color: '#2c2a35', size: 28 });
     this.flyToBar(f.type, ev.typeLeft, sx, sy);
     this.scoreBump();
+    this.calmHelp();
     if (ev.chain > 1 && this.show.combo) {
       this.comboEl.classList.remove('hidden');
-      const x = this.comboEl.querySelector('.hud-combo-x');
-      x.textContent = `${ev.chain} in a row`;
+      this.comboEl.querySelector('.hud-combo-x').textContent = `${ev.chain} in a row`;
       this.comboEl.classList.remove('bump'); void this.comboEl.offsetWidth; this.comboEl.classList.add('bump');
     }
     if (ev.callout && this.show.combo) this.showCallout(ev.callout);
-    // the first combo ever gets a word of explanation
     const comboTip = this.content.intro?.coach?.combo;
-    if (ev.chain === 2 && this.show.combo && comboTip && !app.save.flags.seen['coach:combo']) {
-      app.save.flags.seen['coach:combo'] = true;
+    if (ev.chain === 2 && this.show.combo && comboTip && !this.seen['coach:combo']) {
+      this.seen['coach:combo'] = true;
       this.setCoach(comboTip);
-      setTimeout(() => { if (this.coach.querySelector('.coach-text').textContent === comboTip) this.setCoach(null); }, 3000);
+      setTimeout(() => { if (this.coachText === comboTip) this.setCoach(null); }, 3000);
     }
+    if (ev.complete) return this.complete(ev.complete);
+    this.save();
     if (ev.left === 2 || ev.left === 1) this.app.toast(ev.left === 1 ? 'Just one more!' : 'Two to go!', { ms: 1400, cls: 'mini' });
-    if (this.tutorial) this.tutorialAfterFix(ev);
-    if (ev.complete) this.complete(ev.complete);
+    if (this.tutorial) this.tutorialAfterFix();
+    else this.maybeTeachZoom();
+  }
+
+  /** Zoom is taught the first time something small is left to find (on a
+   *  visit that isn't already teaching a new job: one idea at a time). */
+  maybeTeachZoom() {
+    const text = this.content.intro?.coach?.zoom;
+    if (!text || this.seen['coach:zoom'] || this.zoomed || this.coachText || this.newJobs) return;
+    const view = this.app.view;
+    const small = [...this.session.remaining].map((id) => this.session.byId.get(id)).find((f) => {
+      const b = shapeBounds(f.shape);
+      return Math.sqrt(b.w * b.h) * view.scale < 27;
+    });
+    if (!small) return;
+    this.seen['coach:zoom'] = true;
+    this.app.persist();
+    this.setCoach(text);
+    const [x, y] = view.worldToScreen(small.cx, small.cy);
+    this.pinch.style.transform = `translate(${x}px, ${y}px)`;
+    this.pinch.classList.remove('hidden');
+    setTimeout(() => { this.pinch.classList.add('hidden'); if (this.coachText === text) this.setCoach(null); }, 5200);
   }
 
   scoreBump() {
@@ -409,7 +566,7 @@ export class PlayScreen {
     this.app.haptic('medium');
     const v = this.app.view;
     const [x, y] = v.screenToWorld(v.view.x + v.view.w / 2, v.view.y + v.view.h * 0.3);
-    this.app.view.particles.burst('confetti', x, y, { n: 26 });
+    v.particles.burst('confetti', x, y, { n: 26 });
   }
 
   // -------------------------------------------------------------- hints ---
@@ -424,13 +581,14 @@ export class PlayScreen {
     this.app.view.showLoupe(ev.fault);
     this.app.sfx('hint');
     this.app.haptic('light');
-    if (this.tutorial?.step === 3) this.setCoach(null);
+    this.calmHelp();
+    this.save();
   }
 
   useFlash() {
     if (this.finishing) return;
     if (this.app.save.player.flashbulbs <= 0) {
-      this.app.toast('No flashbulbs left. Earn more from levels, requests and the Daily Postcard.', { ms: 2600 });
+      this.app.toast('No flashbulbs left. Earn more from levels, favours and the Daily Postcard.', { ms: 2600 });
       return;
     }
     const ev = this.session.useFlash();
@@ -446,51 +604,54 @@ export class PlayScreen {
   // -------------------------------------------------------------- pause ---
   pause() {
     if (this.finishing) return;
+    const wasPaused = this.paused;
     this.paused = true;
-    const app = this.app;
+    const app = this.app, v = this.visit;
+    const who = v && app.v.villagers[v.villager];
+    const types = this.session.remainingByType();
+    const todo = Object.entries(types).filter(([, n]) => n.left).map(([t, n]) => `${this.content.faults[t].action} ${n.left}`).join(' · ');
     const cond = this.content.conditions[this.play.condition];
     const sheet = app.sheet(h('div.pause.col',
       h('div.display.sheet-title', { text: 'Paused' }),
-      h('div.pause-scene', h('div.script', { text: this.scene.name }), h('div.label.muted', { text: `${cond.name} · ${this.play.daily ? 'Daily Postcard' : this.content.tier(this.play.tier).name}` })),
-      h('p.pause-blurb', { text: cond.blurb }),
-      h('p.hand.pause-note', { text: `${this.session.left} things still spoil the picture.` }),
+      h('div.pause-scene', h('div.script', { text: this.scene.name }),
+        h('div.label.muted', { text: v ? (v.kind === 'committee' ? 'Committee request' : v.title) : `${cond.name} · ${this.play.daily ? 'Daily Postcard' : 'Photo walk'}` })),
+      v ? h('div.pause-brief.row', h('img', { src: app.assets.spriteUrl(who.portrait, app.village, 0.3), alt: '' }), h('p.hand', { text: `“${v.brief}”` })) : h('p.pause-blurb', { text: cond.blurb }),
+      h('p.pause-note', { text: `Still to do: ${todo}` }),
       h('button.btn.teal', { text: 'Carry on', onclick: () => sheet.close() }),
-      h('button.btn.ink.small', { text: 'Leave (no postcard)', onclick: () => { sheet.close('leave'); } }),
-    ), { onClose: (v) => { this.paused = false; if (v === 'leave') leavePlay(app); } });
+      h('button.btn.ink.small', { text: 'Back to the map', onclick: () => { sheet.close('leave'); } }),
+      h('p.label.muted.pause-keep', { text: 'Anything you’ve done here is kept for next time.' }),
+    ), { onClose: (val) => { this.paused = wasPaused; if (val === 'leave') { leaveSave(app.save); app.persist(true); leavePlay(app); } } });
   }
 
   // ---------------------------------------------------------- finishing ---
+  /** The last fix: the result is saved first; the reveal is only presentation. */
   async complete(results) {
     this.finishing = true;
     const app = this.app, view = app.view;
+    const before = view.renderStill('before', Math.min(1600, Math.round(app.width * app.dpr)));
+    const receipt = commitPlay(app, this.play, this.mess, results);
     this.comboEl.classList.add('hidden');
     this.setCoach(null);
+    this.bubble.classList.add('hidden');
+    this.el.classList.add('finishing');
     // picture perfect: a warm light passes over the whole scene, with a chime
-    await wait(260);
+    await wait(360);
     app.sfx('complete');
     app.haptic('success');
-    this.sweep.classList.add('go');
-    for (let i = 0; i < 5; i++) {
-      setTimeout(() => view.particles.burst('sparkle', view.W * (0.15 + 0.175 * i), view.H * (0.35 + 0.25 * Math.sin(i * 2.1)), { n: 8, confetti: 0, color: '#fff4c8' }), 120 + i * 130);
+    if (!app.reducedMotion) {
+      this.sweep.classList.add('go');
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => view.particles.burst('sparkle', view.W * (0.15 + 0.175 * i), view.H * (0.35 + 0.25 * Math.sin(i * 2.1)), { n: 8, confetti: 0, color: '#fff4c8' }), 120 + i * 130);
+      }
     }
-    await wait(900);
     view.focus(view.W / 2, view.H / 2, 1, 0.7);
-    this.el.classList.add('finishing');
-    this.viewfinder.classList.remove('hidden');
-    app.sfx('tick');
-    await wait(420);
-    app.sfx('tick');
-    await wait(480);
-    const stills = { after: view.renderStill('after', 720), before: view.renderStill('before', 720) };
-    app.sfx('shutter');
-    app.haptic('heavy');
-    this.flashOverlay.classList.add('go');
-    this.viewfinder.classList.add('hidden');
-    await wait(260);
-    await finishPlay(app, this.play, this.mess, results, stills);
+    await wait(900);
+    showReveal(app, { play: this.play, mess: this.mess, result: results, receipt, before });
   }
 
   // ----------------------------------------------------------- tutorial ---
+  get coachText() { return this.coach.classList.contains('hidden') ? null : this.coach.querySelector('.coach-text').textContent; }
+
   setCoach(text, target = null) {
     if (!text) { this.coach.classList.add('hidden'); this.finger.classList.add('hidden'); this.fingerTarget = null; return; }
     this.coach.querySelector('.coach-text').textContent = text;
@@ -502,32 +663,23 @@ export class PlayScreen {
 
   tutorialStep() {
     const t = this.tutorial;
+    if (!t) return;
     const faults = this.mess.faults.filter((f) => this.session.remaining.has(f.id));
     if (t.step === 0) {
       const litter = faults.filter((f) => f.type === 'litter').sort((a, b) => b.salience - a.salience)[0];
       this.setCoach('Litter spoils the picture! Tap it to tidy it away.', litter && { world: [litter.cx, litter.cy] });
     } else if (t.step === 1) {
       const crooked = faults.find((f) => f.type === 'crooked');
-      this.setCoach(crooked ? 'Some things just need a nudge. Tap the crooked one.' : 'Lovely! Keep going.', crooked && { world: [crooked.cx, crooked.cy] });
+      this.setCoach(crooked ? 'That sign’s all crooked. Tap it to put it straight.' : 'Lovely! Keep going.', crooked && { world: [crooked.cx, crooked.cy] });
     } else if (t.step === 2) {
-      this.setCoach('Now find the rest! The bar at the top shows what still needs doing.', { el: this.bar, below: true });
-      setTimeout(() => { if (this.tutorial.step === 2) this.setCoach(null); }, 4500);
+      this.setCoach('Now find the rest! The bar at the top shows what’s left to do.', { el: this.bar, below: true });
+      setTimeout(() => { if (this.tutorial?.step === 2) this.setCoach(null); }, 4500);
     }
   }
 
-  tutorialAfterFix(ev) {
+  tutorialAfterFix() {
     const t = this.tutorial;
     if (t.step < 2) { t.step++; this.tutorialStep(); }
-  }
-
-  updateTutorial(dt) {
-    const t = this.tutorial;
-    t.idle += dt;
-    if (t.step >= 2 && t.idle > 8 && t.step !== 3 && this.show.loupe && this.session.loupeReady && !this.finishing) {
-      t.step = 3;
-      this.setCoach('Stuck? The magnifying glass shows you where to look. It recharges as you play.', { el: this.loupeBtn });
-    }
-    this.moveFinger();
   }
 
   moveFinger() {
@@ -537,6 +689,8 @@ export class PlayScreen {
     if (tg.world) [x, y] = this.app.view.worldToScreen(...tg.world);
     else if (tg.below) { const r = this.app.localRect(tg.el); x = r.left + r.width / 2; y = r.bottom + 2; }
     else { const r = this.app.localRect(tg.el); x = r.left - 30; y = r.top + r.height / 2 - 30; }
-    this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + Math.sin(performance.now() / 180) * 6}px)`;
+    const bob = this.app.reducedMotion ? 0 : Math.sin(performance.now() / 180) * 6;
+    this.finger.style.transform = `translate(${x - 12}px, ${y + 6 + bob}px)`;
   }
 }
+

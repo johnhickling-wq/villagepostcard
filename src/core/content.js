@@ -3,7 +3,7 @@
 // metadata is in /assets/**/manifest.json. This module is DOM-free: the
 // browser passes a fetch-based loader, Node (bot, validator) passes an fs one.
 
-const COMMON_FILES = ['faults', 'items', 'tiers', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics', 'hud', 'intro'];
+const COMMON_FILES = ['faults', 'items', 'tiers', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics', 'hud', 'intro', 'story'];
 
 export async function loadContent(readJson) {
   const common = {};
@@ -19,8 +19,10 @@ export async function loadContent(readJson) {
     await Promise.all(village.scenes.map(async (sid) => { scenes[sid] = await readJson(`${base}/scenes/${sid}.json`); }));
     const villagers = await readJson(`${base}/villagers.json`);
     const collectibles = await readJson(`${base}/collectibles.json`);
+    const { visits } = await readJson(`${base}/visits.json`);
     assets[entry.id] = await readJson(`assets/villages/${entry.id}/manifest.json`);
-    villages[entry.id] = { ...village, sceneOrder: village.scenes, scenes, villagers, collectibles };
+    villages[entry.id] = { ...village, sceneOrder: village.scenes, scenes, villagers, collectibles, visits,
+      visitById: Object.fromEntries(visits.map((vt) => [vt.id, vt])) };
   }
   return new Content(common, index, villages, assets);
 }
@@ -43,6 +45,9 @@ export class Content {
   village(id) { return this.villages[id]; }
 
   scene(villageId, sceneId) { return this.villages[villageId]?.scenes[sceneId]; }
+
+  /** A visit of the village's restoration route (content/villages/<id>/visits.json). */
+  visit(villageId, visitId) { return this.villages[villageId]?.visitById[visitId]; }
 
   /** Resolve an asset key: village manifest first, then common. Returns
    *  {pack, key, meta} or null. */

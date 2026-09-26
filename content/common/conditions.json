@@ -4,11 +4,11 @@
   "icon": "sun",
   "blurb": "Blue skies over the Wold.",
   "grade": {
-   "sat": 1.0,
-   "bright": 1.0,
+   "sat": 1,
+   "bright": 1,
    "tint": null
   },
-  "visibility": 1.0,
+  "visibility": 1,
   "ambient": [
    "clouds",
    "butterflies",
@@ -122,6 +122,9 @@
   },
   "themeMods": {
    "storm": 5
-  }
+  },
+  "exclude": [
+   "faded"
+  ]
  }
 }

@@ -1,12 +1,15 @@
-// The hub: an illustrated village map with pinned postcards for each scene,
-// restoration stickers, the Committee Letter (next goal) and navigation.
+// The hub: an illustrated village map. Each place you can go is a pinned
+// postcard with its stage ("First tidy complete") and what's still to do;
+// the ribbon along the bottom always names the one next step of the story,
+// one tap away. "3 of 8 places restored" is the village's progress.
 
-import { h, icon, svg, ICONS, countUp, CONDITION_ICONS } from '../dom.js';
+import { h, icon, CONDITION_ICONS } from '../dom.js';
 import {
-  sceneStatus, projectStatus, bloom, nextGoal, judgingReady, dailyInfo, introduced, introCardsDue, sceneUnlocked,
+  placeStatus, placesRestored, nextStep, judgingReady, dailyInfo, introduced, introCardsDue, visitLabel, nextWeather,
 } from '../../core/progression.js';
-import { playScene, restoreProject, playDaily, judging } from '../flows.js';
+import { playVisit, playWalk, playDaily, judging } from '../flows.js';
 import { topBar } from '../components/topbar.js';
+import { renderPostcard } from '../../render/stills.js';
 
 export class MapScreen {
   constructor(app, opts = {}) {
@@ -23,61 +26,48 @@ export class MapScreen {
     this.top = topBar(app, { onChange: () => this.render() });
     this.inner = h('div.map-inner');
     this.inner.append(h('img.map-img', { src: app.assets.imageUrl(v.map.image, app.village), alt: `Map of ${v.name}`, draggable: 'false' }));
-    // title cartouche (fixed, over the map)
-    const b = Math.round(bloom(save, app.content, app.village) * 100);
+    const pr = placesRestored(save, app.content, app.village);
+    const dot = (sid) => { const st = placeStatus(save, app.content, app.village, sid); return h('i' + (st.restored ? '.on' : st.done ? '.half' : ''), { title: v.scenes[sid].name }); };
     this.cartouche = h('div.map-cartouche.card.paper',
       h('div.script.map-name', { text: v.name }),
-      h('div.bloom.row', h('span.label', { text: 'Ready for the judges' }), h('div.bloom-bar', h('i', { style: { width: `${b}%` } })), h('span.bloom-num.display', { text: `${b}%` })),
+      h('div.milestone.row', h('div.ms-dots', v.sceneOrder.map(dot)),
+        h('span.ms-text', { text: `${pr.done} of ${pr.total} places restored` })),
     );
-    // a little life: drifting cloud shadows
-    for (let i = 0; i < 3; i++) {
-      this.inner.append(h('div.map-cloud', { style: { top: `${10 + i * 28}%`, width: `${120 + i * 40}px`, height: `${50 + i * 14}px`, animationDuration: `${70 + i * 25}s`, animationDelay: `${-i * 30}s`,
-        background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.9), rgba(255,255,255,0) 70%)' } }));
+    if (!app.reducedMotion) {
+      for (let i = 0; i < 3; i++) {
+        this.inner.append(h('div.map-cloud', { style: { top: `${10 + i * 28}%`, width: `${120 + i * 40}px`, height: `${50 + i * 14}px`, animationDuration: `${70 + i * 25}s`, animationDelay: `${-i * 30}s`,
+          background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.9), rgba(255,255,255,0) 70%)' } }));
+      }
     }
-    // only the places you can visit, and the next one to open: one idea at a time
-    const nextLocked = v.sceneOrder.find((sid) => !sceneUnlocked(save, app.content, app.village, sid));
-    for (const sid of v.sceneOrder) {
-      if (sceneUnlocked(save, app.content, app.village, sid) || sid === nextLocked) this.inner.append(this.pin(sid));
-    }
+    // only the places you can go: the map fills in as the story opens it up
+    this.next = nextStep(save, app.content, app.village);
+    for (const sid of v.sceneOrder) if (placeStatus(save, app.content, app.village, sid).open) this.inner.append(this.pin(sid));
     if (judgingReady(save, app.content, app.village)) {
-      const [MW, MH] = v.map.size || [1000, 1500];
+      const [MW, MH] = v.map.size;
       const [x, y] = v.map.judging || v.map.pins[v.start];
       this.inner.append(h('button.judging-btn.pulse', { style: { left: `${(x / MW) * 100}%`, top: `${(y / MH) * 100}%` }, onclick: () => judging(app) },
         icon('rosette'), h('span.display', { text: 'The judges are here!' })));
     }
     this.scroll = h('div.map-scroll', this.inner);
-    this.goal = this.goalRibbon();
+    this.ribbon = this.nextRibbon();
     this.nav = this.navBar();
-    this.el.append(this.scroll, this.top.el, this.cartouche, this.goal, this.nav);
+    this.el.append(this.scroll, this.top.el, this.cartouche, this.ribbon, this.nav);
   }
 
   async enter() {
-    const app = this.app;
-    requestAnimationFrame(() => this.centerOn(this.focusScene()));
-    const o = this.opts;
-    // arriving after a play: count the Village Fund up
-    if (o.from === 'results' && o.out) {
-      this.top.animateFund(app.save.player.fund - o.out.fund, app.save.player.fund);
-    }
-    if (o.unlocked) setTimeout(() => this.celebrateUnlock(o.unlocked), 400);
-    const letter = (o.events || []).find((e) => e.kind === 'letter');
-    if (letter?.letter === 'teaser') setTimeout(() => this.teaser(), 1200);
-    if ((o.events || []).some((e) => e.kind === 'judgingReady')) setTimeout(() => app.toast([icon('rosette'), 'The judges have arrived on the Green!'], { ms: 3600 }), 900);
-    // first visit after the tutorial: point at the first project
-    if (!app.save.flags.seen.mapIntro) {
-      app.save.flags.seen.mapIntro = true;
-      app.persist();
-      setTimeout(() => this.coachFirstProject(), 700);
-    } else if (!o.unlocked) {
-      setTimeout(() => this.introduceFeatures(), 900);
-    }
+    const app = this.app, o = this.opts;
+    const focus = o.focus || this.next.scene || o.play?.scene || app.v.start;
+    requestAnimationFrame(() => this.centerOn(focus));
+    const opened = (o.receipt?.events || []).filter((e) => e.kind === 'placeOpened').map((e) => e.scene);
+    for (const sid of opened) setTimeout(() => this.celebrateUnlock(sid), 450);
+    if (o.next || opened.length) this.ribbon.classList.add('attention');
+    setTimeout(() => this.introduceFeatures(), opened.length ? 1500 : 800);
   }
 
   /** New features arrive one per visit to the map, each with a card and a pulsing button. */
   async introduceFeatures() {
     const app = this.app;
     for (const f of introCardsDue(app.save, app.content).slice(0, 1)) {
-      // never over another screen or a sheet the player has just opened
       if (app.screen !== this || app.ui.querySelector('.overlay')) return;
       const card = app.content.intro.cards[f];
       app.save.flags.seen[`intro:${f}`] = true;
@@ -94,16 +84,7 @@ export class MapScreen {
         h('div.celebrate-foot', ok),
       ), { dismissable: false });
       await new Promise((res) => ok.addEventListener('click', () => { app.sfx('ui.tap'); m.close(); res(); }));
-      await new Promise((r) => setTimeout(r, 300));
     }
-  }
-
-  focusScene() {
-    const app = this.app;
-    const goal = nextGoal(app.save, app.content, app.village);
-    if (this.opts.focus) return this.opts.focus;
-    if (goal.project) return goal.project.unlocks || goal.project.scene;
-    return this.opts.play?.scene || app.v.start;
   }
 
   centerOn(sid, smooth = false) {
@@ -112,82 +93,63 @@ export class MapScreen {
     const s = this.scroll;
     const x = pin.offsetLeft + this.inner.offsetLeft - s.clientWidth / 2;
     const y = pin.offsetTop + this.inner.offsetTop - s.clientHeight / 2 + 20;
-    s.scrollTo({ left: x, top: y, behavior: smooth ? 'smooth' : 'auto' });
+    s.scrollTo({ left: x, top: y, behavior: smooth && !this.app.reducedMotion ? 'smooth' : 'auto' });
   }
 
   pin(sid) {
     const app = this.app, v = app.v;
     const scene = v.scenes[sid];
-    const st = sceneStatus(app.save, app.content, app.village, sid);
+    const st = placeStatus(app.save, app.content, app.village, sid);
     const [x, y] = v.map.pins[sid];
-    const [MW, MH] = v.map.size || [1000, 1500];
+    const [MW, MH] = v.map.size;
     const thumb = app.assets.imageUrl(scene.plate, app.village, true);
     const rot = ((sid.length * 7) % 9) - 4;
-    const dots = h('div.pin-postcards', { title: `${st.tiersDone} of 5 postcards` }, Array.from({ length: 5 }, (_, i) => h('i' + (i < st.tiersDone ? '.on' : ''))));
-    const el = h('button.pin' + (st.unlocked ? '' : '.locked') + (st.mastered ? '.mastered' : ''), {
+    const isNext = this.next.scene === sid;
+    const line = st.restored ? 'Restored' : st.progress ? `${st.progress.done.length} jobs done` : st.stage || (st.available.length ? 'Not visited yet' : '');
+    const el = h('button.pin' + (st.restored ? '.restored' : '') + (isNext ? '.next' : ''), {
       'data-scene': sid, style: { left: `${(x / MW) * 100}%`, top: `${(y / MH) * 100}%`, '--rot': `${rot}deg` },
-      onclick: () => {
-        app.sfx('ui.tap');
-        app.save.flags.seen[`pin:${sid}`] = true;
-        st.unlocked ? this.sceneSheet(sid) : this.lockedSheet(sid);
-      },
+      'aria-label': `${scene.name}${line ? `: ${line}` : ''}`,
+      onclick: () => { app.sfx('ui.tap'); this.placeSheet(sid); },
     },
-      h('div.pin-card', h('img', { src: thumb, alt: '' }), st.unlocked ? null : h('div.pin-lock', icon('lock'))),
+      h('div.pin-card', h('img', { src: thumb, alt: '' })),
       h('div.pin-pushpin'),
-      h('div.pin-tag', h('span', { text: scene.name }), st.unlocked ? dots : null),
+      h('div.pin-tag', h('span.pin-name', { text: scene.name }), line ? h('span.pin-stage', { text: line }) : null),
     );
-    // restoration stickers: one per finished beautification project
-    const stickers = h('div.pin-stickers');
-    for (const r of scene.restoration || []) {
-      if (!app.save.villages[app.village].projects[r.project]) continue;
-      const p = (r.props || [])[0];
-      if (p) stickers.append(h('img', { src: app.assets.spriteUrl(p.sprite, app.village, 0.25), alt: '' }));
-      else stickers.append(h('span.sticker-paint', icon('paint')));
-    }
-    el.append(stickers);
-    if (st.unlocked && st.plays === 0 && !this.app.save.flags.seen[`pin:${sid}`]) el.append(h('div.pin-new.label', { text: 'New!' }));
-    // a project you can afford gets a flag
-    const affordable = v.projects.some((p) => (p.scene === sid || p.unlocks === sid) && projectStatus(app.save, app.content, app.village, p.id).canBuy);
-    if (affordable) el.append(h('div.pin-flag.wiggle', icon('sparkle')));
+    if (st.restored) el.append(h('div.pin-rosette', icon('check')));
+    // work waiting here: a flag (a committee request gets the Committee's colours)
+    const avail = st.available[0];
+    if (avail) el.append(h('div.pin-flag' + (isNext ? '.wiggle' : '') + (avail.kind === 'committee' ? '.committee' : ''), icon(avail.kind === 'committee' ? 'notice' : 'sparkle')));
     return el;
   }
 
-  goalRibbon() {
-    const app = this.app;
-    const goal = nextGoal(app.save, app.content, app.village);
-    const who = app.v.villagers[goal.project?.villager || 'colonel'];
-    const el = h('button.goal.card.paper', {
-      onclick: () => {
-        app.sfx('ui.tap');
-        if (goal.kind === 'judging') return judging(app);
-        // short of money: go and take the next postcard; enough: go to the project
-        const sid = goal.kind === 'project' ? goal.project.unlocks || goal.project.scene : goal.next?.scene;
-        if (sid) {
-          this.centerOn(sid, true);
-          const st = sceneStatus(app.save, app.content, app.village, sid);
-          const focus = goal.kind === 'project' ? goal.project.id : null;
-          setTimeout(() => (st.unlocked ? this.sceneSheet(sid, { focus }) : this.lockedSheet(sid)), 350);
-        }
-      },
-    },
-      h('img.goal-portrait', { src: app.assets.spriteUrl(who.portrait, app.village, 0.35), alt: '' }),
-      h('div.goal-text', h('div.label.muted', { text: 'The Committee Letter' }), h('div.hand', { text: goal.text }), goal.hint ? h('div.goal-hint', { text: goal.hint }) : null),
-      goal.kind === 'project' ? h('div.goal-go.pulse', icon('sparkle')) : null,
+  /** The one next step, named, one tap away. */
+  nextRibbon() {
+    const app = this.app, n = this.next;
+    const who = n.villager ? app.v.villagers[n.villager] : app.v.villagers[app.v.finale.judge];
+    const go = () => {
+      app.sfx('ui.tap');
+      if (n.kind === 'visit') return playVisit(app, n.visit.id);
+      if (n.kind === 'judging') return judging(app);
+      return this.placeSheet(this.opts.play?.scene || app.v.start);
+    };
+    return h('button.next-ribbon.card.paper', { onclick: go },
+      h('img.nr-portrait', { src: app.assets.spriteUrl(who.portrait, app.village, 0.35), alt: '' }),
+      h('div.nr-text', h('div.label.muted', { text: n.kind === 'free' ? 'Best-Kept Village' : 'Next' }), h('div.nr-label.display', { text: n.label }),
+        n.text ? h('div.nr-sub', { text: n.text }) : null),
+      h('div.nr-go', icon('play')),
     );
-    return el;
   }
 
   navBar() {
     const app = this.app;
     const claimable = app.save.requests.active.filter((r) => r.progress >= r.count).length;
     const daily = dailyInfo(app.save, app.content, app.village);
-    // a button appears only once its feature has been introduced
     const btn = (feature, name, label, onclick, badge) => (introduced(app.save, app.content, feature)
       ? h('button.nav-btn', { 'data-feature': feature, onclick: () => { app.sfx('ui.tap'); onclick(); } },
         h('div.nav-ico', icon(name), badge ? h('span.badge', { text: String(badge) }) : null), h('span.label', { text: label }))
       : null);
     return h('div.nav',
-      btn('album', 'album', 'Album', async () => { const { AlbumScreen } = await import('./album.js'); app.show(new AlbumScreen(app)); }),
+      btn('journal', 'album', 'Journal', async () => { const { AlbumScreen } = await import('./album.js'); app.show(new AlbumScreen(app)); }),
       btn('requests', 'notice', 'Notices', async () => { const { NoticeboardScreen } = await import('./noticeboard.js'); app.show(new NoticeboardScreen(app)); }, claimable),
       btn('daily', 'calendar', 'Daily', () => this.dailySheet(), daily.unlocked && !daily.done ? '!' : 0),
       btn('travel', 'train', 'Travel', async () => { const { TravelScreen } = await import('./travel.js'); app.show(new TravelScreen(app)); }),
@@ -195,82 +157,48 @@ export class MapScreen {
   }
 
   // --------------------------------------------------------------- sheets ---
-  sceneSheet(sid, { focus = null } = {}) {
+  /** A place: how it stands, the visit waiting here, and (optionally) a photo walk. */
+  placeSheet(sid) {
     const app = this.app, v = app.v, c = app.content;
     const scene = v.scenes[sid];
-    const st = sceneStatus(app.save, c, app.village, sid);
-    const next = c.tier(st.nextTier);
-    const conds = Object.keys(next.conditions);
+    const st = placeStatus(app.save, c, app.village, sid);
     const who = v.villagers[scene.villager];
-    const stamps = introduced(app.save, c, 'score');
-    const slots = ['clear', 'golden', 'mist', 'dusk', 'storm'].map((cid) => {
-      const e = st.album[cid];
-      return h('div.slot' + (e ? '.filled' : '') + (cid === conds[0] && !st.mastered ? '.next' : ''), { title: c.conditions[cid].name }, icon(CONDITION_ICONS[cid]), e && stamps ? h('span.slot-stamps', { text: '★'.repeat(e.stamps) }) : null);
+    const visits = st.available.map((visit) => {
+      const prog = app.vs.progress[visit.id];
+      const label = visitLabel(app.save, c, app.village, visit);
+      return h('div.visit-card.card' + (this.next.visit?.id === visit.id ? '.next' : ''),
+        h('div.vc-body',
+          h('div.label.muted', { text: visit.kind === 'committee' ? 'Committee request' : visit.kind === 'incident' ? 'After the storm' : v.villagers[visit.villager].short }),
+          h('div.display.vc-title', { text: visit.title }),
+          prog?.done?.length ? h('div.vc-progress', { text: `${prog.done.length} jobs done, carry on where you left off` }) : null,
+        ),
+        h('button.btn.teal.vc-go', { 'aria-label': label, onclick: () => { sheet.close(); playVisit(app, visit.id); } }, icon('play'), h('span', { text: prog?.done?.length ? 'Carry on' : 'Go' })),
+      );
     });
-    // what the Fund can pay for first, then the rest, then what's done
-    const rank = (p) => { const ps = projectStatus(app.save, c, app.village, p.id); return ps.canBuy ? 0 : ps.done ? 2 : 1; };
-    const projects = v.projects.filter((p) => p.scene === sid && !p.unlocks).sort((a, b) => rank(a) - rank(b));
-    // two columns: the place on the left, what's next on the right
+    const walks = introduced(app.save, c, 'walks') && st.visited;
+    const w = walks ? nextWeather(app.save, c, app.village, sid) : null;
+    const journal = Object.entries(app.vs.journal).filter(([id]) => c.visit(app.village, id)?.scene === sid);
+    const photos = h('div.ss-photos', journal.map(([id, entry]) => {
+      const slot = h('div.ss-photo', h('div.as-loading'));
+      renderPostcard(app, sid, entry, { width: 200 }).then(({ after }) => { slot.innerHTML = ''; slot.append(h('img', { src: after, alt: c.visit(app.village, id).title })); });
+      return slot;
+    }));
     const sheet = app.sheet(h('div.scene-sheet',
       h('div.ss-col',
         h('div.ss-thumb.card', h('img', { src: app.assets.imageUrl(scene.plate, app.village, true), alt: '' }), h('div.tape', { style: { left: '34%', top: '-10px', transform: 'rotate(-4deg)' } })),
         h('div.display.ss-name', { text: scene.name }),
-        h('p.ss-blurb', { text: scene.blurb }),
-        h('button.btn.big.ss-play', { onclick: () => { sheet.close(); playScene(app, sid); } }, icon('camera'), h('span', { text: 'Snap it!' })),
+        h('div.ss-stage.row', st.restored ? icon('check') : null, h('span', { text: st.restored ? 'Restored' : st.stage || 'Not visited yet' })),
+        !st.restored && st.todo ? h('p.ss-todo', { text: st.todo }) : null,
+        journal.length ? photos : h('p.ss-blurb', { text: scene.blurb }),
       ),
       h('div.ss-col',
-        h('div.ss-next.card',
-          h('div.label.muted', { text: st.mastered ? 'Free Play: any weather' : `Next postcard: ${st.nextTier} of 5` }),
-          st.mastered ? h('div.display.ss-tier', { text: 'All five taken!' })
-            : h('div.row.ss-conds', h('span.cond-pill.big', icon(CONDITION_ICONS[conds[0]]), h('span', { text: c.conditions[conds[0]].name }))),
-          h('div.ss-meta.row', h('span', { text: `${next.faults[0]}–${next.faults[1]} things to tidy` }), st.best && stamps ? h('span', { text: `Best ${st.best.toLocaleString('en-GB')}` }) : null),
-        ),
-        h('div.ss-album', h('div.label.muted', { text: `Postcards of ${scene.name}: ${st.tiersDone} of 5` }), h('div.slots', slots)),
-        projects.length ? h('div.ss-projects', h('div.label.muted', { text: 'Restoration' }), projects.map((p) => this.projectCard(p, () => sheet.close()))) : null,
+        visits.length ? h('div.ss-visits', visits) : h('div.ss-quiet.hand', { text: st.restored ? `${scene.name} is looking its best.` : 'Nothing to do here just yet.' }),
+        walks ? h('div.ss-walk.card',
+          h('div.label.muted', { text: 'Optional · Weather postcards' }),
+          h('div.row.ss-walk-row', h('span.cond-pill', icon(CONDITION_ICONS[w.condition]), h('span', { text: w.free ? 'Any weather' : w.name })),
+            h('button.btn.small.mustard', { onclick: () => { sheet.close(); playWalk(app, sid); } }, icon('camera'), h('span', { text: 'Photo walk' }))),
+        ) : null,
         who ? h('div.ss-villager.row', h('img', { src: app.assets.spriteUrl(who.portrait, app.village, 0.3), alt: '' }), h('div.hand', { text: `“${(who.thanks || [''])[sid.length % (who.thanks?.length || 1)]}” — ${who.short}` })) : null,
-      ),
-    ), { cls: 'wide' });
-    // arriving from the Committee Letter: bring the project it named into view
-    const card = focus && sheet.el.querySelector(`[data-project="${focus}"]`);
-    if (card) {
-      card.classList.add('focus');
-      requestAnimationFrame(() => card.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
-    }
-  }
-
-  projectCard(p, closeSheet) {
-    const app = this.app;
-    const ps = projectStatus(app.save, app.content, app.village, p.id);
-    let reason = '';
-    if (ps.done) reason = 'Done!';
-    else if (!ps.sceneOpen) reason = 'Scene not open yet';
-    else if (ps.needFund) reason = `${ps.needFund} more to raise`;
-    const btn = h('button.btn.small' + (ps.canBuy ? '.mustard.pulse' : '.ink'), {
-      disabled: !ps.canBuy,
-      onclick: () => { closeSheet?.(); restoreProject(app, p.id); },
-    }, ps.done ? icon('check') : icon('fund'), h('span', { text: ps.done ? 'Done' : String(p.cost) }));
-    return h('div.project-card.card' + (ps.done ? '.done' : ''), { 'data-project': p.id },
-      h('div.pc-icon', icon(p.icon in ICONS ? p.icon : 'sparkle')),
-      h('div.pc-body', h('div.display.pc-name', { text: p.name }), h('div.pc-desc', { text: p.desc }), reason && !ps.done ? h('div.pc-reason.label', { text: reason }) : null),
-      h('div.pc-cost', btn),
-    );
-  }
-
-  lockedSheet(sid) {
-    const app = this.app, v = app.v;
-    const scene = v.scenes[sid];
-    const access = v.projects.find((p) => p.unlocks === sid);
-    const who = v.villagers[access.villager];
-    const sheet = app.sheet(h('div.scene-sheet.locked',
-      h('div.ss-col',
-        h('div.ss-thumb.card.greyed', h('img', { src: app.assets.imageUrl(scene.plate, app.village, true), alt: '' }), h('div.pin-lock', icon('lock'))),
-        h('div.label.muted', { text: 'Not yet open' }),
-        h('div.display.ss-name', { text: scene.name }),
-        h('p.ss-blurb', { text: scene.blurb }),
-      ),
-      h('div.ss-col',
-        h('div.ss-villager.row', h('img', { src: app.assets.spriteUrl(who.portrait, app.village, 0.3), alt: '' }), h('div.hand', { text: `“${access.desc}” — ${who.short}` })),
-        this.projectCard(access, () => sheet.close()),
       ),
     ), { cls: 'wide' });
   }
@@ -278,63 +206,37 @@ export class MapScreen {
   dailySheet() {
     const app = this.app;
     const d = dailyInfo(app.save, app.content, app.village);
-    if (!d.unlocked) return app.toast('The Daily Postcard opens after your third postcard.', { ms: 2400 });
+    if (!d.unlocked) return;
     const scene = app.content.scene(app.village, d.scene);
     const cond = app.content.conditions[d.condition];
-    const card = d.card.map((r, i) => h('div.streak-day' + (i < (d.done ? d.cardDay : d.cardDay - 1) ? '.on' : '') + (i === d.cardDay - 1 ? '.today' : ''),
+    const filled = d.done ? d.cardDay : d.cardDay - 1;
+    const card = d.card.map((r, i) => h('div.streak-day' + (i < filled ? '.on' : '') + (i === d.cardDay - 1 ? '.today' : ''),
       h('span.label', { text: `Day ${i + 1}` }),
-      r.flashbulbs ? h('img', { src: app.assets.spriteUrl('ui/flashbulb', 'common', 0.25) }) : icon('fund'),
-      h('span.sd-amt', { text: r.flashbulbs ? `×${r.flashbulbs}` : `${r.fund}${r.collectible ? '+' : ''}` })));
+      r.flashbulbs ? h('img', { src: app.assets.spriteUrl('ui/flashbulb', 'common', 0.25) }) : r.collectible ? icon('sparkle') : icon('camera'),
+      h('span.sd-amt', { text: r.flashbulbs ? `×${r.flashbulbs}` : `+${r.xp}` })));
     const sheet = app.sheet(h('div.daily-sheet',
       h('div.ss-col',
         h('div.label.muted', { text: new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) }),
         h('div.display.sheet-title', { text: 'The Daily Postcard' }),
         h('div.daily-card.card', h('img', { src: app.assets.imageUrl(scene.plate, app.village, true), alt: '' }),
           h('div.daily-info', h('div.display', { text: scene.name }), h('div.cond-pill', icon(CONDITION_ICONS[d.condition]), h('span', { text: cond.name })))),
-        h('p.hand.daily-note', { text: 'Everyone gets the same mess today. How tidy can you make it?' }),
+        h('p.hand.daily-note', { text: 'Everyone gets the same photo walk today. Just for fun.' }),
       ),
       h('div.ss-col',
-        h('div.label.muted', { text: `Stamp card · streak ${d.streak} day${d.streak === 1 ? '' : 's'}` }),
+        h('div.label.muted', { text: `Stamp card · ${d.days} day${d.days === 1 ? '' : 's'} played` }),
         h('div.streak-card', card),
-        d.done ? h('div.daily-done.hand', { text: 'Done for today! Come back tomorrow for a new postcard.' })
-          : h('button.btn.big', { onclick: () => { sheet.close(); playDaily(app); } }, icon('camera'), h('span', { text: 'Snap today’s' })),
+        h('p.label.muted', { text: 'Missed a day? No matter: your card keeps its stamps.' }),
+        d.done ? h('div.daily-done.hand', { text: 'Done for today! There’s a new one tomorrow.' })
+          : h('button.btn.big', { onclick: () => { sheet.close(); playDaily(app); } }, icon('camera'), h('span', { text: 'Take today’s' })),
       ),
     ), { cls: 'wide' });
   }
 
-  // ------------------------------------------------------------ moments ---
   celebrateUnlock(sid) {
     const pin = this.inner.querySelector(`[data-scene="${sid}"]`);
     if (!pin) return;
     this.centerOn(sid, true);
     pin.classList.add('just-unlocked');
     this.app.sfx('unlock');
-  }
-
-  async teaser() {
-    const app = this.app;
-    const { showLetter } = await import('../components/letter.js');
-    await showLetter(app, { from: 'postman', ...app.v.letters.teaser, button: 'Pin it up' });
-    const poster = app.content.index.villages.find((x) => !x.playable);
-    const m = app.modal(h('div.celebrate.card.paper.deckle',
-      h('div.label.muted', { text: 'A picture postcard from' }),
-      h('div.display.celebrate-title', { text: poster.name }),
-      h('img.teaser-img', { src: app.assets.imageUrl(poster.poster, null), alt: '' }),
-      h('p.hand', { text: poster.tagline }),
-      h('div.col',
-        h('button.btn.mustard', { onclick: async () => { m.close(); const { TravelScreen } = await import('./travel.js'); app.show(new TravelScreen(app, poster.id)); } }, icon('train'), h('span', { text: 'Travel Office' })),
-        h('button.link.dark', { onclick: () => m.close() }, 'Maybe later'),
-      ),
-    ));
-  }
-
-  coachFirstProject() {
-    const app = this.app;
-    const access = app.v.projects[0];
-    const sid = access.unlocks;
-    this.centerOn(sid, true);
-    app.toast([h('img', { src: app.assets.spriteUrl(app.v.villagers.colonel.portrait, app.village, 0.3) }), 'Splendid snap! Your postcard is on sale at the Post Office, and the money goes into the Village Fund. Now, the lane to the High Street is a disgrace. Tap it to put it right.'], { ms: 6500 });
-    const pin = this.inner.querySelector(`[data-scene="${sid}"]`);
-    pin?.classList.add('coach-glow');
   }
 }

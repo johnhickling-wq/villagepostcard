@@ -32,6 +32,7 @@ export default async function ({ page, wait, url }) {
       const idx = v.visits.indexOf(first);
       const prior = v.visits.slice(0, idx).flatMap((x) => x.effects);
       const mess = generateVisit(c, { village: vid, visit: first.id, seed: 7, effectsDone: prior, fixed: [], cat: false });
+      mess.condition = cond; // the same light for before and after
       await view.load({ village: vid, scene: sid, mess, effects: prior, fixed: [], bloom: 0, condition: cond });
       const before = view.renderStill('before', W);
       const partialFx = [...prior, ...first.effects];

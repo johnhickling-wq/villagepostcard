@@ -483,7 +483,7 @@
    "sprite": "props/flower-tub",
    "x": 810,
    "y": 900,
-   "h": 66,
+   "h": 84,
    "tags": [
     "flowers",
     "standing"
@@ -494,7 +494,7 @@
    "sprite": "props/wheelbarrow",
    "x": 1360,
    "y": 915,
-   "h": 76,
+   "h": 100,
    "tags": [
     "standing"
    ]
@@ -504,7 +504,7 @@
    "sprite": "props/watering-can",
    "x": 1105,
    "y": 870,
-   "h": 44,
+   "h": 58,
    "tags": [
     "standing"
    ]
@@ -601,9 +601,9 @@
     {
      "id": "bench",
      "sprite": "props/bench",
-     "x": 1570,
-     "y": 975,
-     "h": 110,
+     "x": 1590,
+     "y": 862,
+     "h": 130,
      "tags": []
     },
     {
@@ -611,7 +611,7 @@
      "sprite": "props/stone-trough",
      "x": 1250,
      "y": 850,
-     "h": 54,
+     "h": 72,
      "tags": [
       "flowers"
      ]
@@ -621,7 +621,7 @@
      "sprite": "props/lavender-pot",
      "x": 870,
      "y": 870,
-     "h": 52,
+     "h": 66,
      "tags": [
       "flowers",
       "standing"

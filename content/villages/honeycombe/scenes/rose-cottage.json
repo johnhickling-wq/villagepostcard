@@ -569,7 +569,7 @@
      "sprite": "props/bird-bath",
      "x": 720,
      "y": 960,
-     "h": 100,
+     "h": 125,
      "tags": [
       "standing"
      ]

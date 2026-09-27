@@ -2,6 +2,16 @@
 
 27 September 2026. Live build: https://johnhickling-wq.github.io/villagepostcard/. Source cross-check: main at c843fca.
 
+## Owner addition: all-scene art quality and authorised budget
+
+The owner requires **more vibrant colours in every scene**, not just the Village Green, and **one consistent graphic style across the entire game**. Apply this to existing outdoor scenes, the new shop interior, backgrounds, interactive objects and permanent restoration overlays. Maintain the same cut-paper materials, edge treatment, texture density, lighting, shadow style, perspective and level of detail. Individual locations can have distinct palettes and atmosphere while clearly belonging to the same illustrated world.
+
+The owner reports increasing the OpenRouter budget to approximately **US$50** and explicitly authorises spending whatever is needed **up to US$50 total for this graphics improvement pass**, without seeking approval for each generation or iteration. Use the available balance if lower; do not exceed the cap or assume permission to top up. Track cumulative cost, including retries, and report actual spend and outstanding work. This is a ceiling, not a target to exhaust.
+
+Graphics quality takes priority over retaining an inadequate asset. Regenerate or replace any backgrounds, sprites or overlays needed to reach a consistently excellent result. The earlier suggestions to reuse art or prototype crops are efficiency options, not restrictions on this authorisation.
+
+Establish a shared visual reference and reusable art-direction brief, then apply it across the full scene set. Review all scenes together as a contact sheet and individually in gameplay at phone and tablet sizes. Check untreated, partly restored and completed states: all should feel fresh and attractive, with neglect shown locally. Do not treat a blanket saturation increase as the whole job, or accept stylistic mismatch because each image looks good on its own.
+
 ## Decision and scope
 
 The restoration story is a substantial improvement. Keep the currency-free route, residents, persistent improvements, repeat visits and large postcard reward. The next pass should concentrate on reliable restart, attractive colour throughout play, believable close-up compositions and clearer visual tasks.
@@ -158,7 +168,8 @@ Deliver one coherent playable update, with an honest short account of what was c
 
 Required evidence:
 - Restart reproduction and browser-lifecycle regression check.
-- Clear-weather before/after comparisons for the revised Green and representative other scenes.
+- Clear-weather before/after comparisons across every scene, plus a whole-game contact sheet demonstrating consistent art direction, including the shop interior and restoration overlays.
+- OpenRouter cost summary showing cumulative spend for this pass within the US$50 cap.
 - Playable close-up Green and an integrated shop interior, or explicit identification of any real art dependency rather than claiming it is complete.
 - Correct contextual Clean instruction and visibly meaningful mill task.
 - Perspective/scale audit of both loose tasks and permanent reward props.

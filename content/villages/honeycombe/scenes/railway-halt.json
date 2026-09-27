@@ -619,12 +619,10 @@
    ]
   },
   {
-   "effect": "halt-tidy",
-   "added": 3
+   "effect": "halt-tidy"
   },
   {
    "effect": "halt-tubs",
-   "added": 3,
    "props": [
     {
      "id": "tub-b",
@@ -650,7 +648,6 @@
   },
   {
    "effect": "halt-colours",
-   "added": 3,
    "tints": {
     "tub": "red",
     "tub-b": "white",

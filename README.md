@@ -11,7 +11,7 @@ a time: a resident asks for help, and you tap to put things right:
 
 Then the whole scene wipes from before to after, the shutter clicks, and the
 visit's postcard goes into your journal. What you restore stays restored, and
-there is always one clear next place to go. Fourteen visits later the judges
+there is always one clear next place to go. Fifteen visits later the judges
 arrive. Photo walks in five kinds of weather, a Daily Postcard, favours for the
 neighbours and a scrapbook of keepsakes are there for anyone who wants more;
 none of them is needed for the story. The first village,
@@ -91,7 +91,9 @@ Each sound has a named hook (`fix.paint`, `combo`, `shutter`…).
 ### Art
 
 The art is flat cut-paper collage, generated through OpenRouter (GPT Image)
-and matched to one style reference (`art_src/style_ref_cutpaper.jpg`). Scenes
+and matched to one style reference (`art_src/style_ref_cutpaper.jpg`) and one
+art direction (`art_src/ART_DIRECTION.md`); `tools/art/freshen.py` gives every
+image the same fresh colour at build time without moving a pixel. Scenes
 are 2:1 to fill a phone held sideways. The art was then cut out, packed and
 annotated by the tools in `tools/art/`. Replace any source image and rerun
 `python3 tools/art/build.py` to swap in final art. The earlier painted art is
@@ -108,4 +110,7 @@ node tools/qa/shots.mjs story|hints|resume|reset|recover|map|screens|fixes|galle
 VW=667 VH=375 node tools/qa/shots.mjs compact   # small phone (and VW=1024 VH=768 for a 4:3 tablet)
 VW=390 VH=844 node tools/qa/shots.mjs rotated   # portrait phone: the stage turns itself
 node tools/qa/shots.mjs mix                     # loudness of every sound against its target
+node tools/qa/shots.mjs compare                 # every scene before/after in one light, and contact sheets
+node tools/qa/shots.mjs visits                  # every visit as a player meets it (VISITS=id,id; VW/VH for sizes)
+node tools/qa/shots.mjs reset                   # Start again through the UI and the page lifecycle
 ```

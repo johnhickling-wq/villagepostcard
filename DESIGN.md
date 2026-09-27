@@ -53,7 +53,10 @@ wonky sign. The period is 1957: the colour request is for "a village
 celebration", not a royal occasion that didn't happen that year.
 
 The art is flat cut-paper collage, like a 1950s picture book made from coloured
-paper. Everything in a scene is paper, so the things you fix belong in it
+paper, in the colours of a fresh spring day (`art_src/ART_DIRECTION.md`).
+Every place is inviting from the first frame: neglect is shown locally (faded
+paint, grime, litter, weeds, empty planters), never by greying the scene, and
+restoration adds only a faint warm glow on top of its visible changes. Everything in a scene is paper, so the things you fix belong in it
 rather than sitting on top. The UI borrows from ephemera: postage stamps,
 railway tickets, rosettes, cork noticeboards.
 
@@ -68,7 +71,8 @@ Map: the ribbon names one next step ("Visit the Village Green")
       │  (or tap any place for its visit, its postcards, an optional photo walk)
       ▼
 The resident's request, in the scene: who, what and why, in a sentence
-      │  a new job gets a one-line card the first time it appears
+      │  a job met for the first time is explained in the same card, in terms
+      │  of the thing in front of you ("The Market Cross has gone grubby…")
       ▼
 PUT IT RIGHT — tap each job; the bar along the top counts them down
       │  stuck? the free loupe is offered; tomorrow's work gets a friendly word
@@ -79,9 +83,10 @@ The last fix: the result is SAVED, then the reveal
       ▼
 The shutter: the postcard's border forms around the picture
       │  a shallow rail: the resident's reaction, what improved,
-      │  "4 of 8 places restored", and one big named Next button
+      │  "4 of 9 places restored", and one big named Next button
       ▼
-Next visit (or the map when a new place has opened)
+Next visit, straight away (when a new place has just opened, the map shows
+it for a moment on the way and carries on by itself; a touch stops it)
 ```
 
 The play screen is the full-screen scene with small overlays:
@@ -182,7 +187,7 @@ outline everything left.
    live as it passes and the camera holds on the restored place.
 4. The shutter: the picture becomes a postcard, its border forming around it.
 5. The rail: the resident, "The High Street restored!", their reaction, what
-   improved, the eight-dot "places restored" milestone and **Next: Visit the
+   improved, the one-dot-per-place "places restored" milestone and **Next: Visit the
    Village Green**. Compare (before/after), Details (jobs, time, hints) and Map
    are small secondary buttons; keepsakes and level-ups wait as chips.
 
@@ -208,7 +213,7 @@ runs beneath it.
 Each place has a **stage** (the latest finished visit's `stage`, e.g. "First
 tidy complete") and a **to-do** (the next unfinished visit's `todo`, e.g.
 "Flowers to plant, tubs to water"). It is **restored** when its visit marked
-`restores` is done. "3 of 8 places restored" is the village's progress, on the
+`restores` is done. "3 of 9 places restored" is the village's progress, on the
 map, the rail and the journal. A storm never lowers it.
 
 The **next step** is always the first available visit in `visits.json` order,
@@ -226,22 +231,28 @@ street.
 | # | Visit | Place | Kind | What changes, visibly |
 |---|---|---|---|---|
 | 1 | Tidy the platform | Halt | restoration | litter gone, signs and clock straight (coached) |
-| 2 | Brighten the High Street | High Street | restoration | the faded kiosk and pillar box repainted Post Office red |
-| 3 | Spruce up the Green | Village Green | restoration | the Market Cross scrubbed, a bench painted, litter gone |
+| 2 | Brighten the High Street | High Street | restoration | the faded kiosk and pillar box repainted Post Office red, bunting and baskets |
+| 3 | Spruce up the Green | Village Green | restoration | the Market Cross scrubbed, the bench painted, litter gone |
 | 4 | Plant the station tubs | Halt | restoration | shelter painted, window polished, three tubs planted, pots, baskets and trolley |
-| 5 | Paint the Weavers' doors | Weavers' Row | restoration | doors painted, window boxes, a trough planted, bunting |
-| 6 | Clear the mill race | Old Mill | restoration | doors painted, ford cleared, a garden with bench and hive |
-| 7 | Dress the street for the fête | High Street | committee | basket and trough planted, the board reads FÊTE TODAY, bunting |
-| 8 | Spruce up the pub garden | Bee & Bramble | restoration | door and gate varnished, baskets planted, festoon lights |
-| 9 | Make the Green flourish | Village Green | restoration | tubs watered and planted, duck house, bird bath, bunting |
-| 10 | Restore the churchyard | St Aldhelm's | restoration | clock gleaming, door and gate painted, trough, bench |
-| 11 | Clear up after the storm | Old Mill | incident | branches, twigs and slates cleared, sacks and barrel righted; paint untouched |
-| 12 | Nan's cottage garden | Rose Cottage | restoration | hives painted, greenhouse cleaned, gate painted, set for tea |
-| 13 | Red, white and blue tubs | Halt | committee | the tubs replanted in the celebration's colours, bunting |
-| 14 | Final preparations | Village Green | committee (finale) | the board reads JUDGING TODAY; then the judging |
+| 5 | Open up the Post Office | Post Office & Stores (interior) | restoration | the shop window cleaned, the counter repainted, the sign straight |
+| 6 | Paint the Weavers' doors | Weavers' Row | restoration | doors painted, window boxes, a trough planted, bunting |
+| 7 | Clear the mill race | Old Mill | restoration | doors painted, the flour sign straight, ford cleared, a garden with bench and hive |
+| 8 | Dress the window for the fête | Post Office & Stores | committee | the sweet case sparkling, flowers in the window and on the counter, bunting, the board reads FÊTE SATURDAY |
+| 9 | Spruce up the pub garden | Bee & Bramble | restoration | door and gate varnished, baskets planted, festoon lights |
+| 10 | Make the Green flourish | Village Green | restoration | tubs watered and planted, duck house, bird bath, bunting |
+| 11 | Restore the churchyard | St Aldhelm's | restoration | the great window gleaming, door and gate painted, trough, bench |
+| 12 | Clear up after the storm | Old Mill | incident | branches, twigs and slates cleared, sacks and barrel righted; paint untouched |
+| 13 | Nan's cottage garden | Rose Cottage | restoration | hives painted, greenhouse cleaned, gate painted, set for tea |
+| 14 | Red, white and blue tubs | Halt | committee | the tubs replanted in the celebration's colours, bunting |
+| 15 | Final preparations | Village Green | committee (finale) | the board reads JUDGING TODAY; then the judging |
 
-The Halt and the Green have three visits; the High Street and the Mill two;
-four places one. Visits run five to seven jobs.
+The Halt and the Green have three visits; the Post Office and the Mill two;
+five places one. Visits run five to seven jobs.
+
+The Village Green is played close up (the Market Cross, one bench, the pond
+edge); the wider view of the village stays on the map and in the finale. The
+Post Office & Stores is the one interior: a change of light, scale and shapes
+after the outdoor places, and the home of the Committee's fête request.
 
 ### 4.3 Permanent, current, incident and historical state
 
@@ -276,7 +287,7 @@ colour-only.
 
 ### 4.5 The finale
 
-The final visit leads to **Judging Day**: the judges tour all eight places,
+The final visit leads to **Judging Day**: the judges tour every place,
 each shown as it was when you arrived (the first visit's own before-picture)
 wiping to how it stands now, drawn from the actual restored state, with a word
 from its resident. Then the rosette, the Colonel's letter and the Editor's.
@@ -394,17 +405,19 @@ walks:
 | After | New | How it arrives |
 |---|---|---|
 | 0 | tidying, straightening; the loupe; zoom | the coached first visit; the loupe is offered when you stall; zoom when something small is left |
-| 1+ | each new job (repaint, clean, plant, water, weed, stand up) | a one-line card the first time a visit uses it |
-| 1 | the journal | a card on the map |
+| 1+ | each new job (repaint, clean, plant, water, weed, stand up) | a line in the resident's request the first time a visit uses it |
+| 1 | the journal | a small cue on the map |
 | 2 | Marmalade; runs | she simply appears; a word the first time |
-| 3 | photographer level; photo walks | cards on the map |
+| 3 | photographer level; photo walks | small cues on the map |
 | 4 | keepsakes | the first is guaranteed |
-| 6 | the noticeboard | a card on the map |
+| 6 | the noticeboard | a small cue on the map |
 | 8 | flashbulbs (walks) | the coach points at it once |
-| 9 | the Daily Postcard | a card on the map |
+| 9 | the Daily Postcard | a small cue on the map |
 | finale | the Travel Office | after the judging |
 
-At most one card per visit to the map.
+At most one cue per visit to the map. A cue sits beside its button, never
+blocks the map and can be waved away; it never interrupts a Next that is on
+its way to a visit.
 
 ## 8. Commerce
 

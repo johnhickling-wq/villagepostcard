@@ -607,14 +607,14 @@
    "villager": "vicar",
    "title": "Restore the churchyard",
    "goal": "clean the church clock",
-   "brief": "Bless you for coming. The clock face is grimed over, the door and the lychgate need paint, and the path is all weeds.",
+   "brief": "Bless you for coming. The great window is grimed over, the door and the lychgate need paint, and the path is all weeds.",
    "condition": "clear",
    "subtlety": 0.2,
    "tasks": [
     {
-     "id": "clock",
+     "id": "window",
      "op": "grimy",
-     "target": "clock"
+     "target": "win-church-a"
     },
     {
      "id": "church-door",
@@ -646,9 +646,9 @@
     "church-flowers"
    ],
    "restores": true,
-   "todo": "A grimy clock and a weedy path",
+   "todo": "A grimy window and a weedy path",
    "stage": "Restored",
-   "improved": "A gleaming clock, fresh paint and flowers by the path",
+   "improved": "A gleaming window, fresh paint and flowers by the path",
    "reaction": "The bells shall ring for you! Oh dear. Is that a storm coming over the hill?"
   },
   {

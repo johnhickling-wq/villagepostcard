@@ -127,8 +127,26 @@ export class App {
 
   /** Save now (or shortly). Returns false if the device refused. */
   persist(now = false) {
-    if (!this.save || this.holdSaves) return false;
+    if (!this.save || this.holdSaves || this.resetting) return false;
     return storage.save(this.save, now);
+  }
+
+  /**
+   * Start again, as one operation: the old run is discarded in memory and in
+   * storage, a fresh current-version save is written, every later write from
+   * this page is refused (so the lifecycle handlers can't bring the old run
+   * back), and the page reloads onto the fresh opening. The sound, music,
+   * haptics and reduced-motion settings are kept on purpose: they belong to
+   * the device and the player, not to the village.
+   */
+  startAgain() {
+    const fresh = newSave(this.content);
+    Object.assign(fresh.settings, this.save?.settings || {});
+    this.resetting = true;
+    this.screen?.exit?.();
+    this.save = fresh;
+    storage.reset(fresh);
+    location.reload();
   }
 
   /** Reduced motion: the player's choice, or the device's setting until they choose. */

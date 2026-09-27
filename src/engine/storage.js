@@ -21,6 +21,7 @@ export const storage = {
   onError: null,
   _timer: null,
   _warned: false,
+  _locked: false,
 
   /** Can this device keep a save at all? (Private browsing or a blocked site can say no.) */
   available() {
@@ -49,6 +50,7 @@ export const storage = {
 
   /** Returns true if the save was written (always true for a debounced write that is still pending). */
   save(data, immediate = false) {
+    if (this._locked) return false;
     clearTimeout(this._timer);
     const write = () => this._write(KEY, JSON.stringify(data));
     if (immediate) return write();
@@ -67,10 +69,25 @@ export const storage = {
     }
   },
 
-  /** Start again: the current save becomes the backup first, so it can be recovered. */
-  clear() {
-    const r = this.read();
-    if (r.raw) this.backup(r.raw);
+  /** Drop a debounced write that hasn't happened yet. */
+  cancel() {
+    clearTimeout(this._timer);
+    this._timer = null;
+  },
+
+  /**
+   * Start again: cancel any pending write, replace the save with a fresh one
+   * (and drop the old backup, which the player can't use), then refuse every
+   * later write from this page, so nothing the old run still holds (a
+   * debounced save, pagehide, visibilitychange) can write it back before the
+   * page reloads. Returns true if the fresh save was written.
+   */
+  reset(fresh) {
+    this.cancel();
+    try { this.backend.remove(BACKUP); } catch { /* nothing to remove */ }
     try { this.backend.remove(KEY); } catch { /* nothing to remove */ }
+    const ok = this._write(KEY, JSON.stringify(fresh));
+    this._locked = true;
+    return ok;
   },
 };

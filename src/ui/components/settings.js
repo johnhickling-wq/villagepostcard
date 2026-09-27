@@ -1,5 +1,4 @@
 import { h, icon } from '../dom.js';
-import { storage } from '../../engine/storage.js';
 
 export function openSettings(app, onChange) {
   const s = app.save.settings;
@@ -46,6 +45,11 @@ export function openSettings(app, onChange) {
     toggle('music', 'Music', 'music'),
     toggle('haptics', 'Haptics', 'vibrate'),
     toggle('reducedMotion', 'Reduce motion', 'eye'),
+    h('div.display.sheet-sub', { text: 'Progress' }),
+    h('div.setting.progress-row',
+      h('div.grow', h('div', { text: 'Start again' }), h('div.label.muted', { text: 'A fresh village from the first visit.' })),
+      h('button.btn.ink.small', { 'data-act': 'start-again', onclick: () => resetProgress(app) }, h('span', { text: 'Start again' })),
+    ),
     h('div.display.sheet-sub', { text: 'Your postcards' }),
     group('frames', 'Frames'),
     group('films', 'Film'),
@@ -53,16 +57,18 @@ export function openSettings(app, onChange) {
     h('div.about.card',
       h('div.script', { text: 'Postcard Perfect' }),
       h('p', { text: 'A cosy restoration game. Cut-paper collage art, synthesised sound, no ads, no energy meters and nothing to buy while you play. Your progress is saved on this device.' }),
-      h('button.btn.ink.small', { onclick: () => resetProgress(app) }, h('span', { text: 'Start again' })),
     ),
   );
   const sheet = app.sheet(content, { onClose: onChange });
 }
 
 function resetProgress(app) {
-  const yes = h('button.btn', { text: 'Yes, start again' });
-  const no = h('button.btn.teal.small', { text: 'Keep my village' });
-  const m = app.modal(h('div.celebrate.card.paper', h('div.display.celebrate-title', { text: 'Start again?' }), h('p', { text: 'This starts a new village on this device. Your current one is kept as a backup, but the game won’t show it.' }), h('div.col', yes, no)));
-  no.addEventListener('click', () => m.close());
-  yes.addEventListener('click', () => { storage.clear(); location.reload(); });
+  const yes = h('button.btn.small', { 'data-act': 'confirm-reset', text: 'Yes, start again' });
+  const no = h('button.btn.teal', { 'data-act': 'cancel-reset', text: 'Keep my village' });
+  const m = app.modal(h('div.celebrate.card.paper',
+    h('div.display.celebrate-title', { text: 'Start again?' }),
+    h('p', { text: 'Every visit, postcard, keepsake and level on this device will be cleared, and Honeycombe starts again from the station. This can’t be undone. Your sound and motion settings stay as they are.' }),
+    h('div.col', no, yes)));
+  no.addEventListener('click', () => { app.sfx('ui.tap'); m.close(); });
+  yes.addEventListener('click', () => { yes.disabled = true; no.disabled = true; app.startAgain(); });
 }

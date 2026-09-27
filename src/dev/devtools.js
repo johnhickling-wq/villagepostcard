@@ -66,6 +66,8 @@ export function openDevTools(app, { onClose } = {}) {
     h('div.dev-walk', placeSel, tierSel, condSel, stateSel,
       h('button.btn.teal.small', { onclick: () => { sheet.close(); jumpWalk(app, placeSel.value, +tierSel.value, condSel.value || null, +stateSel.value); } }, h('span', { text: 'Take the walk' }))),
     row('The Daily Postcard', 'today’s walk, on a fully restored village', btn('Play', () => jumpDaily(app))),
+    h('div.display.sheet-sub', { text: 'Playtest reports' }),
+    row('Your reports', 'made with the bug button at the left edge of any screen', btn('Open', () => import('./feedback.js').then((m) => m.openReports(app, { onClose })))),
     h('div.display.sheet-sub', { text: 'Introductions' }),
     row('Show every introduction again', 'new-job lines, coach tips, map cues', btn('Reset', () => { resetIntros(app.save); app.persist(true); app.toast('Introductions will show again.'); })),
   );

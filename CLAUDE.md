@@ -74,8 +74,23 @@ bought yet.
   village state) and the daily. It builds a save that really played the
   route (`seededSave` in `src/dev/devtools.js`); the owner's own village is
   set aside and "Back to my real village" restores it.
+- **Playtest reports:** a bug button at the left edge of every screen
+  (`src/dev/feedback.js`) pauses, takes a picture of the whole screen, lets
+  the tester tap the problem (it records the job, prop, region or button
+  there, in scene and screen coordinates), and keeps the note on the device.
+  Settings → Developer → Playtest reports sends them as pre-filled GitHub
+  issues titled `[Playtest] …` in `FEEDBACK_REPO`; the picture is attached by
+  hand. **When the owner says "check the feedback"**, list the open issues
+  whose title starts with `[Playtest]` (GitHub tools), read each one's
+  "Details to reproduce" JSON (screen, place, visit and its done tasks,
+  seed, weather, camera, what was pointed at, device), reproduce it (the
+  developer panel or `tools/qa/scenarios/visits.mjs`), fix it, and comment on
+  and close the issue when the fix is pushed.
 - `DEV_TOOLS` in `src/dev/flags.js` must be `false` for release
-  (`docs/RELEASE_BLOCKERS.md`). `tools/qa/scenarios/dev.mjs` tests every jump.
+  (`docs/RELEASE_BLOCKERS.md`); it removes the panel and the bug button.
+  `tools/qa/scenarios/dev.mjs` tests every jump; `feedback.mjs` the reporter.
+  `src/dev/vendor/html-to-image.js` (MIT) makes the pictures; it is only
+  loaded by the reporter.
 
 ## Setup and everyday commands
 

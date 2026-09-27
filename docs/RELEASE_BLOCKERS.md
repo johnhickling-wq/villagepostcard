@@ -106,8 +106,10 @@ request. Possible improvements, none blocking:
 - A save that cannot be read is kept aside (`postcard-perfect/save/unreadable`)
   and a new village begins; there is no in-game way to export or import a save.
 - **Developer tools off.** Set `DEV_TOOLS` to `false` in `src/dev/flags.js`
-  (the Developer button in Settings and the pause menu, `src/dev/devtools.js`)
-  and check neither appears in the release build.
+  (the Developer button in Settings and the pause menu, `src/dev/devtools.js`,
+  and the playtest bug button, `src/dev/feedback.js`) and check none of them
+  appears in the release build. Consider leaving `src/dev/` out of the build
+  altogether.
 - **Save migration before release.** During development saves are not carried
   between versions (the owner's 27 September 2026 brief): a save from an
   earlier development version starts a fresh village. Before the first store

@@ -113,4 +113,6 @@ node tools/qa/shots.mjs mix                     # loudness of every sound agains
 node tools/qa/shots.mjs compare                 # every scene before/after in one light, and contact sheets
 node tools/qa/shots.mjs visits                  # every visit as a player meets it (VISITS=id,id; VW/VH for sizes)
 node tools/qa/shots.mjs reset                   # Start again through the UI and the page lifecycle
+node tools/qa/shots.mjs dev                     # the developer panel's jumps
+node tools/qa/shots.mjs feedback                # the playtest bug button and reports
 ```

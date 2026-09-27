@@ -12,7 +12,7 @@ Graphics quality takes priority over retaining an inadequate asset. Regenerate o
 
 Establish a shared visual reference and reusable art-direction brief, then apply it across the full scene set. Review all scenes together as a contact sheet and individually in gameplay at phone and tablet sizes. Check untreated, partly restored and completed states: all should feel fresh and attractive, with neglect shown locally. Do not treat a blanket saturation increase as the whole job, or accept stylistic mismatch because each image looks good on its own.
 
-## Status (27 September 2026, branch `claude/wizardly-goodall-9i1s3j`, not yet merged)
+## Status (27 September 2026: done on branch `claude/wizardly-goodall-9i1s3j`, merged to `main` at `7b3a657`)
 
 Carried out as one pass. Everything below was tested in desktop Chromium with
 phone and tablet emulation (Playwright, touch enabled) and by the repository's

@@ -12,8 +12,8 @@ bought yet.
 
 - **Latest brief:** `docs/VISUAL_PLAYTEST_2026-09-27.md` (Start again, fresh
   colour and one art style, closer work areas, a shop interior, tasks that look
-  like their action). It has been carried out on branch
-  `claude/wizardly-goodall-9i1s3j`; its "Status" section says what was done,
+  like their action). It has been carried out and merged to `main` (at
+  `7b3a657`, with the developer panel and playtest reports); its "Status" section says what was done,
   how it was tested and what is still open. Where it conflicts with older
   docs, the brief wins.
 - **Art direction:** `art_src/ART_DIRECTION.md`, the one look every plate and

@@ -65,11 +65,11 @@
    "ambiguous": 0,
    "underHud": 0,
    "small": 81,
-   "tiny": 7,
+   "tiny": 10,
    "spoils": 0,
    "novice": 39,
-   "average": 37,
-   "averageP90": 50,
+   "average": 38,
+   "averageP90": 51,
    "skilled": 33
   },
   {
@@ -118,11 +118,11 @@
    "unreachable": 0,
    "ambiguous": 0,
    "underHud": 0,
-   "small": 13,
+   "small": 16,
    "tiny": 0,
    "spoils": 0,
    "novice": 36,
-   "average": 35,
+   "average": 33,
    "averageP90": 44,
    "skilled": 30
   },
@@ -150,17 +150,17 @@
    "kind": "restoration",
    "n": 150,
    "tasks": 7,
-   "salience": 0.6,
+   "salience": 0.63,
    "unreachable": 0,
    "ambiguous": 0,
    "underHud": 0,
-   "small": 148,
-   "tiny": 42,
+   "small": 54,
+   "tiny": 0,
    "spoils": 0,
-   "novice": 41,
+   "novice": 42,
    "average": 39,
-   "averageP90": 52,
-   "skilled": 37
+   "averageP90": 53,
+   "skilled": 36
   },
   {
    "visit": "green-flourish",
@@ -168,17 +168,17 @@
    "kind": "restoration",
    "n": 150,
    "tasks": 6,
-   "salience": 0.76,
+   "salience": 0.78,
    "unreachable": 0,
    "ambiguous": 0,
    "underHud": 0,
-   "small": 120,
-   "tiny": 6,
+   "small": 53,
+   "tiny": 3,
    "spoils": 0,
    "novice": 37,
-   "average": 35,
-   "averageP90": 48,
-   "skilled": 31
+   "average": 34,
+   "averageP90": 47,
+   "skilled": 30
   },
   {
    "visit": "church-restore",
@@ -244,12 +244,12 @@
    "unreachable": 0,
    "ambiguous": 0,
    "underHud": 0,
-   "small": 108,
+   "small": 101,
    "tiny": 3,
    "spoils": 0,
    "novice": 33,
    "average": 32,
-   "averageP90": 43,
+   "averageP90": 44,
    "skilled": 27
   },
   {
@@ -288,12 +288,12 @@
    "novice": 61,
    "skilled": 43,
    "stamps3": 29,
-   "stamps2": 37
+   "stamps2": 38
   },
   {
    "tier": 3,
    "target": 70,
-   "average": 74,
+   "average": 73,
    "novice": 92,
    "skilled": 65,
    "stamps3": 39,
@@ -303,7 +303,7 @@
    "tier": 4,
    "target": 85,
    "average": 79,
-   "novice": 101,
+   "novice": 100,
    "skilled": 71,
    "stamps3": 32,
    "stamps2": 43
@@ -311,16 +311,16 @@
   {
    "tier": 5,
    "target": 100,
-   "average": 96,
+   "average": 95,
    "novice": 120,
-   "skilled": 77,
+   "skilled": 76,
    "stamps3": 26,
    "stamps2": 41
   },
   {
    "tier": 6,
    "target": 90,
-   "average": 86,
+   "average": 85,
    "novice": 111,
    "skilled": 74,
    "stamps3": 28,
@@ -1960,33 +1960,33 @@
    "tier": 1,
    "n": 150,
    "faults": 5.5,
-   "salience": 0.69,
+   "salience": 0.7,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
-   "overlaps": 8,
+   "overlaps": 6,
    "underHud": 0,
    "spoils": 0,
-   "novice": 44,
+   "novice": 43,
    "average": 37,
-   "averageP90": 50,
-   "skilled": 33,
+   "averageP90": 51,
+   "skilled": 32,
    "target": 40,
    "stamps": {
     "novice": [
-     53,
-     36,
-     11
+     49,
+     37,
+     15
     ],
     "average": [
-     30,
-     35,
-     35
+     34,
+     34,
+     32
     ],
     "skilled": [
-     16,
-     34,
-     50
+     12,
+     29,
+     59
     ]
    },
    "types": {
@@ -2004,33 +2004,33 @@
    "tier": 2,
    "n": 150,
    "faults": 8.5,
-   "salience": 0.58,
+   "salience": 0.59,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
-   "overlaps": 7,
+   "overlaps": 2,
    "underHud": 0,
    "spoils": 0,
-   "novice": 64,
-   "average": 52,
-   "averageP90": 75,
-   "skilled": 45,
+   "novice": 65,
+   "average": 54,
+   "averageP90": 76,
+   "skilled": 46,
    "target": 55,
    "stamps": {
     "novice": [
-     53,
-     35,
+     55,
+     32,
      13
     ],
     "average": [
      35,
-     34,
+     35,
      31
     ],
     "skilled": [
-     16,
-     23,
-     61
+     11,
+     31,
+     58
     ]
    },
    "types": {
@@ -2049,42 +2049,42 @@
    "tier": 3,
    "n": 150,
    "faults": 10.1,
-   "salience": 0.39,
+   "salience": 0.4,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
    "overlaps": 3,
    "underHud": 0,
    "spoils": 0,
-   "novice": 98,
-   "average": 78,
+   "novice": 95,
+   "average": 76,
    "averageP90": 108,
-   "skilled": 70,
+   "skilled": 69,
    "target": 70,
    "stamps": {
     "novice": [
-     31,
-     54,
-     15
+     39,
+     49,
+     11
     ],
     "average": [
-     19,
-     40,
-     41
+     15,
+     39,
+     46
     ],
     "skilled": [
-     2,
-     38,
-     60
+     8,
+     29,
+     63
     ]
    },
    "types": {
-    "litter": 376,
+    "litter": 374,
     "pigeon": 109,
     "weeds": 147,
     "cobweb": 158,
     "toppled": 139,
-    "crooked": 188,
+    "crooked": 190,
     "grimy": 191,
     "faded": 169,
     "wilted": 34
@@ -2096,42 +2096,42 @@
    "tier": 4,
    "n": 150,
    "faults": 11.5,
-   "salience": 0.42,
+   "salience": 0.43,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
-   "overlaps": 5,
+   "overlaps": 7,
    "underHud": 0,
    "spoils": 0,
-   "novice": 106,
+   "novice": 103,
    "average": 81,
-   "averageP90": 114,
-   "skilled": 72,
+   "averageP90": 110,
+   "skilled": 71,
    "target": 85,
    "stamps": {
     "novice": [
-     53,
+     51,
      39,
      9
     ],
     "average": [
-     19,
-     50,
-     31
+     21,
+     51,
+     29
     ],
     "skilled": [
      7,
-     29,
-     65
+     33,
+     60
     ]
    },
    "types": {
     "grimy": 201,
     "unlit": 284,
     "weeds": 145,
-    "toppled": 132,
+    "toppled": 131,
     "faded": 173,
-    "cobweb": 120,
+    "cobweb": 121,
     "crooked": 190,
     "litter": 421,
     "pigeon": 25,
@@ -2144,42 +2144,42 @@
    "tier": 5,
    "n": 150,
    "faults": 15.5,
-   "salience": 0.43,
+   "salience": 0.44,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
-   "overlaps": 14,
+   "overlaps": 16,
    "underHud": 0,
    "spoils": 0,
-   "novice": 127,
-   "average": 106,
-   "averageP90": 151,
-   "skilled": 84,
+   "novice": 126,
+   "average": 100,
+   "averageP90": 139,
+   "skilled": 82,
    "target": 100,
    "stamps": {
     "novice": [
      68,
-     26,
-     6
+     25,
+     7
     ],
     "average": [
-     27,
-     48,
-     25
+     28,
+     50,
+     22
     ],
     "skilled": [
      7,
-     30,
-     63
+     25,
+     68
     ]
    },
    "types": {
     "cobweb": 214,
-    "toppled": 360,
+    "toppled": 361,
     "pigeon": 97,
-    "crooked": 250,
+    "crooked": 243,
     "weeds": 239,
-    "litter": 844,
+    "litter": 850,
     "grimy": 281,
     "wilted": 43
    }
@@ -2190,43 +2190,43 @@
    "tier": 6,
    "n": 150,
    "faults": 14.9,
-   "salience": 0.45,
+   "salience": 0.46,
    "short": 0,
    "unreachable": 0,
    "ambiguous": 0,
-   "overlaps": 18,
+   "overlaps": 20,
    "underHud": 0,
    "spoils": 0,
-   "novice": 114,
-   "average": 93,
-   "averageP90": 138,
-   "skilled": 83,
+   "novice": 113,
+   "average": 89,
+   "averageP90": 130,
+   "skilled": 79,
    "target": 90,
    "stamps": {
     "novice": [
-     67,
+     66,
      25,
-     7
+     9
     ],
     "average": [
-     31,
-     38,
+     35,
+     34,
      31
     ],
     "skilled": [
-     10,
-     32,
-     58
+     9,
+     29,
+     62
     ]
    },
    "types": {
     "cobweb": 196,
     "faded": 183,
-    "litter": 653,
+    "litter": 655,
     "grimy": 284,
     "weeds": 224,
-    "toppled": 219,
-    "crooked": 235,
+    "toppled": 222,
+    "crooked": 230,
     "wilted": 45,
     "pigeon": 119,
     "unlit": 77

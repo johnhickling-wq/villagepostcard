@@ -12,6 +12,52 @@ Graphics quality takes priority over retaining an inadequate asset. Regenerate o
 
 Establish a shared visual reference and reusable art-direction brief, then apply it across the full scene set. Review all scenes together as a contact sheet and individually in gameplay at phone and tablet sizes. Check untreated, partly restored and completed states: all should feel fresh and attractive, with neglect shown locally. Do not treat a blanket saturation increase as the whole job, or accept stylistic mismatch because each image looks good on its own.
 
+## Status (27 September 2026, branch `claude/wizardly-goodall-9i1s3j`, not yet merged)
+
+Carried out as one pass. Everything below was tested in desktop Chromium with
+phone and tablet emulation (Playwright, touch enabled) and by the repository's
+Node checks. **Nothing has been tried on a real iPhone or iPad, and no human
+has played it**: timings are simulated.
+
+| Brief item | Done | How it was checked |
+|---|---|---|
+| P0 Start again | One coordinated reset (`App.startAgain`): cancels the pending write, writes a fresh save, locks storage against every later write from the page (so `pagehide`/`visibilitychange` can't bring the old run back), then reloads. Sound, music, haptics and reduced motion are kept on purpose. Start again has its own Progress section in Settings; the copy promises no backup. | The old failure was reproduced first (after 9 visits the title still said "Tap to carry on"). `tools/qa/scenarios/reset.mjs`: Cancel keeps the village; Start again with a debounced write pending and `pagehide`/`visibilitychange`/`persist` fired during unload gives "Tap to begin", no postcards, restoration, active visit or intro flag; still fresh after another reload; the opening and first visit follow; and the same from the map, journal, noticeboard and travel office, each with an unfinished visit left behind. |
+| Saves | No backwards compatibility: `SAVE_VERSION` 4; an older development save starts afresh (settings kept, a word on the title); the v2 migration, legacy postcards, backups and their tests are gone. Current-version save, resume and once-only completion kept. | `npm test` (a current save reloads unchanged; older saves not carried over), `resume.mjs` (mid-visit and mid-reveal reloads), `recover.mjs` (unreadable and older saves). |
+| Pending photo walk rollback | Reproduced as a failing unit test, then fixed: a pending walk whose effects, fixed things or protected targets no longer match the village is dropped and replanned (`pendingWalk`/`walkCurrent`). | `npm test`: the overtaken walk shows the Halt as it is now; an unchanged walk still resumes. |
+| P1 Fresh colour | The blanket tired grade (0.42 grey + 0.3 cool) is gone; neglect is local only; restoration adds a faint warm glow. One colour direction for all art: `tools/art/freshen.py` (hue-selective: fresh leaf greens, clear blue sky, warm honey stone, cream without the yellow cast), applied at build to every plate, sprite, map and poster. Faded paint now shows weathered wood; stone grime is stains, streaks and moss. | `compare.mjs`: every scene before / part-restored / after in clear weather, then golden, mist, dusk and storm, and whole-game contact sheets (look at them; they are the evidence). |
+| One consistent style | `art_src/ART_DIRECTION.md`: the shared brief. New art is generated against freshened references. | Contact sheets of all nine places, untreated, part-restored and complete. |
+| P1 Closer work areas | **Village Green**: a new close plate (the Market Cross, one bench, the pond edge, little sky), re-annotated at believable scale; the wide Green is kept for reference. **Old Mill, Weavers' Row, Rose Cottage, St Aldhelm's**: brought closer by cropping the existing plates (x1.25–1.43) with `tools/art/crop_scene.py`, which moves every annotation with the picture. High Street and the Bee & Bramble keep their framing (the pub was the benchmark; the High Street's litter now stays in the near street). | `npm run bot` counts jobs under 30 px across on an 844 px phone: per visit, the mill 2.2 → 0.1, the storm 2.0 → 0, the churchyard 2.0 → 0, the cottage 2.4 → 0, Weavers' Row 2.0 → 0.6 (weeds). Every visit is now under 1 (the rest are small loose litter, which stays tappable through target assistance). `visits.mjs` at 667x375 and 844x390, `compact.mjs` at 667x375 and 1024x768, `rotated.mjs` at 390x844. |
+| P1 Shop interior | The Post Office & Stores, a new interior place (Mrs Pemberton's): clean the window, repaint the counter, straighten the Post Office sign, stand a sack up (first restoration); then the Committee's fête request moves here from the street (sweet case, flowers in the window and on the counter, bunting, FÊTE SATURDAY). Interiors have only dust motes for ambient life. The route is 15 visits over 9 places. | Validator, bot, route simulator; `visits.mjs` for both shop visits; the judging tour and map include it. |
+| P1 Clean instruction | A new job is explained in terms of its actual target: per-target `intro` lines and per-tag `introFor` lines (glass or stone). The Market Cross now reads "grubby with grime and moss… scrub it clean". | Screenshot of the Green's first visit. |
+| P1 Mill ambiguity | The round cartwheel is no longer a Straighten job; a hanging FLOUR & MEAL sign on the outbuilding is. | Mill screenshots at phone size. |
+| P1 Planting clarity | Bigger seed-packet markers on empty planters; larger pub baskets. | Pub and Halt screenshots. |
+| Scale audit | Story litter no longer 1.6x oversized (now 1.2x at low subtlety), the tiniest items (matchbox, peel, apple core) left to photo walks, and the High Street's litter kept in the near street at a corrected scale; the pub's cap is still a little generous for readability; the mill bench moved off the giant-flower foreground; church and cottage rewards resized; the station trolley checked. | Before/after comparisons of every scene. |
+| P2 Rhythm | A named Next goes straight into its visit; when a place has just opened, the map shows it for about two seconds with a filling ribbon and carries on (a touch stops it). New-feature cards are now small dismissible cues on the map, never on the way to a visit. A new job is explained inside the resident's brief, not on a second card. | `story.mjs`: Next from the Halt lands in the High Street's visit, and from the High Street in the Green's. |
+| Engine hygiene | The judges' remarks and the title scene were Honeycombe text hard-coded in the engine; they are now village data (`judgeRemark`, `titleScene`). | Judging scenario. |
+
+**Art spend for this pass: US$0.99** (four generations: the close Green and
+three takes of the shop interior), $25.55 cumulative, against the $50 cap.
+The rest of the improvement came from the shared colour pass and crops of
+existing art, which kept every scene's geometry.
+
+**Simulated route** (`tools/bot/economy.md`, simulated players, not people):
+first action 0:18, first postcard 0:45–0:50, story to the judging 14:44–16:33.
+The story is still well under the 25–40 minute hypothesis for real
+first-timers; per this brief, that needs human playtests before content is
+added.
+
+**Still open**
+- Real devices: touch feel, audio, haptics, safe areas and performance on an
+  iPhone and an iPad; first-time non-gamer playtests on phones.
+- The High Street remains a deep street view; its kiosk and pillar box read
+  at phone size, but a shopfront-focused close plate would help if playtests
+  show hesitation there.
+- The optional Green play-area setting was not made (not needed for the
+  route; a candidate for a later visit).
+- At 667 px the action bar drops its labels when a visit has five kinds of
+  job (icons and counts only), as before.
+- Photo walks are tuned for the new scenes by the bot only.
+
 ## Decision and scope
 
 The restoration story is a substantial improvement. Keep the currency-free route, residents, persistent improvements, repeat visits and large postcard reward. The next pass should concentrate on reliable restart, attractive colour throughout play, believable close-up compositions and clearer visual tasks.

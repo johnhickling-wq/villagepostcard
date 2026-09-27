@@ -216,7 +216,6 @@
      "items": [
       "newspaper",
       "paper-bag",
-      "orange-peel",
       "tin-can"
      ]
     }
@@ -395,7 +394,6 @@
       "old-boot",
       "tin-can",
       "newspaper",
-      "ginger-beer-bottle",
       "paper-bag"
      ]
     }
@@ -515,8 +513,6 @@
       "lawn"
      ],
      "items": [
-      "ginger-beer-bottle",
-      "matchbox",
       "crisp-packet",
       "flat-cap",
       "paper-bag"
@@ -582,7 +578,6 @@
      "items": [
       "newspaper",
       "paper-bag",
-      "apple-core",
       "tin-can"
      ]
     }
@@ -799,8 +794,7 @@
      "items": [
       "paper-plate",
       "balloon",
-      "newspaper",
-      "orange-peel"
+      "newspaper"
      ]
     }
    ],

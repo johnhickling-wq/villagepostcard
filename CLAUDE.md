@@ -5,15 +5,19 @@ JavaScript. It will later be wrapped for iOS. The player restores a 1950s
 cut-paper village one short visit at a time: a resident asks for help, the
 player taps to fix things, the scene wipes from before to after, and a
 postcard of the visit goes into their journal. The first village, Honeycombe
-(Cotswolds, 1957), is complete and free: a 14-visit route to the Best-Kept
+(Cotswolds, 1957), is complete and free: a 15-visit route over nine places
+(one of them an interior, the Post Office & Stores), to the Best-Kept
 Village judging. Other villages are shown as "in preparation"; nothing can be
 bought yet.
 
-- **Current work (start here):** `docs/VISUAL_PLAYTEST_2026-09-27.md`, the
-  owner's brief for the next polish pass: fix Start again, fresher colour and
-  one consistent art style in every scene, closer work areas, a shop interior,
-  tasks that look like their action. Where it conflicts with anything below or
-  in older docs, the brief wins.
+- **Latest brief:** `docs/VISUAL_PLAYTEST_2026-09-27.md` (Start again, fresh
+  colour and one art style, closer work areas, a shop interior, tasks that look
+  like their action). It has been carried out on branch
+  `claude/wizardly-goodall-9i1s3j`; its "Status" section says what was done,
+  how it was tested and what is still open. Where it conflicts with older
+  docs, the brief wins.
+- **Art direction:** `art_src/ART_DIRECTION.md`, the one look every plate and
+  sprite follows.
 - **Why the game works as it does:** `DESIGN.md`. Its numbers match the content JSON.
 - **The brief behind the current design:** `docs/RESTORATION_HANDOVER.md`
   (26 September 2026). It superseded the old Village Fund economy and has been
@@ -85,6 +89,10 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
     noticeboard, travel), fixes (every job incl. planting and replanting),
     gallery, judging (the final visit and the finale), daily, dialogs, audio,
     mix (every sound's loudness against its target);
+  - `compare`: every scene before / part-restored / after in one light
+    (`COND=golden` etc.) plus whole-game contact sheets;
+  - `visits`: every visit (or `VISITS=id,id`) as a player reaches it, with
+    checks that it counts once and earlier restoration is kept;
   - `compact` checks the space-sensitive screens at other sizes:
     `VW=667 VH=375` (small phone) and `VW=1024 VH=768` (4:3 tablet);
   - `rotated` needs a portrait viewport: `VW=390 VH=844 node tools/qa/shots.mjs rotated`;
@@ -194,8 +202,11 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
 ## Art pipeline (OpenRouter)
 
 - **Key:** `OPENROUTER_API_KEY` is in the environment. Never print it.
-- **Style:** flat cut-paper collage. Plates match
-  `art_src/style_ref_cutpaper.jpg`; sprite sheets match
+- **Style:** flat cut-paper collage in fresh spring colour
+  (`art_src/ART_DIRECTION.md`). `tools/art/freshen.py` recolours every plate,
+  sprite, map and poster at build time (hue-selective, never moves a pixel);
+  new art is generated against freshened references with a lower `freshen`
+  amount. Plates match `art_src/style_ref_cutpaper.jpg`; sprite sheets match
   `art_src/style_ref_objects.jpg` and are redrawn pose for pose from the old
   painted sheets in `art_src/sheets_painted/`.
 - **Tools:**
@@ -205,6 +216,9 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   - `cutout.py` cuts magenta chroma-key sheets.
   - `build.py` builds atlases, plates, colour grids and inpainting.
   - `grid.py` and `overlay.py` draw annotation overlays for placing slots.
+  - `crop_scene.py` brings a scene closer: it crops the plate to a 2:1 window
+    and transforms the scene file with it (the wide originals are kept in
+    `art_src/<village>/plates_wide/`).
   - `cutpaper_plates.py` restyles a village's plates; `widen.py` makes a 3:2
     plate 2:1 without moving anything in it; `widen_scene.py` shifts a scene
     file to match.
@@ -221,12 +235,14 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
     authorises spending up to US$50 without asking per generation (use the
     available balance if lower; never exceed the cap or assume a top-up).
     Track cumulative cost including retries and report it. Spend before that
-    pass: $24.56.
+    pass: $24.56; the pass itself spent $0.99 (four generations: the close
+    Green and three takes of the shop interior), $25.55 in all.
   - The key belongs to an OpenRouter workspace with its own lifetime budget.
     A 403 "Workspace lifetime budget exceeded" means the owner must raise it
     in the workspace's settings on openrouter.ai; the key can't change it.
-- **Setup:** the art tools need Pillow (`pip install pillow`); a fresh
-  container may not have it.
+- **Setup:** the art tools need Pillow, numpy, scipy and OpenCV
+  (`pip install pillow numpy scipy opencv-python-headless`); a fresh container
+  may not have them.
 - **Scratch output:** `scratch_art/` and `art_src/cut/` are gitignored and
   are lost with the container. Anything worth keeping goes in `art_src/` or
   `assets/`. The painted plates, sheets, map and posters are kept in

@@ -11,17 +11,17 @@ Each visit is generated in route order, in the state of the village a player rea
 | halt-tidy | railway-halt | restoration | 5 | 30s | **25s** | 40s | 26s | 0.7 | 0 |
 | hs-refresh | high-street | restoration | 6 | 33s | **32s** | 43s | 29s | 0.1 | 0 |
 | green-tidy | village-green | restoration | 6 | 34s | **31s** | 44s | 28s | 0.3 | 0 |
-| halt-refresh | railway-halt | restoration | 6 | 39s | **37s** | 50s | 33s | 0.5 | 0 |
+| halt-refresh | railway-halt | restoration | 6 | 39s | **38s** | 51s | 33s | 0.5 | 0 |
 | shop-restore | village-shop | restoration | 6 | 31s | **29s** | 43s | 24s | 0.4 | 0 |
 | row-restore | weavers-row | restoration | 6 | 38s | **34s** | 47s | 31s | 0.6 | 0 |
-| mill-race | old-mill | restoration | 7 | 36s | **35s** | 44s | 30s | 0.1 | 0 |
+| mill-race | old-mill | restoration | 7 | 36s | **33s** | 44s | 30s | 0.1 | 0 |
 | shop-fete | village-shop | committee | 5 | 28s | **26s** | 38s | 25s | 0.3 | 0 |
-| pub-garden | bee-and-bramble | restoration | 7 | 41s | **39s** | 52s | 37s | 1.0 | 0 |
-| green-flourish | village-green | restoration | 6 | 37s | **35s** | 48s | 31s | 0.8 | 0 |
+| pub-garden | bee-and-bramble | restoration | 7 | 42s | **39s** | 53s | 36s | 0.4 | 0 |
+| green-flourish | village-green | restoration | 6 | 37s | **34s** | 47s | 30s | 0.4 | 0 |
 | church-restore | st-aldhelms | restoration | 6 | 41s | **41s** | 53s | 37s | 0.0 | 0 |
 | mill-storm | old-mill | incident | 5 | 31s | **29s** | 42s | 26s | 0.0 | 0 |
 | cottage-garden | rose-cottage | restoration | 7 | 41s | **39s** | 53s | 35s | 0.0 | 0 |
-| halt-colours | railway-halt | committee | 5 | 33s | **32s** | 43s | 27s | 0.7 | 0 |
+| halt-colours | railway-halt | committee | 5 | 33s | **32s** | 44s | 27s | 0.7 | 0 |
 | green-judging | village-green | committee | 5 | 28s | **27s** | 37s | 25s | 0.8 | 0 |
 
 All visits: 15, 0 unreachable, 0 ambiguous, 0 under overlays, 0 outside an incident's allowed jobs.
@@ -33,20 +33,20 @@ A third each on a fresh, a half-restored and a fully restored village.
 | Tier | Target | Novice | Average | Skilled | 3 stamps | 2 stamps |
 |---|---|---|---|---|---|---|
 | 1 | 40s | 41s | **34s** | 30s | 34% | 37% |
-| 2 | 55s | 61s | **52s** | 43s | 29% | 37% |
-| 3 | 70s | 92s | **74s** | 65s | 39% | 43% |
-| 4 | 85s | 101s | **79s** | 71s | 32% | 43% |
-| 5 | 100s | 120s | **96s** | 77s | 26% | 41% |
-| 6 | 90s | 111s | **86s** | 74s | 28% | 36% |
+| 2 | 55s | 61s | **52s** | 43s | 29% | 38% |
+| 3 | 70s | 92s | **73s** | 65s | 39% | 43% |
+| 4 | 85s | 100s | **79s** | 71s | 32% | 43% |
+| 5 | 100s | 120s | **95s** | 76s | 26% | 41% |
+| 6 | 90s | 111s | **85s** | 74s | 28% | 36% |
 
 ## Fault mix
 
-- litter: 30582
+- litter: 30588
 - grimy: 11012
 - weeds: 8524
-- toppled: 8259
-- crooked: 7760
-- cobweb: 6027
+- toppled: 8262
+- crooked: 7750
+- cobweb: 6028
 - faded: 4380
 - wilted: 4031
 - pigeon: 3019
@@ -96,12 +96,12 @@ None: every generated mess was solvable and unambiguous.
 | old-mill | 4 | 11.5 | 0.43 | 77s | 110s | 101s | 75s | 33% |
 | old-mill | 5 | 15.5 | 0.46 | 90s | 130s | 119s | 72s | 25% |
 | old-mill | 6 | 14.8 | 0.47 | 84s | 120s | 114s | 71s | 24% |
-| bee-and-bramble | 1 | 5.5 | 0.69 | 37s | 50s | 44s | 33s | 35% |
-| bee-and-bramble | 2 | 8.5 | 0.58 | 52s | 75s | 64s | 45s | 31% |
-| bee-and-bramble | 3 | 10.1 | 0.39 | 78s | 108s | 98s | 70s | 41% |
-| bee-and-bramble | 4 | 11.5 | 0.42 | 81s | 114s | 106s | 72s | 31% |
-| bee-and-bramble | 5 | 15.5 | 0.43 | 106s | 151s | 127s | 84s | 25% |
-| bee-and-bramble | 6 | 14.9 | 0.45 | 93s | 138s | 114s | 83s | 31% |
+| bee-and-bramble | 1 | 5.5 | 0.7 | 37s | 51s | 43s | 32s | 32% |
+| bee-and-bramble | 2 | 8.5 | 0.59 | 54s | 76s | 65s | 46s | 31% |
+| bee-and-bramble | 3 | 10.1 | 0.4 | 76s | 108s | 95s | 69s | 46% |
+| bee-and-bramble | 4 | 11.5 | 0.43 | 81s | 110s | 103s | 71s | 29% |
+| bee-and-bramble | 5 | 15.5 | 0.44 | 100s | 139s | 126s | 82s | 22% |
+| bee-and-bramble | 6 | 14.9 | 0.46 | 89s | 130s | 113s | 79s | 31% |
 | st-aldhelms | 1 | 5.4 | 0.52 | 43s | 55s | 49s | 34s | 33% |
 | st-aldhelms | 2 | 8.5 | 0.48 | 59s | 82s | 70s | 47s | 34% |
 | st-aldhelms | 3 | 10 | 0.34 | 81s | 112s | 99s | 69s | 35% |

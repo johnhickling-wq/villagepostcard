@@ -5,11 +5,10 @@
 //
 // Keys:
 //   postcard-perfect/save             the save
-//   postcard-perfect/save/backup      the last good save before a migration or a fresh start
 //   postcard-perfect/save/unreadable  a save that couldn't be read, kept aside, never deleted by the game
 
 const KEY = 'postcard-perfect/save';
-const BACKUP = `${KEY}/backup`;
+const BACKUP = `${KEY}/backup`; // written by earlier builds; removed on Start again
 const UNREADABLE = `${KEY}/unreadable`;
 
 export const storage = {
@@ -39,10 +38,6 @@ export const storage = {
       return { status: 'ok', data, raw };
     } catch { return { status: 'corrupt', raw }; }
   },
-  readBackup() { return this.read(BACKUP); },
-
-  /** Keep a copy of a good save before changing it for good. */
-  backup(raw) { return this._write(BACKUP, raw); },
   /** Put an unreadable save aside (it is never deleted). */
   setAside(raw) { return this._write(UNREADABLE, raw); },
 

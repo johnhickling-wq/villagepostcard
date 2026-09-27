@@ -3,7 +3,7 @@
 // metadata is in /assets/**/manifest.json. This module is DOM-free: the
 // browser passes a fetch-based loader, Node (bot, validator) passes an fs one.
 
-const COMMON_FILES = ['faults', 'items', 'tiers', 'tiers-legacy', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics', 'hud', 'intro', 'story'];
+const COMMON_FILES = ['faults', 'items', 'tiers', 'conditions', 'scoring', 'levels', 'requests', 'notes', 'cosmetics', 'hud', 'intro', 'story'];
 
 export async function loadContent(readJson) {
   const common = {};
@@ -43,7 +43,6 @@ export class Content {
   tier(n) { return this.tiers.find((t) => t.tier === n) || this.tiers[this.tiers.length - 1]; }
 
   /** The tier table as it was for save version 2's album postcards (frozen: they redraw from it). */
-  legacyTier(n) { return this.tiersLegacy.find((t) => t.tier === n) || this.tiersLegacy[this.tiersLegacy.length - 1]; }
 
   village(id) { return this.villages[id]; }
 

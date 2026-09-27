@@ -32,7 +32,7 @@ none of them is needed for the story. The first village,
 ```sh
 npm install          # dev tools only (esbuild, playwright)
 npm run dev          # http://localhost:5173 — open on a phone held sideways, or with device emulation
-npm test             # the route, saves and migration, legacy postcards
+npm test             # the route, saves, resume, once-only completion
 npm run build        # dist/: one bundled game.js plus content and assets, ready for an iOS wrapper
 ```
 
@@ -48,7 +48,7 @@ src/core/      pure rules, no DOM; the bot runs them in Node
   session.js     one play: hit-testing, target assistance, combos, hints, score, resume
   scoring.js     points, time bonus, stamps (photo walks)
   sim.js         the perception model of a player (par times, bot)
-  progression.js the save and its migration, the visit route, places restored, the next step, walks, intro, favours, scrapbook, daily, levels
+  progression.js the save, the visit route, places restored, the next step, walks, intro, favours, scrapbook, daily, levels
 src/render/    canvas scene: grading, props, fix animations, particles, ambient life
 src/engine/    assets (atlases/manifests), procedural WebAudio sound and music, input, haptics, storage
 src/ui/        screens (title, map, play, the reveal, journal, noticeboard, travel, judging)
@@ -101,10 +101,10 @@ kept in `art_src/**/*_painted*` for reference.
 
 ```sh
 npm run validate   # content integrity and the visit graph
-npm test           # route, resume, completion, migration, legacy postcards
+npm test           # route, resume, completion, current-version saves, pending walks
 npm run bot        # fairness over every visit and thousands of photo walks
 npm run economy    # route simulator: story moments and optional content
-node tools/qa/shots.mjs story|hints|resume|migrate|map|screens|fixes|gallery|judging|daily|dialogs   # 844x390 landscape phone
+node tools/qa/shots.mjs story|hints|resume|reset|recover|map|screens|fixes|gallery|judging|daily|dialogs   # 844x390 landscape phone
 VW=667 VH=375 node tools/qa/shots.mjs compact   # small phone (and VW=1024 VH=768 for a 4:3 tablet)
 VW=390 VH=844 node tools/qa/shots.mjs rotated   # portrait phone: the stage turns itself
 node tools/qa/shots.mjs mix                     # loudness of every sound against its target

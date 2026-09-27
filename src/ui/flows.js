@@ -60,7 +60,7 @@ export async function playVisit(app, visitId) {
 
 /** An optional photo walk (or, with opts.daily, the Daily Postcard). */
 export async function playWalk(app, sceneId, opts = {}) {
-  const plan = opts.plan || pendingWalk(app.save, sceneId, opts.daily || null) || planWalk(app.save, app.content, app.village, sceneId, opts);
+  const plan = opts.plan || pendingWalk(app.save, app.content, sceneId, opts.daily || null) || planWalk(app.save, app.content, app.village, sceneId, opts);
   const progress = beginPlay(app.save, plan);
   app.persist(true);
   const mess = generateMess(app.content, {

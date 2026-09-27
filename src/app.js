@@ -2,7 +2,7 @@
 // the screen router, sheets/modals/toasts and the main loop.
 
 import { loadContent } from './core/content.js';
-import { newSave, migrate, levelInfo, refillRequests, SAVE_VERSION } from './core/progression.js';
+import { newSave, migrate, olderSave, levelInfo, refillRequests } from './core/progression.js';
 import { Assets } from './engine/assets.js';
 import { audio } from './engine/audio.js';
 import { haptics } from './engine/haptics.js';
@@ -75,25 +75,28 @@ export class App {
     await wait(250);
     if (this.saveNotice === 'corrupt') await this.recoverSave();
     this.show(new TitleScreen(this));
+    if (this.saveNotice === 'older') setTimeout(() => this.toast('This new version of the game starts Honeycombe afresh.', { ms: 4200 }), 1400);
     if (this.saveNotice === 'unavailable') setTimeout(() => this.toast('This device isn’t keeping saves (private browsing?), so progress will be lost when you close the game.', { ms: 6000, cls: 'warn' }), 1600);
   }
 
-  /** Read and, if it's from an older version, migrate the save (keeping a backup). */
+  /** Read the save. One from an earlier development version starts a fresh
+   *  village (the owner allowed progress to reset before release); one that
+   *  can't be read is never quietly replaced. */
   loadSave() {
     const r = storage.read();
     if (r.status === 'ok') {
-      const from = r.data.v;
       const save = migrate(r.data, this.content);
-      if (save) {
-        this.save = save;
-        // the old version is kept as a backup before the new one replaces it
-        if (from < SAVE_VERSION) { storage.backup(r.raw); this.persist(true); }
-        return 'ok';
+      if (save) { this.save = save; return 'ok'; }
+      if (olderSave(r.data)) {
+        this.save = newSave(this.content);
+        Object.assign(this.save.settings, r.data.settings || {});
+        this.persist(true);
+        return 'older';
       }
     }
     this.save = newSave(this.content);
     if (r.status === 'ok' || r.status === 'corrupt') {
-      // never quietly replace a save we couldn't read: nothing is written until the player chooses
+      // nothing is written until the player has seen what happened
       this.holdSaves = true;
       this.badSave = r.raw;
       return 'corrupt';
@@ -101,21 +104,17 @@ export class App {
     return r.status === 'unavailable' ? 'unavailable' : 'new';
   }
 
-  /** A save we couldn't read: offer the backup, or a fresh start with the old one kept aside. */
+  /** A save we couldn't read: it is kept aside, and a new village begins. */
   async recoverSave() {
-    const b = storage.readBackup();
-    const backup = b.status === 'ok' ? migrate(b.data, this.content) : null;
-    const choose = await new Promise((res) => {
-      const tryBackup = backup ? h('button.btn.teal', { text: 'Use the backup', onclick: () => res('backup') }) : null;
-      const fresh = h('button.btn' + (backup ? '.ink.small' : '.teal'), { text: 'Start a new village', onclick: () => res('new') });
+    await new Promise((res) => {
+      const fresh = h('button.btn.teal', { text: 'Start a new village', onclick: () => res() });
       this.modal(h('div.celebrate.card.paper', h('div.display.celebrate-title', { text: 'We couldn’t read your saved village' }),
-        h('p', { text: backup ? 'There is an earlier backup on this device. Your unreadable save is kept aside either way.' : 'Your unreadable save is kept aside on this device, and a new village will begin.' }),
-        h('div.col', tryBackup, fresh)), { dismissable: false });
+        h('p', { text: 'Your unreadable save is kept aside on this device, and a new village will begin.' }),
+        h('div.col', fresh)), { dismissable: false });
     });
     document.querySelector('.modal')?.remove();
     document.querySelector('.overlay')?.remove();
     storage.setAside(this.badSave);
-    if (choose === 'backup' && backup) this.save = backup;
     this.holdSaves = false;
     this.persist(true);
   }

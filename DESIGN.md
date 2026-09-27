@@ -382,11 +382,9 @@ never "missing".
 
 A postcard is re-rendered, never stored as an image. Every new postcard (render
 version 2) stores its own faults and the permanent state before and after, so
-later restoration can't change it. Album cards from save version 2 keep their
-old description (a seed and a project list) and are redrawn by the legacy
-generator path with the restoration-update layers left out and the frozen
-tier table (`tiers-legacy.json`); `tools/test/legacy.test.mjs` proves they are
-unchanged. The cache key includes the village and a hash of the whole entry.
+later restoration can't change it. Before release, saves from earlier
+development versions are not carried over: they start a fresh village (the
+owner's 27 September 2026 brief).
 
 ## 7. First-time experience: one idea at a time
 
@@ -406,8 +404,7 @@ walks:
 | 9 | the Daily Postcard | a card on the map |
 | finale | the Travel Office | after the judging |
 
-At most one card per visit to the map. A player coming from save version 2
-sees one "Honeycombe has changed" card instead.
+At most one card per visit to the map.
 
 ## 8. Commerce
 
@@ -428,8 +425,12 @@ sees one "Honeycombe has changed" card instead.
   `restores` visit, and every visit generated in route order over 25 seeds.
 - **Tests** (`npm test`): the whole route, random orders (no stranding), resume
   after reload, idempotent completion, permanent work surviving later visits,
-  the storm and walks, the colour request, save migration from version 2 (fresh,
-  part-restored, judged and collector saves; repeatable), legacy postcards.
+  the storm and walks, the colour request, current-version saves (an older
+  development save is not carried over), and a pending photo walk that the
+  story has overtaken being replanned.
+- **Browser scenarios** (`tools/qa/scenarios`): among them `reset`, which plays
+  Start again through the interface with a pending write and the page's
+  `pagehide`/`visibilitychange` saves, from every place Settings opens.
 - **Bot** (`npm run bot`): every visit in route order and every walk tier on
   fresh, half and fully restored villages: tappable, unambiguous, clear of the
   overlays, nothing protected spoilt; simulated times.

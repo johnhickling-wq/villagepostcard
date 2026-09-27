@@ -22,8 +22,8 @@ Needed before a village can be sold:
 2. **A store integration** in the iOS wrapper (StoreKit, e.g. through a
    Capacitor plugin), for one-off non-consumable products. The product ids are
    in `content/villages/index.json`.
-3. **An entitlement path** in the game: `save.purchases` already survives
-   migration; loading a purchased pack needs `loadContent` to include packs the
+3. **An entitlement path** in the game: `save.purchases` is in the save;
+   loading a purchased pack needs `loadContent` to include packs the
    player owns, not just `"playable": true` ones.
 4. **Tested outcomes**: success, cancellation, failure, interrupted
    fulfilment (app killed mid-purchase), and Restore Purchases on a new device
@@ -104,5 +104,9 @@ request. Possible improvements, none blocking:
   the red, white and blue tubs, and the final preparations). More optional
   post-story requests could reuse the same data.
 - A save that cannot be read is kept aside (`postcard-perfect/save/unreadable`)
-  and the player can choose the backup or a new village; there is no in-game
-  way to export or import a save.
+  and a new village begins; there is no in-game way to export or import a save.
+- **Save migration before release.** During development saves are not carried
+  between versions (the owner's 27 September 2026 brief): a save from an
+  earlier development version starts a fresh village. Before the first store
+  release, freeze the save shape; from then on every change needs a repeatable
+  `migrate()` step and a test.

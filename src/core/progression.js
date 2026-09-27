@@ -15,13 +15,14 @@
 //   daily      a seeded Daily Postcard walk and a stamp card with no streak to lose
 //   level      account-wide photographer XP, perks and cosmetics
 //
-// There is no currency. The Village Fund of save version 2 is kept only as
-// history (save.legacy.fund).
+// There is no currency. Saves from earlier development versions are not
+// carried over: the owner allowed progress to reset before release, so an
+// older save starts a fresh village (see migrate()).
 
 import { Rng, seedOf, clamp } from './rng.js';
 import { activeProps } from './mess.js';
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 const STAMP_XP = [0, 10, 25];
 const DAILY_CARD = [
   { xp: 40 }, { xp: 50 }, { xp: 60 }, { flashbulbs: 1 },
@@ -58,17 +59,19 @@ export function newSave(content, now = Date.now()) {
 }
 
 /**
- * Bring any older save up to date. Repeatable: migrating the same old save
- * twice gives the same result. Returns null only for something that isn't a
- * save at all (the caller decides what to do; it never silently starts again).
+ * Check a stored save and fill in anything a newer build expects. Returns null
+ * for something that isn't a current-version save: before release, saves from
+ * earlier development versions are not migrated (the owner's 27 September 2026
+ * brief), and the caller starts a fresh village instead.
  */
-export function migrate(save, content, now = Date.now()) {
-  if (!save || typeof save !== 'object' || !save.v || !save.villages) return null;
-  if (save.v < 2) return null; // pre-release saves: never shipped
-  if (save.v < 3) migrateV2(save, content, now);
+export function migrate(save, content) {
+  if (!save || typeof save !== 'object' || save.v !== SAVE_VERSION || !save.villages) return null;
   for (const vid of Object.keys(content.villages)) ensureVillage(save, content, vid);
   return save;
 }
+
+/** A save from an earlier development version (readable, but not carried over). */
+export const olderSave = (save) => !!save && typeof save === 'object' && typeof save.v === 'number' && save.v < SAVE_VERSION;
 
 function ensureVillage(save, content, vid) {
   const v = content.village(vid);
@@ -76,63 +79,8 @@ function ensureVillage(save, content, vid) {
   vs.scenes ||= {};
   for (const k of ['effects', 'fixed', 'visits', 'journal', 'progress', 'letters']) vs[k] ||= {};
   vs.judged ??= false;
-  vs.legacyOpen ||= [];
   for (const sid of v.sceneOrder) vs.scenes[sid] ||= { tier: 0, plays: 0, best: 0, bestStamps: 0, album: {} };
   return vs;
-}
-
-/** Version 2 (the Village Fund and purchased projects) -> version 3 (visits). */
-function migrateV2(save, content, now) {
-  save.legacy = { from: save.v, fund: save.player?.fund || 0, projects: {} };
-  delete save.player.fund;
-  save.player.walks = save.player.plays || 0;
-  save.stats.visits ||= 0;
-  save.active = null;
-  save.walk = null;
-  save.settings.reducedMotion ??= null;
-  // the stamp card no longer resets: count the days played
-  save.daily = { last: save.daily?.last || null, days: Object.keys(save.daily?.history || {}).length, history: save.daily?.history || {} };
-  // favours pay experience now, not money
-  for (const r of save.requests?.active || []) {
-    if (r.reward) r.reward = { xp: (r.reward.xp || 20) + 25, ...(r.reward.flashbulbs ? { flashbulbs: r.reward.flashbulbs } : {}), ...(r.reward.collectible ? { collectible: true } : {}) };
-  }
-  for (const [vid, vs] of Object.entries(save.villages)) {
-    const v = content.village(vid);
-    if (!v) continue;
-    const bought = vs.projects || {};
-    save.legacy.projects[vid] = Object.keys(bought);
-    const legacy = v.legacy || { access: {}, effects: [] };
-    vs.effects = {};
-    for (const [p, ts] of Object.entries(bought)) if (legacy.effects.includes(p)) vs.effects[p] = ts || now;
-    // an area that was opened stays open
-    vs.legacyOpen = Object.keys(bought).filter((p) => legacy.access[p]).map((p) => legacy.access[p]);
-    delete vs.projects;
-    for (const k of ['fixed', 'visits', 'journal', 'progress']) vs[k] ||= {};
-    // visits whose work the player already paid for count as done, so nothing
-    // they restored looks unfinished; new jobs are never marked done just
-    // because of money
-    for (const visit of v.visits) {
-      const ss = vs.scenes?.[visit.scene];
-      const old = visit.effects.filter((e) => legacy.effects.includes(e));
-      let done = false;
-      if (vs.judged) done = true;
-      else if (old.length) done = old.every((e) => vs.effects[e]);
-      else if (visit.kind === 'restoration' && !visit.effects.some((e) => legacy.effects.includes(e))) {
-        // a first tidy of a place: done if they took a postcard there
-        const first = v.visits.find((x) => x.scene === visit.scene) === visit;
-        done = first && ((ss?.tier || 0) > 0 || (visit.tutorial && save.flags?.tutorial));
-      }
-      if (!done) continue;
-      for (const e of visit.effects) vs.effects[e] ||= now;
-      vs.visits[visit.id] = { done: now, migrated: true };
-      save.stats.visits++;
-    }
-  }
-  // they know their way around: cards for features they already had aren't
-  // shown again; a single card explains the update instead
-  for (const [f, at] of Object.entries(content.intro?.features || {})) if ((save.player.plays || 0) >= at && content.intro.cards?.[f]) save.flags.seen[`intro:${f}`] = true;
-  save.flags.updated = 3;
-  save.v = 3;
 }
 
 // ------------------------------------------------------------ derived -----
@@ -142,17 +90,11 @@ export const visitDone = (save, vid, id) => !!save.villages[vid]?.visits[id];
 export const effectsDone = (save, vid) => Object.keys(save.villages[vid].effects);
 export const fixedIn = (save, vid, sid) => Object.keys(save.villages[vid].fixed[sid] || {});
 
-/** Can this visit be played now? Its earlier visits are done (or, for a save
- *  from version 2, the place was already open and this is its next restoration). */
+/** Can this visit be played now? Its earlier visits are done. */
 export function visitAvailable(save, content, vid, visit) {
   const vs = save.villages[vid];
   if (vs.visits[visit.id]) return false;
-  if ((visit.after || []).every((a) => vs.visits[a])) return true;
-  if (visit.kind === 'restoration' && vs.legacyOpen.includes(visit.scene)) {
-    const here = visitsOf(content, vid).filter((x) => x.scene === visit.scene);
-    return here.slice(0, here.indexOf(visit)).every((x) => vs.visits[x.id]);
-  }
-  return false;
+  return (visit.after || []).every((a) => vs.visits[a]);
 }
 
 export const availableVisits = (save, content, vid) => visitsOf(content, vid).filter((x) => visitAvailable(save, content, vid, x));
@@ -199,7 +141,7 @@ export function placeStatus(save, content, vid, sid) {
   const stage = [...done].reverse().find((x) => x.stage)?.stage || null;
   const todo = here.find((x) => !vs.visits[x.id] && x.todo)?.todo || null;
   const ss = vs.scenes[sid];
-  const open = done.length > 0 || available.length > 0 || vs.legacyOpen.includes(sid) || ss.plays > 0;
+  const open = done.length > 0 || available.length > 0 || ss.plays > 0;
   const progress = available.map((x) => vs.progress[x.id]).find((p) => p?.done?.length) || null;
   return { open, visited: done.length > 0 || ss.plays > 0, restored, stage, todo, available, done: done.length, total: here.length, progress };
 }
@@ -331,10 +273,23 @@ export function resumePlan(save) {
   return activeProgress(save)?.play || null;
 }
 
-/** An unfinished photo walk at this place, if there is one. */
-export function pendingWalk(save, sid, daily = null) {
+/** An unfinished photo walk at this place, if there is one. A walk planned
+ *  before the story restored more of the village is dropped (a fresh walk is
+ *  planned instead), so it can never show old neglect or leave out permanent
+ *  improvements. */
+export function pendingWalk(save, content, sid, daily = null) {
   const w = save.walk;
-  return w && w.play.scene === sid && (w.play.daily || null) === daily && w.done.length ? w.play : null;
+  if (!w || w.play.scene !== sid || (w.play.daily || null) !== daily || !w.done.length) return null;
+  if (!walkCurrent(save, content, w.play)) { save.walk = null; return null; }
+  return w.play;
+}
+
+/** Was this walk planned against the village's permanent state as it is now? */
+export function walkCurrent(save, content, play) {
+  const same = (a = [], b = []) => a.length === b.length && a.every((x) => b.includes(x));
+  const vid = play.village;
+  return same(play.effects, effectsDone(save, vid)) && same(play.fixed, fixedIn(save, vid, play.scene))
+    && same(play.protect, protectedTargets(save, content, vid, play.scene));
 }
 
 /** The progress record of the play in hand (or null). */

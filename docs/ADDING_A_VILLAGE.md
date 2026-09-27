@@ -57,7 +57,6 @@ Copy `content/villages/honeycombe/` as a template:
   - **`letters`**: intro, welcome, teaser and finale (read in the journal).
   - **`difficultyBase`** (photo walks): pack 2 should be about 0.15 so it
     starts a notch harder.
-  - No `legacy` block: that only maps Honeycombe's version-2 saves.
 - `visits.json`: the route (step 4 below).
 - `villagers.json`: lines for every favour kind (`fix`, `fixAny`, `cat`,
   `stamps`, `condition`, `combo`, `nohint`, `quick`, `plays`, `collect`),
@@ -225,7 +224,7 @@ visits come from variety and looking, not from tiny distant things.
 
 ```sh
 npm run validate      # broken references, missing art, the visit graph, every visit generated
-npm test              # the route played through, resume, migration
+npm test              # the route played through, resume, saves
 npm run bot           # every visit in route order + thousands of photo walks: fairness and timing
 npm run economy       # the route simulator: first postcard, third place, whole story
 node tools/bot/tune.mjs   # optional: re-fit photo-walk tiers and stamp thresholds

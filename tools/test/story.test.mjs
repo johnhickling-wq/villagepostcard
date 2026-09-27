@@ -1,4 +1,4 @@
-// The restoration route, its saves and their migration.
+// The restoration route and its saves.
 //   npm test
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -149,96 +149,50 @@ test('the colour request plants red, white and blue and keeps everything else', 
   for (const id of ['basket-2', 'trolley', 'pot-door-l', 'pot-door-r']) assert.ok(props.some((p) => p.id === id), `${id} still there`);
 });
 
-// ------------------------------------------------------------ migration --
+// ---------------------------------------------------------------- saves --
 
-function v2Save(kind) {
-  const scenes = Object.fromEntries(c.village(V).sceneOrder.map((sid) => [sid, { tier: 0, plays: 0, best: 0, bestStamps: 0, album: {} }]));
-  const s = {
-    v: 2, created: 1_690_000_000_000,
-    settings: { sfx: false, music: true, haptics: false, reducedMotion: true },
-    player: { xp: 0, fund: 40, flashbulbs: 1, secondClass: 0, plays: 0 },
-    cosmetics: { owned: ['frame-classic', 'film-natural', 'postmark-wold'], equipped: { frames: 'frame-classic', films: 'film-natural', postmarks: 'postmark-wold' } },
-    stats: { fixes: {}, cats: 0, bestCombo: 0, hints: 0, collectibles: 0, perfect: 0, score: 0 },
-    flags: { intro: true, tutorial: false, seen: {} },
-    current: V,
-    villages: { [V]: { scenes, projects: {}, judged: false, letters: {} } },
-    requests: { active: [], seq: 0, friendship: {}, done: 0, letters: {} },
-    collect: { owned: {}, sets: {}, pity: 0 },
-    daily: { last: null, streak: 0, best: 0, history: {} },
-    purchases: { porthkennack: true },
-  };
-  const vs = s.villages[V];
-  const card = (seed, tier, condition, projects) => ({ seed, tier, condition, stamps: 2, score: 1500, time: 50, date: '2026-09-01', projects, script: null, types: null, cat: true });
-  if (kind === 'fresh') return s;
-  s.flags.tutorial = true;
-  if (kind === 'partial') {
-    Object.assign(s.player, { xp: 800, fund: 420, plays: 14 });
-    for (const p of ['open-high-street', 'halt-paint', 'open-village-green', 'hs-paint']) vs.projects[p] = 1_695_000_000_000;
-    Object.assign(vs.scenes['railway-halt'], { tier: 4, plays: 6 });
-    Object.assign(vs.scenes['high-street'], { tier: 2, plays: 3 });
-    Object.assign(vs.scenes['village-green'], { tier: 1, plays: 1 });
-    vs.scenes['railway-halt'].album = { clear: card(11, 1, 'clear', []), golden: card(12, 2, 'golden', ['open-high-street']) };
-    s.requests.active = [{ id: 'r3', villager: 'colonel', kind: 'plays', progress: 0, count: 2, scene: 'high-street', text: 'x', goal: 'y', reward: { fund: 60, xp: 20 } }];
-    s.requests.seq = 3;
-    return s;
+test('a current save survives a reload unchanged; older development saves are not carried over', () => {
+  let save = P.newSave(c, 1_700_000_000_000);
+  ({ save } = playVisit(save, 'halt-tidy'));
+  assert.deepEqual(reload(save), save, 'a current-version save loads as it was');
+  for (const v of [2, 3]) {
+    const old = { ...clone(save), v };
+    assert.equal(P.migrate(clone(old), c), null, `a version ${v} save is not migrated`);
+    assert.ok(P.olderSave(old), `a version ${v} save is recognised as older`);
   }
-  if (kind === 'judged' || kind === 'collector') {
-    Object.assign(s.player, { xp: 9000, fund: 180, plays: 75, secondClass: 2 });
-    for (const p of [...Object.keys(c.village(V).legacy.access), ...c.village(V).legacy.effects]) vs.projects[p] = 1_695_000_000_000;
-    for (const sid of c.village(V).sceneOrder) { Object.assign(vs.scenes[sid], { tier: 5, plays: 8 }); vs.scenes[sid].album = { storm: card(sid.length, 5, 'storm', Object.keys(vs.projects)) }; }
-    if (kind === 'judged') vs.judged = 1_696_000_000_000;
-    if (kind === 'collector') {
-      for (const set of c.village(V).collectibles.sets) for (const it of set.items) s.collect.owned[it.id] = 2;
-      for (const set of c.village(V).collectibles.sets) s.collect.sets[set.id] = 1;
-      s.daily = { last: '2026-09-20', streak: 4, best: 9, history: { '2026-09-17': { stamps: 3, score: 2000 }, '2026-09-18': { stamps: 1, score: 900 }, '2026-09-20': { stamps: 2, score: 1500 } } };
-      s.requests.friendship = { colonel: 9, landlady: 5 };
-      s.cosmetics.owned.push('frame-gilt', 'film-sepia');
-    }
-    return s;
-  }
-}
-
-test('save v2 migrates: settings, album, keepsakes and purchases are kept', () => {
-  for (const kind of ['fresh', 'partial', 'judged', 'collector']) {
-    const old = v2Save(kind);
-    const save = P.migrate(clone(old), c, 1_700_000_000_000);
-    assert.equal(save.v, 3, kind);
-    assert.deepEqual(save.settings, old.settings);
-    assert.deepEqual(save.cosmetics, old.cosmetics);
-    assert.deepEqual(save.collect, old.collect);
-    assert.deepEqual(save.purchases, old.purchases);
-    for (const sid of c.village(V).sceneOrder) assert.deepEqual(save.villages[V].scenes[sid].album, old.villages[V].scenes[sid].album, `${kind} ${sid} album`);
-    assert.equal(save.legacy.fund, old.player.fund);
-    assert.deepEqual(P.migrate(clone(old), c, 1_700_000_000_000), save, `${kind}: migration is repeatable`);
-    assert.deepEqual(P.migrate(clone(save), c), save, `${kind}: a v3 save is left alone`);
-  }
+  assert.equal(P.migrate({ nonsense: true }, c), null);
+  assert.ok(!P.olderSave({ nonsense: true }), 'something that is not a save is not called older');
 });
 
-test('a part-restored v2 village stays restored and stays open', () => {
-  const save = P.migrate(v2Save('partial'), c);
-  const vs = save.villages[V];
-  assert.ok(vs.effects['halt-paint'] && vs.effects['hs-paint']);
-  assert.ok(vs.visits['halt-tidy'] && vs.visits['hs-refresh'] && vs.visits['green-tidy']);
-  assert.ok(!vs.visits['halt-refresh'], 'the halt still has flowers to plant');
-  for (const sid of ['railway-halt', 'high-street', 'village-green']) assert.ok(P.placeStatus(save, c, V, sid).open, `${sid} stays open`);
-  // what they bought doesn't reappear as work
-  const m = generateVisit(c, { village: V, visit: 'halt-refresh', seed: 3, effectsDone: P.effectsDone(save, V), fixed: [], cat: false });
-  assert.deepEqual(m.skipped.sort(), ['valance', 'win-left']);
-  assert.equal(save.requests.active[0].reward.fund, undefined);
+test('a photo walk left pending never brings back work the story has since restored', () => {
+  let save = P.newSave(c, 1_700_000_000_000);
+  for (const id of ['halt-tidy', 'hs-refresh', 'green-tidy']) ({ save } = playVisit(save, id));
+  // start a walk at the Halt, fix one thing, walk away
+  const plan = P.planWalk(save, c, V, 'railway-halt', {});
+  const progress = P.beginPlay(save, plan);
+  progress.done = ['f0'];
+  P.leavePlay(save);
+  // the story then restores the Halt further
+  ({ save } = playVisit(save, 'halt-refresh'));
+  const resumed = P.pendingWalk(save, c, 'railway-halt');
+  const now = P.effectsDone(save, V);
+  if (resumed) {
+    assert.deepEqual([...resumed.effects].sort(), [...now].sort(), 'a resumed walk shows the Halt as it is now');
+  }
+  const walk = resumed || P.planWalk(save, c, V, 'railway-halt', {});
+  const mess = generateMess(c, { village: V, scene: walk.scene, tier: walk.tier, condition: walk.condition, seed: walk.seed, projectsDone: walk.effects, fixed: walk.fixed, protect: walk.protect, policy: true, types: walk.types, cat: false });
+  const halt = c.visit(V, 'halt-refresh');
+  for (const e of halt.effects) assert.ok(walk.effects.includes(e), `${e} stays in force on the walk`);
+  const restoredNeglect = (c.scene(V, 'railway-halt').neglect || []).filter((n) => halt.effects.includes(n.effect)).map((n) => n.target);
+  for (const n of mess.neglect) assert.ok(!restoredNeglect.includes(n.target), `${n.target} is not neglected again`);
 });
 
-test('a judged v2 village is complete and keeps its rosette', () => {
-  const save = P.migrate(v2Save('judged'), c);
-  assert.ok(P.storyComplete(save, c, V));
-  assert.ok(save.villages[V].judged);
-  assert.equal(P.judgingReady(save, c, V), false);
-  assert.equal(P.placesRestored(save, c, V).done, 8);
-});
-
-test('an opened-but-unrestored v2 place offers its restoration', () => {
-  const old = v2Save('partial');
-  old.villages[V].projects['open-weavers-row'] = 1;
-  const save = P.migrate(old, c);
-  assert.ok(P.placeStatus(save, c, V, 'weavers-row').open);
-  assert.ok(P.visitAvailable(save, c, V, c.visit(V, 'row-restore')));
+test('a pending photo walk carries on when nothing has changed', () => {
+  let save = P.newSave(c, 1_700_000_000_000);
+  for (const id of ['halt-tidy', 'hs-refresh', 'green-tidy']) ({ save } = playVisit(save, id));
+  const plan = P.planWalk(save, c, V, 'high-street', {});
+  P.beginPlay(save, plan).done = ['f0'];
+  P.leavePlay(save);
+  const again = P.pendingWalk(reload(save), c, 'high-street');
+  assert.ok(again && again.seed === plan.seed, 'the same walk resumes');
 });

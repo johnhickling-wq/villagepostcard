@@ -35,9 +35,9 @@ export class SceneView {
 
   // ------------------------------------------------------------ loading ---
   /**
-   * @param o {village, scene, mess?, effects?, fixed?, legacy?, staged?, condition?, bloom?, thumb?}
+   * @param o {village, scene, mess?, effects?, fixed?, staged?, condition?, bloom?, thumb?}
    *   effects: the permanent restoration layers done; fixed: things story tasks restored for good;
-   *   legacy: draw as a save-v2 postcard; staged: planters of layers still to come, shown bare
+   *   staged: planters of layers still to come, shown bare
    */
   async load(o) {
     const content = this.content;
@@ -47,12 +47,11 @@ export class SceneView {
     this.mess = o.mess || null;
     this.effects = new Set(o.effects || []);
     this.fixed = new Set(o.fixed || []);
-    this.legacy = !!o.legacy;
     this.staged = o.staged || o.mess?.staged || [];
     this.condId = o.mess?.condition || o.condition || 'clear';
     this.cond = content.conditions[this.condId];
     this.dark = !!this.cond.dark;
-    this.bloom = o.bloom ?? sceneBloom(scene, this.effects, { legacy: this.legacy });
+    this.bloom = o.bloom ?? sceneBloom(scene, this.effects);
     this.gradeCache = new Map();
     this.W = scene.size[0];
     this.H = scene.size[1];
@@ -108,13 +107,13 @@ export class SceneView {
   }
 
   _buildProps() {
-    this.props = activeProps(this.scene, this.effects, { legacy: this.legacy, staged: this.staged }).map((p) => this._propRuntime(p));
+    this.props = activeProps(this.scene, this.effects, { staged: this.staged }).map((p) => this._propRuntime(p));
   }
 
   /** Neglect still showing; a task's own target is drawn by its task instead. */
   _neglect() {
     const tasks = new Set(this.faults.map(faultTarget).filter(Boolean));
-    return activeNeglect(this.scene, this.effects, { legacy: this.legacy, fixed: this.fixed }).filter((n) => !tasks.has(n.target));
+    return activeNeglect(this.scene, this.effects, { fixed: this.fixed }).filter((n) => !tasks.has(n.target));
   }
 
   /** Mark tasks finished before a reload as done, with no animation. */
@@ -153,7 +152,7 @@ export class SceneView {
   _activeDecor() {
     const out = [];
     for (const r of this.scene.restoration || []) {
-      if (!this.effects.has(r.effect) || (this.legacy && r.added)) continue;
+      if (!this.effects.has(r.effect)) continue;
       for (const d of r.decor || []) out.push({ ...d, effect: r.effect, appear: null });
     }
     return out;

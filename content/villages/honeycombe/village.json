@@ -90,35 +90,5 @@
    "title": "Your next assignment",
    "body": "Dear Photographer,\n\nBest-Kept Village! The whole company is thrilled, and the Honeycombe postcards are our best-sellers of the year.\n\nWord travels. Porthkennack Cove in Cornwall has entered the Coastal Village Prize, and they're already asking for you by name. We're still making the arrangements, so there's no ticket yet; I'll write the moment there is.\n\nUntil then, enjoy Honeycombe. You've earned it.\n\nYours, very proudly,\nClementine Ashby"
   }
- },
- "legacy": {
-  "note": "Save migration from version 2: access projects that opened a place, and the restoration projects that are now effects.",
-  "access": {
-   "open-high-street": "high-street",
-   "open-village-green": "village-green",
-   "open-weavers-row": "weavers-row",
-   "open-old-mill": "old-mill",
-   "open-bee-and-bramble": "bee-and-bramble",
-   "open-st-aldhelms": "st-aldhelms",
-   "open-rose-cottage": "rose-cottage"
-  },
-  "effects": [
-   "halt-paint",
-   "halt-flowers",
-   "hs-paint",
-   "hs-bunting",
-   "green-benches",
-   "green-ducks",
-   "row-paint",
-   "row-bunting",
-   "mill-paint",
-   "mill-garden",
-   "pub-door",
-   "pub-lights",
-   "church-clock",
-   "church-flowers",
-   "cottage-hives",
-   "cottage-fete"
-  ]
  }
 }

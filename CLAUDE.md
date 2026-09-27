@@ -35,8 +35,7 @@ bought yet.
   (`content/common/hud.json`; the bot checks it).
 - **The restoration rules (from the handover; don't undo them):**
   - There is no currency. Places open because the story reaches them, never by
-    paying; don't add a replacement token either. (Saves from version 2 keep
-    their old Village Fund total only as history, in `save.legacy.fund`.)
+    paying; don't add a replacement token either.
   - The scene, the job bar and the response to a tap must agree. If something
     looks like today's work, it is a task; tomorrow's work gets a friendly word,
     never a penalty. Story visits have no penalties and no lockout.
@@ -69,7 +68,7 @@ bought yet.
 npm install                      # esbuild + playwright (Chromium is preinstalled at /opt/pw-browsers)
 npm run dev                      # http://localhost:5173 (run in background); `node tools/serve.mjs 5174 dist` serves a build
 npm run validate                 # content integrity, the visit graph, every visit generated in route order
-npm test                         # route, resume, idempotent completion, migration, legacy postcards (node --test)
+npm test                         # route, resume, idempotent completion, current-version saves, pending walks (node --test)
 npm run bot                      # fairness over every visit and thousands of photo walks -> tools/bot/report.md
 npm run economy                  # route simulator: story moments and optional content -> tools/bot/economy.md
 node tools/bot/tune.mjs          # retunes photo walks: content/common/tiers.json + scoring.json (use --dry first)
@@ -81,7 +80,8 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   a save that has played the first n visits, and `tapAll`):
   - smoke, story (a new player's opening to the Green), hints (stalls, the
     loupe offer, tomorrow's work, zoom, pause), resume (reload mid-visit and
-    mid-reveal), migrate (a version-2 save), map, screens (journal, postcard,
+    mid-reveal), reset (Start again through the UI and the page lifecycle),
+    recover (an unreadable or older save), map, screens (journal, postcard,
     noticeboard, travel), fixes (every job incl. planting and replanting),
     gallery, judging (the final visit and the finale), daily, dialogs, audio,
     mix (every sound's loudness against its target);
@@ -100,12 +100,12 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   it that way.
   - `mess.js`: `generateVisit` builds a story visit's authored tasks on stable
     targets (seeded only for where litter and weeds land); `generateMess` is
-    the tier generator for photo walks, the daily and (with `legacy: true`)
-    version-2 album postcards. Also the restoration layers (`activeProps`,
+    the tier generator for photo walks and the daily. Also the restoration
+    layers (`activeProps`,
     `activeNeglect`).
   - `session.js` runs one play (story visits: no penalties; small-target
     assistance; resume from saved progress).
-  - `progression.js` covers the save and migrations, the visit route
+  - `progression.js` covers the save, the visit route
     (availability, next step, place stages, completion), the active-visit
     checkpoint, photo walks, the introduction, favours, daily and levels.
   - `sim.js` is the perception-model player.
@@ -121,7 +121,7 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   looks), `layout.css` (the landscape layout of every screen).
 - **Content:**
   - `content/common/*.json` holds rules: faults (jobs), tiers (photo walks),
-    `tiers-legacy.json` (frozen, for version-2 postcards), conditions, scoring,
+    conditions, scoring,
     levels, requests (favours), notes, cosmetics, items, intro (the
     introduction), hud (overlay keep-out areas) and story (visit operations,
     incidents, hint timing, planters and flower colours).
@@ -155,25 +155,25 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   `run()`, because otherwise the screen stacks on the previous one. Toasts are
   cleared on every screen change.
 - **Saves and determinism:**
-  - **The owner no longer requires backwards compatibility during
-    development** (27 September 2026 brief): progress may reset, and the
-    version-2 migration, legacy postcard path and their tests may be removed
-    or simplified. Current-version save, resume, once-only completion and a
-    reliable Start again are still required. The notes below describe the code
-    as it stands.
-  - New postcards (render version 2) store their own faults and the
-    permanent state before and after, so they never change.
-  - Version-2 album postcards are stored as seeds and re-rendered by the
-    legacy path of `generateMess`. Never change its RNG draw order, the frozen
-    `tiers-legacy.json`, or what `legacy: true` leaves out (layers marked
-    `"added": 3`); `tools/test/legacy.test.mjs` fails if an old card would
-    change. The daily also depends on the draw order, so add new draws on
-    forked RNGs (`rng.fork(...)`).
-  - Scene layers added after version 2 must carry `"added": 3` (or higher).
-  - When the save shape changes, bump `SAVE_VERSION` (now 3) and add a step in
-    `migrate()` in `progression.js`, because players' saves must survive
-    updates. Migration must be repeatable, keep a backup
-    (`storage.backup`), and never silently replace an unreadable save.
+  - **No backwards compatibility during development** (27 September 2026
+    brief): `SAVE_VERSION` is 4, and a save from an earlier development
+    version starts a fresh village (its settings are kept, and the title says
+    so once). There is no migration, backup or legacy postcard path any more;
+    don't rebuild them before release. Current-version save, resume,
+    once-only completion and a reliable Start again are required.
+  - **Start again** is `App.startAgain()`: it cancels the pending debounced
+    write, writes a fresh save, locks `storage` against every later write from
+    the page (so `pagehide`/`visibilitychange` can't write the old run back),
+    then reloads. Never reset by just removing the key.
+    `tools/qa/scenarios/reset.mjs` drives it through the UI and the lifecycle.
+  - Postcards (render version 2) store their own faults and the permanent
+    state before and after, so they never change.
+  - The daily depends on `generateMess`'s draw order (everyone gets the same
+    walk on a date), so add new draws on forked RNGs (`rng.fork(...)`).
+  - A pending photo walk is dropped if the story has restored more of its
+    place since it was planned (`pendingWalk`/`walkCurrent`).
+  - Once the game ships, bump `SAVE_VERSION` and add a repeatable step in
+    `migrate()` whenever the save shape changes.
   - Stable ids: visits, tasks, effects and scene props/regions are addressed
     by id in saves. Don't rename them; add new ones.
 - **Fairness:** the generator must never hide one fault under another, or

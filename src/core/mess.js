@@ -24,17 +24,15 @@ export const hasTag = (tags, want) => (Array.isArray(want) ? want.some((w) => (t
 
 const doneSet = (effects) => (effects instanceof Set ? effects : new Set(effects || []));
 
-/** Restoration layers in force. Layers marked "added" arrived with the
- *  restoration update (save v3); legacy postcards (album entries without a
- *  render version) are drawn without them, so they look as they always did. */
-function layers(scene, opts = {}) {
-  return (scene.restoration || []).filter((r) => !(opts.legacy && r.added));
+/** The scene's restoration layers. */
+function layers(scene) {
+  return scene.restoration || [];
 }
 
 /**
  * Props present in the clean scene for a restoration state.
  * @param effects  the permanent effects done (a Set or list of effect ids)
- * @param opts     {legacy, staged: prop ids from not-yet-done layers to show anyway (a visit's planting targets)}
+ * @param opts     {staged: prop ids from not-yet-done layers to show anyway (a visit's planting targets)}
  */
 export function activeProps(scene, effects, opts = {}) {
   const done = doneSet(effects);
@@ -42,7 +40,7 @@ export function activeProps(scene, effects, opts = {}) {
   const removed = new Set();
   const labels = {}, tints = {};
   const props = [...(scene.props || [])];
-  for (const r of layers(scene, opts)) {
+  for (const r of layers(scene)) {
     if (!done.has(r.effect)) {
       for (const p of r.props || []) if (staged.has(p.id)) props.push({ ...p, staged: true });
       continue;
@@ -68,13 +66,13 @@ export function allProps(scene) {
 export function activeNeglect(scene, effects, opts = {}) {
   const done = doneSet(effects);
   const fixed = doneSet(opts.fixed);
-  return (scene.neglect || []).filter((n) => !(opts.legacy && n.added) && !done.has(n.effect) && !fixed.has(n.target));
+  return (scene.neglect || []).filter((n) => !done.has(n.effect) && !fixed.has(n.target));
 }
 
-/** 0..1 how restored (and therefore how lovely) a legacy postcard's scene was. */
-export function sceneBloom(scene, effects, opts = {}) {
+/** 0..1 how restored a scene is by its layers (when no place bloom is given). */
+export function sceneBloom(scene, effects) {
   const done = doneSet(effects);
-  const effectIds = scene.bloomProjects || layers(scene, opts).map((r) => r.effect);
+  const effectIds = scene.bloomProjects || layers(scene).map((r) => r.effect);
   if (!effectIds.length) return 1;
   return effectIds.filter((p) => done.has(p)).length / effectIds.length;
 }
@@ -114,11 +112,11 @@ function inScene(ctx, shape) {
 }
 
 /**
- * The generated mess of a photo walk, Daily Postcard or (legacy) album postcard.
+ * The generated mess of a photo walk or the Daily Postcard.
  * @param {Content} content
- * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, fixed?, collectible?, script?, types?, cat?, legacy?, protect?, policy?}
+ * @param {object} o  {village, scene, tier, condition?, seed, projectsDone?, fixed?, collectible?, script?, types?, cat?, protect?, policy?}
  *   projectsDone: the permanent effects done; types: the jobs allowed (the rest aren't introduced yet);
- *   cat: false keeps Marmalade away; legacy: draw as a save-v2 postcard (no restoration-update layers);
+ *   cat: false keeps Marmalade away;
  *   protect: things restored for good, which a walk must never spoil; policy: apply the weather's
  *   "exclude" list (a storm doesn't strip paint)
  */
@@ -126,11 +124,11 @@ export function generateMess(content, o) {
   const village = content.village(o.village);
   const scene = village.scenes[o.scene];
   const rng = new Rng(seedOf('mess', o.village, o.scene, o.tier, o.seed));
-  const tier = o.legacy ? content.legacyTier(o.tier) : content.tier(o.tier);
+  const tier = content.tier(o.tier);
   const condId = o.condition || rng.fork('cond').weighted(tier.conditions);
   const cond = content.conditions[condId];
   const done = doneSet(o.projectsDone);
-  const layerOpts = { legacy: !!o.legacy, fixed: o.fixed };
+  const layerOpts = { fixed: o.fixed };
   const props = activeProps(scene, done, layerOpts);
   const neglect = activeNeglect(scene, done, layerOpts);
   const offset = (scene.difficultyOffset || 0) + (village.difficultyBase || 0);

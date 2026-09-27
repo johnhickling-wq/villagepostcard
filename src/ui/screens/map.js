@@ -67,11 +67,10 @@ export class MapScreen {
   /** New features arrive one per visit to the map, each with a card and a pulsing button. */
   async introduceFeatures() {
     const app = this.app, seen = app.save.flags.seen;
-    const update = app.save.flags.updated && !seen[`update:${app.save.flags.updated}`] ? 'update' : null;
-    for (const f of update ? [update] : introCardsDue(app.save, app.content).slice(0, 1)) {
+    for (const f of introCardsDue(app.save, app.content).slice(0, 1)) {
       if (app.screen !== this || app.ui.querySelector('.overlay')) return;
-      const card = f === 'update' ? app.content.intro.updateCard : app.content.intro.cards[f];
-      seen[f === 'update' ? `update:${app.save.flags.updated}` : `intro:${f}`] = true;
+      const card = app.content.intro.cards[f];
+      seen[`intro:${f}`] = true;
       app.persist();
       const btn = this.nav.querySelector(`[data-feature="${f}"]`) || (f === 'level' ? this.top.el.querySelector('.level-badge') : null);
       btn?.classList.add('just-new');

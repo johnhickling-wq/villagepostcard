@@ -211,9 +211,6 @@ function validateVisits(v, vid, W) {
       if (!layerOwner.has(n.effect)) err(W(`${sid} neglect ${n.target}`), `its effect ${n.effect} is never made`);
     }
   }
-  // legacy (save v2) mapping
-  for (const [p, sid] of Object.entries(v.legacy?.access || {})) if (!v.scenes[sid]) err(W('legacy'), `${p} opens unknown scene ${sid}`);
-  for (const e of v.legacy?.effects || []) if (!layerOwner.has(e)) err(W('legacy'), `old project ${e} has no layer`);
   // generation in route order: every task placed, for many seeds
   const effects = new Set(), fixed = {};
   for (const vt of visits) {

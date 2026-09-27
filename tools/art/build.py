@@ -20,6 +20,11 @@ for plates a coarse colour grid used to judge how well litter blends in.
 
 This is the swap-in interface for final art: replace a source PNG, rerun the
 build, and the game picks it up — keys and scene data stay the same.
+
+Every plate, sprite and image goes through tools/art/freshen.py, the shared
+colour direction (see art_src/ART_DIRECTION.md); a source can set its own
+"freshen" amount (plates.json per scene, atlases.json per atlas, extra.json
+per image) when it was generated nearer the target already.
 """
 import json, sys, pathlib, base64, hashlib
 import numpy as np
@@ -30,6 +35,7 @@ SRC = ROOT / "art_src"
 OUT = ROOT / "assets"
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from cutout import cut  # noqa: E402
+from freshen import freshen  # noqa: E402
 
 FORCE = "--force" in sys.argv
 GRID = 20  # plate colour grid cell size, in scene units
@@ -112,7 +118,7 @@ def build_atlases():
                 if not p.exists():
                     print(f"  missing sprite {entry}")
                     continue
-                im = Image.open(p).convert("RGBA")
+                im = freshen(Image.open(p).convert("RGBA"), spec.get("freshen", 1.0))
                 s = min(1.0, max_side / max(im.size))
                 if s < 1:
                     im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
@@ -164,6 +170,7 @@ def build_images():
         manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
         manifest.setdefault("images", {})
         manifest.setdefault("sprites", {})
+        plate_cfg = json.loads((vdir.parent / "plates.json").read_text()) if (vdir.parent / "plates.json").exists() else {}
         for png in sorted([*vdir.glob("*.png"), *vdir.glob("*.webp")]):
             sid = png.stem
             dst = odir / "plates" / f"{sid}.webp"
@@ -177,6 +184,7 @@ def build_images():
                 scene_w = (sdata.get("size") or [1500 if im.width > im.height else 1000])[0]
                 if erase:
                     im = inpaint(im, erase, scene_w)
+                im = freshen(im, (plate_cfg.get(sid) or {}).get("freshen", 1.0) if isinstance(plate_cfg.get(sid), dict) else 1.0)
                 im.save(dst, "WEBP", quality=80, method=6)
                 th = im.resize((480, round(480 * im.height / im.width)), Image.LANCZOS)
                 th.save(odir / "plates" / f"{sid}.thumb.webp", "WEBP", quality=78, method=6)
@@ -192,7 +200,7 @@ def build_images():
                     continue
                 if newer(src, dst) or key not in manifest["images"]:
                     dst.parent.mkdir(parents=True, exist_ok=True)
-                    im = Image.open(src).convert("RGB")
+                    im = freshen(Image.open(src).convert("RGB"), spec.get("freshen", 1.0))
                     if spec.get("width"):
                         im = im.resize((spec["width"], round(spec["width"] * im.height / im.width)), Image.LANCZOS)
                     im.save(dst, "WEBP", quality=spec.get("quality", 80), method=6)
@@ -218,7 +226,7 @@ def build_common_images():
         if newer(src, dst) or key not in manifest["images"]:
             dst.parent.mkdir(parents=True, exist_ok=True)
             im = Image.open(src)
-            im = im.convert("RGBA" if spec.get("alpha") else "RGB")
+            im = freshen(im.convert("RGBA" if spec.get("alpha") else "RGB"), spec.get("freshen", 1.0))
             if spec.get("width"):
                 im = im.resize((spec["width"], round(spec["width"] * im.height / im.width)), Image.LANCZOS)
             im.save(dst, "WEBP", quality=spec.get("quality", 80), method=6)

@@ -6,7 +6,7 @@
    "y": 0,
    "w": 190,
    "h": 240,
-   "color": "#ad806d"
+   "color": "#a97469"
   },
   "litter/milk-bottle": {
    "atlas": "litter.webp",
@@ -14,7 +14,7 @@
    "y": 0,
    "w": 98,
    "h": 240,
-   "color": "#ccc6ae"
+   "color": "#cdc9b4"
   },
   "litter/banana-peel": {
    "atlas": "litter.webp",
@@ -22,7 +22,7 @@
    "y": 0,
    "w": 232,
    "h": 240,
-   "color": "#dba545"
+   "color": "#dd9f3f"
   },
   "litter/apple-core": {
    "atlas": "litter.webp",
@@ -30,7 +30,7 @@
    "y": 0,
    "w": 156,
    "h": 240,
-   "color": "#d37c67"
+   "color": "#d37663"
   },
   "litter/tin-can": {
    "atlas": "litter.webp",
@@ -38,7 +38,7 @@
    "y": 0,
    "w": 138,
    "h": 240,
-   "color": "#9b8f83"
+   "color": "#9b9084"
   },
   "litter/umbrella": {
    "atlas": "litter.webp",
@@ -46,7 +46,7 @@
    "y": 243,
    "w": 178,
    "h": 240,
-   "color": "#436b6c"
+   "color": "#395b69"
   },
   "litter/old-boot": {
    "atlas": "litter.webp",
@@ -54,7 +54,7 @@
    "y": 243,
    "w": 231,
    "h": 240,
-   "color": "#62503f"
+   "color": "#614c3b"
   },
   "litter/paper-bag": {
    "atlas": "litter.webp",
@@ -62,7 +62,7 @@
    "y": 243,
    "w": 183,
    "h": 240,
-   "color": "#b28561"
+   "color": "#b3835c"
   },
   "litter/balloon": {
    "atlas": "litter.webp",
@@ -70,7 +70,7 @@
    "y": 243,
    "w": 159,
    "h": 240,
-   "color": "#bc4446"
+   "color": "#bb3b3e"
   },
   "litter/cardboard-box": {
    "atlas": "litter.webp",
@@ -78,7 +78,7 @@
    "y": 243,
    "w": 240,
    "h": 238,
-   "color": "#b88755"
+   "color": "#b9854e"
   },
   "litter/ice-cream": {
    "atlas": "litter.webp",
@@ -86,7 +86,7 @@
    "y": 0,
    "w": 180,
    "h": 240,
-   "color": "#d09577"
+   "color": "#d19273"
   },
   "litter/newspaper": {
    "atlas": "litter.webp",
@@ -94,7 +94,7 @@
    "y": 0,
    "w": 239,
    "h": 240,
-   "color": "#af9c85"
+   "color": "#af9c86"
   },
   "litter/bunting-scrap": {
    "atlas": "litter.webp",
@@ -102,7 +102,7 @@
    "y": 486,
    "w": 240,
    "h": 232,
-   "color": "#ab7e70"
+   "color": "#aa7b6c"
   },
   "litter/branch": {
    "atlas": "litter.webp",
@@ -110,7 +110,7 @@
    "y": 243,
    "w": 187,
    "h": 240,
-   "color": "#927a4b"
+   "color": "#927546"
   },
   "litter/leaf-clump": {
    "atlas": "litter.webp",
@@ -118,7 +118,7 @@
    "y": 486,
    "w": 240,
    "h": 221,
-   "color": "#9a5b3e"
+   "color": "#995536"
   },
   "litter/flat-cap": {
    "atlas": "litter.webp",
@@ -126,7 +126,7 @@
    "y": 721,
    "w": 240,
    "h": 198,
-   "color": "#876d5b"
+   "color": "#866a58"
   },
   "litter/paper-plate": {
    "atlas": "litter.webp",
@@ -134,7 +134,7 @@
    "y": 721,
    "w": 240,
    "h": 201,
-   "color": "#e1cbb2"
+   "color": "#e1cdb7"
   },
   "litter/sweet-wrapper": {
    "atlas": "litter.webp",
@@ -142,7 +142,7 @@
    "y": 721,
    "w": 240,
    "h": 191,
-   "color": "#49858f"
+   "color": "#3d718e"
   },
   "litter/orange-peel": {
    "atlas": "litter.webp",
@@ -150,7 +150,7 @@
    "y": 486,
    "w": 240,
    "h": 221,
-   "color": "#ea9253"
+   "color": "#ec8d4b"
   },
   "litter/matchbox": {
    "atlas": "litter.webp",
@@ -158,7 +158,7 @@
    "y": 721,
    "w": 240,
    "h": 208,
-   "color": "#bf9d7f"
+   "color": "#c19c7e"
   },
   "litter/ginger-beer-bottle": {
    "atlas": "litter.webp",
@@ -166,7 +166,7 @@
    "y": 721,
    "w": 240,
    "h": 160,
-   "color": "#a27458"
+   "color": "#a17154"
   },
   "litter/twigs": {
    "atlas": "litter.webp",
@@ -174,7 +174,7 @@
    "y": 486,
    "w": 240,
    "h": 218,
-   "color": "#896258"
+   "color": "#895e53"
   },
   "critters/dandelion": {
    "atlas": "critters.webp",
@@ -182,7 +182,7 @@
    "y": 0,
    "w": 203,
    "h": 260,
-   "color": "#98875a"
+   "color": "#948756"
   },
   "critters/thistle": {
    "atlas": "critters.webp",
@@ -190,7 +190,7 @@
    "y": 0,
    "w": 179,
    "h": 260,
-   "color": "#6f6659"
+   "color": "#6b6556"
   },
   "critters/nettle": {
    "atlas": "critters.webp",
@@ -198,7 +198,7 @@
    "y": 0,
    "w": 165,
    "h": 260,
-   "color": "#7e7750"
+   "color": "#767749"
   },
   "critters/dock": {
    "atlas": "critters.webp",
@@ -206,7 +206,7 @@
    "y": 0,
    "w": 211,
    "h": 260,
-   "color": "#907e4a"
+   "color": "#8e7c44"
   },
   "critters/cat-sit": {
    "atlas": "critters.webp",
@@ -214,7 +214,7 @@
    "y": 0,
    "w": 151,
    "h": 260,
-   "color": "#b9844c"
+   "color": "#ba8145"
   },
   "critters/pigeon-b": {
    "atlas": "critters.webp",
@@ -222,7 +222,7 @@
    "y": 0,
    "w": 237,
    "h": 260,
-   "color": "#867d80"
+   "color": "#877e81"
   },
   "critters/pigeon-fly": {
    "atlas": "critters.webp",
@@ -238,7 +238,7 @@
    "y": 263,
    "w": 213,
    "h": 260,
-   "color": "#bd8349"
+   "color": "#be7f42"
   },
   "critters/pigeon-a": {
    "atlas": "critters.webp",
@@ -254,7 +254,7 @@
    "y": 263,
    "w": 259,
    "h": 260,
-   "color": "#b07f4f"
+   "color": "#b17d49"
   },
   "critters/cat-loaf": {
    "atlas": "critters.webp",
@@ -262,7 +262,7 @@
    "y": 263,
    "w": 260,
    "h": 235,
-   "color": "#b3773b"
+   "color": "#b47333"
   },
   "props/bicycle": {
    "atlas": "props.webp",
@@ -270,7 +270,7 @@
    "y": 606,
    "w": 300,
    "h": 297,
-   "color": "#705446"
+   "color": "#6e5141"
   },
   "props/deckchair": {
    "atlas": "props.webp",
@@ -278,7 +278,7 @@
    "y": 303,
    "w": 254,
    "h": 300,
-   "color": "#bb7c63"
+   "color": "#bb785f"
   },
   "props/bird-feeder": {
    "atlas": "props.webp",
@@ -286,7 +286,7 @@
    "y": 303,
    "w": 199,
    "h": 300,
-   "color": "#8d6347"
+   "color": "#8d5f41"
   },
   "props/bee-skep": {
    "atlas": "props.webp",
@@ -294,7 +294,7 @@
    "y": 303,
    "w": 265,
    "h": 300,
-   "color": "#b58243"
+   "color": "#b67f3c"
   },
   "props/sign-pub": {
    "atlas": "props.webp",
@@ -302,7 +302,7 @@
    "y": 0,
    "w": 180,
    "h": 300,
-   "color": "#9b886d"
+   "color": "#9a886b"
   },
   "props/trug": {
    "atlas": "props.webp",
@@ -310,7 +310,7 @@
    "y": 1198,
    "w": 300,
    "h": 247,
-   "color": "#9f804f"
+   "color": "#9a8048"
   },
   "props/a-board": {
    "atlas": "props.webp",
@@ -318,7 +318,7 @@
    "y": 0,
    "w": 231,
    "h": 300,
-   "color": "#6e523d"
+   "color": "#6d5038"
   },
   "props/hanging-basket": {
    "atlas": "props.webp",
@@ -326,7 +326,7 @@
    "y": 0,
    "w": 227,
    "h": 300,
-   "color": "#8e704d"
+   "color": "#896e47"
   },
   "props/barrel": {
    "atlas": "props.webp",
@@ -334,7 +334,7 @@
    "y": 303,
    "w": 211,
    "h": 300,
-   "color": "#a07c54"
+   "color": "#a0794f"
   },
   "props/luggage-trolley": {
    "atlas": "props.webp",
@@ -342,7 +342,7 @@
    "y": 606,
    "w": 276,
    "h": 300,
-   "color": "#8b704a"
+   "color": "#886f44"
   },
   "props/bird-bath": {
    "atlas": "props.webp",
@@ -350,7 +350,7 @@
    "y": 303,
    "w": 198,
    "h": 300,
-   "color": "#a98f79"
+   "color": "#aa8e79"
   },
   "props/geranium-pot": {
    "atlas": "props.webp",
@@ -358,7 +358,7 @@
    "y": 0,
    "w": 226,
    "h": 300,
-   "color": "#9f5d3a"
+   "color": "#955a31"
   },
   "props/sign-teashop": {
    "atlas": "props.webp",
@@ -366,7 +366,7 @@
    "y": 0,
    "w": 194,
    "h": 300,
-   "color": "#b69c77"
+   "color": "#b69d74"
   },
   "props/litter-bin": {
    "atlas": "props.webp",
@@ -374,7 +374,7 @@
    "y": 0,
    "w": 190,
    "h": 300,
-   "color": "#617249"
+   "color": "#507542"
   },
   "props/weathervane": {
    "atlas": "props.webp",
@@ -382,7 +382,7 @@
    "y": 303,
    "w": 220,
    "h": 300,
-   "color": "#a3593f"
+   "color": "#a25337"
   },
   "props/milk-churn": {
    "atlas": "props.webp",
@@ -390,7 +390,7 @@
    "y": 0,
    "w": 161,
    "h": 300,
-   "color": "#b0a192"
+   "color": "#b2a395"
   },
   "props/lavender-pot": {
    "atlas": "props.webp",
@@ -398,7 +398,7 @@
    "y": 606,
    "w": 196,
    "h": 300,
-   "color": "#727792"
+   "color": "#6c7190"
   },
   "props/cartwheel": {
    "atlas": "props.webp",
@@ -406,7 +406,7 @@
    "y": 606,
    "w": 254,
    "h": 300,
-   "color": "#937450"
+   "color": "#92724a"
   },
   "props/beehive": {
    "atlas": "props.webp",
@@ -414,7 +414,7 @@
    "y": 606,
    "w": 249,
    "h": 300,
-   "color": "#d7c4ac"
+   "color": "#d7c5b0"
   },
   "props/flower-tub": {
    "atlas": "props.webp",
@@ -422,7 +422,7 @@
    "y": 0,
    "w": 262,
    "h": 300,
-   "color": "#866b4b"
+   "color": "#826845"
   },
   "props/station-clock": {
    "atlas": "props.webp",
@@ -430,7 +430,7 @@
    "y": 303,
    "w": 255,
    "h": 300,
-   "color": "#a88972"
+   "color": "#a78871"
   },
   "props/window-box": {
    "atlas": "props.webp",
@@ -438,7 +438,7 @@
    "y": 909,
    "w": 300,
    "h": 276,
-   "color": "#987450"
+   "color": "#927249"
   },
   "props/sign-hanging": {
    "atlas": "props.webp",
@@ -446,7 +446,7 @@
    "y": 0,
    "w": 291,
    "h": 300,
-   "color": "#d2bea2"
+   "color": "#d1c0a6"
   },
   "props/scarecrow": {
    "atlas": "props.webp",
@@ -454,7 +454,7 @@
    "y": 303,
    "w": 273,
    "h": 300,
-   "color": "#957c5a"
+   "color": "#957856"
   },
   "props/nameboard": {
    "atlas": "props.webp",
@@ -462,7 +462,7 @@
    "y": 1198,
    "w": 300,
    "h": 229,
-   "color": "#a78e77"
+   "color": "#a68d78"
   },
   "props/stone-trough": {
    "atlas": "props.webp",
@@ -470,7 +470,7 @@
    "y": 909,
    "w": 300,
    "h": 278,
-   "color": "#aa9975"
+   "color": "#a69973"
   },
   "props/bench": {
    "atlas": "props.webp",
@@ -478,7 +478,7 @@
    "y": 1198,
    "w": 300,
    "h": 260,
-   "color": "#8b6045"
+   "color": "#8a5d40"
   },
   "props/duck-house": {
    "atlas": "props.webp",
@@ -486,7 +486,7 @@
    "y": 909,
    "w": 300,
    "h": 274,
-   "color": "#998c69"
+   "color": "#978c66"
   },
   "props/watering-can": {
    "atlas": "props.webp",
@@ -494,7 +494,7 @@
    "y": 909,
    "w": 300,
    "h": 283,
-   "color": "#9d988e"
+   "color": "#9f9a90"
   },
   "props/enamel-sign": {
    "atlas": "props.webp",
@@ -502,7 +502,7 @@
    "y": 909,
    "w": 300,
    "h": 286,
-   "color": "#4a6392"
+   "color": "#415890"
   },
   "props/flour-sack": {
    "atlas": "props.webp",
@@ -510,7 +510,7 @@
    "y": 606,
    "w": 227,
    "h": 300,
-   "color": "#d6b893"
+   "color": "#d7b894"
   },
   "ui/postcard-stamp": {
    "atlas": "ui.webp",
@@ -518,7 +518,7 @@
    "y": 0,
    "w": 153,
    "h": 200,
-   "color": "#dfb67e"
+   "color": "#e1b57b"
   },
   "ui/film-roll": {
    "atlas": "ui.webp",
@@ -526,7 +526,7 @@
    "y": 0,
    "w": 158,
    "h": 200,
-   "color": "#7f5d2f"
+   "color": "#7e5829"
   },
   "ui/magnifier": {
    "atlas": "ui.webp",
@@ -534,7 +534,7 @@
    "y": 0,
    "w": 149,
    "h": 200,
-   "color": "#b7a07d"
+   "color": "#b9a07b"
   },
   "ui/flashbulb": {
    "atlas": "ui.webp",
@@ -542,7 +542,7 @@
    "y": 0,
    "w": 124,
    "h": 200,
-   "color": "#9d9f98"
+   "color": "#9fa09a"
   },
   "ui/camera-badge": {
    "atlas": "ui.webp",
@@ -550,7 +550,7 @@
    "y": 0,
    "w": 191,
    "h": 200,
-   "color": "#85836f"
+   "color": "#817b6d"
   },
   "litter/roof-slate": {
    "atlas": "litter.webp",
@@ -558,7 +558,7 @@
    "y": 486,
    "w": 240,
    "h": 222,
-   "color": "#867d79"
+   "color": "#877d7a"
   },
   "props/gnome": {
    "atlas": "props.webp",
@@ -566,7 +566,7 @@
    "y": 303,
    "w": 138,
    "h": 300,
-   "color": "#957668"
+   "color": "#937166"
   },
   "props/noticeboard": {
    "atlas": "props.webp",
@@ -574,7 +574,7 @@
    "y": 606,
    "w": 214,
    "h": 300,
-   "color": "#b28f66"
+   "color": "#b28e62"
   },
   "props/milk-crate": {
    "atlas": "props.webp",
@@ -582,7 +582,7 @@
    "y": 606,
    "w": 297,
    "h": 300,
-   "color": "#b4a997"
+   "color": "#b4aa99"
   },
   "props/wheelbarrow": {
    "atlas": "props.webp",
@@ -590,7 +590,7 @@
    "y": 1198,
    "w": 300,
    "h": 226,
-   "color": "#9c6f47"
+   "color": "#9c6b41"
   },
   "props/hamper": {
    "atlas": "props.webp",
@@ -598,7 +598,7 @@
    "y": 909,
    "w": 300,
    "h": 271,
-   "color": "#aa7b45"
+   "color": "#aa783f"
   },
   "tools/broom": {
    "atlas": "tools.webp",
@@ -606,7 +606,7 @@
    "y": 0,
    "w": 73,
    "h": 96,
-   "color": "#ca9c61"
+   "color": "#cb995c"
   },
   "tools/weed": {
    "atlas": "tools.webp",
@@ -614,7 +614,7 @@
    "y": 0,
    "w": 63,
    "h": 96,
-   "color": "#848059"
+   "color": "#7f8054"
   },
   "tools/brush": {
    "atlas": "tools.webp",
@@ -622,7 +622,7 @@
    "y": 0,
    "w": 53,
    "h": 96,
-   "color": "#526c63"
+   "color": "#4c6662"
   },
   "tools/clean": {
    "atlas": "tools.webp",
@@ -630,7 +630,7 @@
    "y": 0,
    "w": 89,
    "h": 96,
-   "color": "#e1bd8b"
+   "color": "#e3bc88"
   },
   "tools/light": {
    "atlas": "tools.webp",
@@ -638,7 +638,7 @@
    "y": 0,
    "w": 39,
    "h": 96,
-   "color": "#d5804a"
+   "color": "#d67b42"
   },
   "tools/dust": {
    "atlas": "tools.webp",
@@ -646,7 +646,7 @@
    "y": 0,
    "w": 78,
    "h": 96,
-   "color": "#a28a6c"
+   "color": "#a2896a"
   },
   "tools/shoo": {
    "atlas": "tools.webp",
@@ -654,7 +654,7 @@
    "y": 0,
    "w": 96,
    "h": 96,
-   "color": "#938377"
+   "color": "#928377"
   },
   "tools/standUp": {
    "atlas": "tools.webp",
@@ -662,7 +662,7 @@
    "y": 0,
    "w": 88,
    "h": 96,
-   "color": "#e2ab45"
+   "color": "#e5a53f"
   },
   "tools/straighten": {
    "atlas": "tools.webp",
@@ -670,7 +670,7 @@
    "y": 0,
    "w": 96,
    "h": 27,
-   "color": "#9e7b4c"
+   "color": "#9c7846"
   },
   "tools/wateringCan": {
    "atlas": "tools.webp",
@@ -678,7 +678,7 @@
    "y": 0,
    "w": 91,
    "h": 96,
-   "color": "#82854c"
+   "color": "#778843"
   }
  },
  "images": {

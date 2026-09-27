@@ -1,7 +1,14 @@
 // Colour grading with canvas blend modes (works on iOS Safari, which lacks
 // ctx.filter). Used to bake each scene's plate for its weather condition and
-// restoration "bloom": a tired, unloved scene is cooler and greyer; restoring
-// it warms it up.
+// restoration "bloom".
+//
+// Neglect is shown locally (faded paint, grime, litter, weeds, empty
+// planters), never by greying the whole scene: an unrestored place must look
+// fresh and inviting from the first frame (visual playtest, 27 September
+// 2026). Restoration adds only a faint warm glow on top of its local changes.
+
+/** How much warmth full restoration adds (soft-light alpha). */
+const WARMTH = 0.07;
 
 export function bakePlate(img, cond, bloom, W = 1000, H = 1500, maxW = 2600) {
   const scale = Math.min(1, maxW / img.width);
@@ -31,9 +38,8 @@ export function gradeSprite(spr, cond, bloom) {
 export function gradeColor(hex, cond, bloom = 1) {
   let [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
   const gr = cond?.grade || {};
-  const tired = Math.max(0, 1 - bloom);
   const grey = (r + g + b) / 3;
-  const desat = 0.3 * tired + ((gr.sat ?? 1) < 1 ? 1 - gr.sat : 0);
+  const desat = (gr.sat ?? 1) < 1 ? 1 - gr.sat : 0;
   [r, g, b] = [r, g, b].map((v) => v + (grey - v) * desat);
   const br = gr.bright ?? 1;
   [r, g, b] = [r, g, b].map((v) => v * Math.min(1.1, br));
@@ -48,15 +54,9 @@ export function gradeColor(hex, cond, bloom = 1) {
 
 export function applyGrade(g, w, h, cond, bloom = 1, opts = {}) {
   const gr = cond?.grade || {};
-  const tired = Math.max(0, 1 - bloom);
   g.save();
-  // tired scenes: grey and cool
-  if (tired > 0) {
-    fill(g, 'saturation', '#808080', 0.42 * tired, w, h);
-    fill(g, 'multiply', '#c3cbd2', 0.3 * tired, w, h);
-  } else {
-    fill(g, 'soft-light', '#ffd8a0', 0.12, w, h);
-  }
+  // a restored place glows a little warmer; nothing greys an unrestored one
+  fill(g, 'soft-light', '#ffe2b8', WARMTH * Math.max(0, Math.min(1, bloom)), w, h);
   const sat = gr.sat ?? 1;
   if (sat < 1) fill(g, 'saturation', '#808080', 1 - sat, w, h);
   else if (sat > 1) fill(g, 'saturation', '#ff3030', Math.min(0.25, (sat - 1) * 0.9), w, h);

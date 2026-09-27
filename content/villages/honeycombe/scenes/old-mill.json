@@ -2,6 +2,7 @@
  "id": "old-mill",
  "name": "The Old Mill",
  "blurb": "The wheel has turned here since the Domesday Book. The ford is for splashing through.",
+ "judgeRemark": "One could eat one’s dinner off that path.",
  "villager": "beekeeper",
  "plate": "plate/old-mill",
  "size": [

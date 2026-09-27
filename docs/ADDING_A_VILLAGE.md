@@ -51,7 +51,8 @@ Copy `content/villages/honeycombe/` as a template:
 - `village.json`:
   - **`opening`**: one readable sentence that starts the game ("Help
     Honeycombe look its best before the village judges arrive.").
-  - **`scenes`** and **`start`** (the first visit's place).
+  - **`scenes`** and **`start`** (the first visit's place), and
+    **`titleScene`**, the place shown fully restored behind the title.
   - **`map.pins`**: coordinates on the 1500×1000 map, and `map.judging`.
   - **`finale`**.
   - **`letters`**: intro, welcome, teaser and finale (read in the journal).
@@ -79,16 +80,24 @@ These are shared by every village and need nothing from a new pack:
 - `content/common/hud.json`: the play screen's overlay areas, which the mess
   generator keeps clear;
 - `content/common/faults.json`: each job's action name, tool icon and the
-  one-line explanation on its "new job" card.
+  one-line explanation of a new job, with `introFor` lines for particular
+  kinds of target (Clean on glass or on stone). A region or prop can carry its
+  own `intro` when it needs one ("The Market Cross has gone grubby…"): a new
+  job is always explained in terms of the thing in front of the player.
 
 ## 2. Generate the art
 
-1. Write the prompts:
-   - `art_src/<id>/plates.json`: one prompt per scene. Plates are 2:1 (the
-     shape of a phone held sideways). Reuse the `common` text from Honeycombe;
-     it asks for the cut-paper style, calm ground across the full width where
-     litter will lie, no people and no text. Every plate is matched to
-     `art_src/style_ref_cutpaper.jpg`.
+1. Read `art_src/ART_DIRECTION.md`: one look for every village (fresh spring
+   colour, neglect shown locally, close work areas, believable scale).
+   Write the prompts:
+   - `art_src/<id>/plates.json`: one entry per scene. Plates are 2:1 (the
+     shape of a phone held sideways). Use the object form
+     `{prompt, refs, freshen}` with Honeycombe's `commonFresh` text: it asks
+     for the cut-paper style and colour, a close view, calm ground across the
+     full width where litter will lie, no people and no text. `refs` are
+     freshened references (an existing plate run through
+     `tools/art/freshen.py`) so the new village lands on the same palette.
+     A `restyle` entry redraws its first reference, keeping the composition.
    - `art_src/sheets.json`: add sheets for the new props, the collectibles and
      a `villagers` portrait sheet. Sprite sheets are matched to
      `art_src/style_ref_objects.jpg`, a close-up of cut-paper objects.
@@ -137,7 +146,7 @@ These **slots** are the only hand-authored part of a scene:
 | Field | What it is |
 |---|---|
 | `depth` | `farY`/`nearY` and their scales, for perspective sizing of litter |
-| `zones` | ground polygons where litter can land (`water: true` makes it bob) |
+| `zones` | ground polygons where litter can land; `scale` corrects litter size in one zone when the depth line alone gets it wrong (check it beside benches and tables) |
 | `edges` | polylines at wall bases and path edges, for weeds |
 | `regions` | polygons of doors, benches and windows. Tags: `paintable` (faded paint), `window` or `grime` (grime) |
 | `props` | sprites added over the plate, placed by base point `x,y` (or `pivot: "top"` for hanging things) and height `h`. Tags: `tiltable`, `standing`, `flowers`. Optional painted `label` |
@@ -150,6 +159,8 @@ These **slots** are the only hand-authored part of a scene:
 | `neglect` | things that look tired until a visit restores them: `{target, type: faded/grimy/wilted, amount, effect, later?}`. `later` is the resident's line if it's tapped before its visit |
 | `restoration` | permanent layers, each `{effect, props?, removes?, decor?, labels?, tints?}`: props that appear (planters to plant), bunting and lights, new lettering on a sign, flower colours |
 | `mess.themes` | litter theme weights for this scene |
+| `interior` | `true` for an indoor scene: no weather life (birds, butterflies, fog), only dust motes |
+| `judgeRemark` | what the judges say about this place on Judging Day |
 
 Two tools make this quick:
 
@@ -157,6 +168,8 @@ Two tools make this quick:
 python3 tools/art/grid.py art_src/<id>/plates/<scene>.webp out.jpg                    # coordinate grid
 python3 tools/art/grid.py art_src/<id>/plates/<scene>.webp out.jpg 100 400 600 900 --step 20   # zoomed crop
 python3 tools/art/overlay.py <id> <scene> out.jpg --restored                          # draw all slots and props
+node tools/qa/shots.mjs compare                                                       # every scene before/after, and contact sheets
+VW=667 VH=375 VISITS=<visit> node tools/qa/shots.mjs visits                           # a visit as the player meets it, small phone
 ```
 
 Scene coordinates are 2000 wide and 1000 tall, whatever the image size. Keep

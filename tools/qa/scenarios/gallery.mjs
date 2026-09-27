@@ -7,9 +7,9 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await wait(2500);
-  await seedStory(page, 14, { plays: 20 });
-  const scenes = ['railway-halt', 'high-street', 'village-green', 'weavers-row', 'old-mill', 'bee-and-bramble', 'st-aldhelms', 'rose-cottage'];
-  const conds = ['storm', 'dusk', 'mist', 'golden', 'dusk', 'storm', 'mist', 'golden'];
+  await seedStory(page, 15, { plays: 20 });
+  const scenes = ['railway-halt', 'high-street', 'village-shop', 'village-green', 'weavers-row', 'old-mill', 'bee-and-bramble', 'st-aldhelms', 'rose-cottage'];
+  const conds = ['storm', 'dusk', 'golden', 'mist', 'golden', 'dusk', 'storm', 'mist', 'golden'];
   const tier = +(process.env.TIER || 5);
   for (let i = 0; i < scenes.length; i++) {
     await page.evaluate(async ([sid, cond, tier]) => {

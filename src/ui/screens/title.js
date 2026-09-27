@@ -2,7 +2,7 @@ import { h } from '../dom.js';
 import { logo } from '../components/logo.js';
 import { startGame } from '../flows.js';
 
-/** Title: the fully restored High Street at golden hour, drifting gently. */
+/** Title: the village's title scene (village.json "titleScene") fully restored at golden hour, drifting gently. */
 export class TitleScreen {
   constructor(app) {
     this.app = app;
@@ -27,9 +27,10 @@ export class TitleScreen {
   async enter() {
     const app = this.app;
     // the High Street in its Sunday best: every restoration layer, golden light
-    const scene = app.content.scene(app.village, 'high-street');
+    const sid = app.v.titleScene || app.v.start;
+    const scene = app.content.scene(app.village, sid);
     const all = (scene.restoration || []).map((r) => r.effect);
-    await app.view.load({ village: app.village, scene: 'high-street', mess: null, effects: all, bloom: 1, condition: 'golden' });
+    await app.view.load({ village: app.village, scene: sid, mess: null, effects: all, bloom: 1, condition: 'golden' });
     app.view.reduced = app.reducedMotion;
     this.resize();
   }

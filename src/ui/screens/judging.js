@@ -12,10 +12,8 @@ import { showLetter } from '../components/letter.js';
 import { showRewardsQueue } from '../components/rewards.js';
 import { goMap, placeState } from '../flows.js';
 
-const REMARKS = [
-  'Not a crisp packet in sight.', 'Immaculate paintwork.', 'The Market Cross gleams!', 'Window boxes all along. Charming.',
-  'One could eat one’s dinner off that path.', 'The festoon lights! Delightful.', 'Best-kept in the county, surely?', 'The roses, the hives, the tea!',
-];
+// each place's own remark is its scene's "judgeRemark"; these cover a place without one
+const REMARKS = ['Splendid!', 'Quite charming.', 'Not a thing out of place.', 'Best-kept in the county, surely?'];
 
 export class JudgingScreen {
   constructor(app, out, { replay = false } = {}) {
@@ -52,7 +50,7 @@ export class JudgingScreen {
       const card = h('div.judge-card', { style: { '--rot': `${[-5, 4, -3, 5, -4, 3, -4, 5][i % 8]}deg` } },
         h('div.jc-photo', after, before, h('div.jc-tag.label', { text: 'When you arrived' })),
         h('div.jc-name.script', { text: v.scenes[sid].name }),
-        h('div.jc-remark.hand', { text: `“${REMARKS[i % REMARKS.length]}”` }),
+        h('div.jc-remark.hand', { text: `“${v.scenes[sid].judgeRemark || REMARKS[i % REMARKS.length]}”` }),
         who ? h('div.jc-who.row', h('img', { src: app.assets.spriteUrl(who.portrait, app.village, 0.3), alt: '' }), h('span.label', { text: `with thanks to ${who.name}` })) : null,
       );
       this.stage.append(card);

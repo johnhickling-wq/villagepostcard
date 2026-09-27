@@ -2,6 +2,7 @@
  "id": "bee-and-bramble",
  "name": "The Bee & Bramble",
  "blurb": "Thatch, roses and the best ploughman's in the Wolds. Mabel pulls a fine pint.",
+ "judgeRemark": "The festoon lights! Delightful.",
  "villager": "landlady",
  "plate": "plate/bee-and-bramble",
  "size": [
@@ -116,7 +117,7 @@
      800
     ]
    ],
-   "scale": 0.75
+   "scale": 0.85
   },
   {
    "id": "lawn",
@@ -159,7 +160,7 @@
      940
     ]
    ],
-   "scale": 0.75
+   "scale": 0.85
   }
  ],
  "edges": [

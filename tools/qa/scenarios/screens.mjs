@@ -8,10 +8,14 @@ export default async function ({ page, shot, wait, url }) {
   await page.reload();
   await wait(2500);
   await seedStory(page, 7, { plays: 12 });
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const app = window.__app, P = window.__progression, s = app.save;
+    const { generateMess } = await import('/src/core/mess.js');
+    const { makeSnapshot } = await import('/src/render/stills.js');
+    const state = { effects: P.effectsDone(s, 'honeycombe'), fixed: P.fixedIn(s, 'honeycombe', 'railway-halt'), bloom: 1 };
+    const walk = generateMess(app.content, { village: 'honeycombe', scene: 'railway-halt', tier: 2, condition: 'golden', seed: 12, projectsDone: state.effects, fixed: state.fixed, policy: true });
     s.collect.owned = { cowslip: 1, 'dog-rose': 2, 'platform-ticket': 1, 'luggage-label': 1, 'porter-badge': 1, 'guard-whistle': 1, 'railway-lamp': 1, 'honey-jar': 1 };
-    s.villages.honeycombe.scenes['railway-halt'].album = { golden: { seed: 12, tier: 2, condition: 'golden', stamps: 2, score: 1700, time: 60, date: '2026-09-02', projects: [], cat: true } };
+    s.villages.honeycombe.scenes['railway-halt'].album = { golden: { ...makeSnapshot(walk, state, state), seed: 12, tier: 2, condition: 'golden', stamps: 2, score: 1700, time: 60, date: '2026-09-02' } };
     P.refillRequests(s, app.content, 'honeycombe');
     s.requests.active[0].progress = s.requests.active[0].count;
     s.requests.friendship = { colonel: 3, postmistress: 2 }; s.requests.letters = { 'colonel:1': true, 'postmistress:1': true };

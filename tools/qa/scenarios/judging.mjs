@@ -7,7 +7,9 @@ export default async function ({ page, shot, wait, url }) {
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await wait(2500);
-  await seedStory(page, 13, { plays: 20 });
+  // every visit before the finale
+  const n = await page.evaluate(() => window.__app.content.village('honeycombe').visits.length - 1);
+  await seedStory(page, n, { plays: 20 });
   await page.evaluate(() => window.__flows.playVisit(window.__app, 'green-judging'));
   await wait(2600);
   await page.locator('.brief .btn').click({ force: true });

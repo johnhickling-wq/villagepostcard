@@ -2,6 +2,7 @@
  "id": "rose-cottage",
  "name": "Rose Cottage",
  "blurb": "Nan Honeysett's garden: roses, runner beans and three hives of very contented bees.",
+ "judgeRemark": "The roses, the hives, the tea!",
  "villager": "beekeeper",
  "plate": "plate/rose-cottage",
  "size": [

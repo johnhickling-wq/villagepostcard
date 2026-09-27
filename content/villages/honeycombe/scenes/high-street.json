@@ -2,6 +2,7 @@
  "id": "high-street",
  "name": "The High Street",
  "blurb": "Post office, tea room and a kiosk that has seen better days. The heart of the village.",
+ "judgeRemark": "Immaculate paintwork.",
  "villager": "postmistress",
  "plate": "plate/high-street",
  "size": [

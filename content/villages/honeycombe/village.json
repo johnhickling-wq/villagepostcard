@@ -9,6 +9,7 @@
  "opening": "Help Honeycombe look its best before the village judges arrive.",
  "difficultyBase": 0,
  "start": "railway-halt",
+ "titleScene": "high-street",
  "scenes": [
   "railway-halt",
   "high-street",

@@ -3,6 +3,7 @@
  "name": "Honeycombe Halt",
  "short": "the Halt",
  "blurb": "Where the branch line stops, eventually. Mr Figg keeps the platform like a parlour.",
+ "judgeRemark": "Not a crisp packet in sight.",
  "villager": "stationmaster",
  "plate": "plate/railway-halt",
  "size": [

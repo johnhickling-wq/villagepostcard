@@ -54,7 +54,7 @@ test('the whole route can be played in story order, then judged once', () => {
   }
   assert.deepEqual(order, c.village(V).visits.map((v) => v.id), 'the next step always follows the route');
   assert.ok(P.judgingReady(save, c, V));
-  assert.equal(P.placesRestored(save, c, V).done, 8);
+  assert.equal(P.placesRestored(save, c, V).done, c.village(V).sceneOrder.length);
   assert.ok(P.completeJudging(save, c, V));
   assert.equal(P.completeJudging(save, c, V), null, 'judging rewards are granted once');
   assert.equal(P.nextStep(save, c, V).kind, 'free');

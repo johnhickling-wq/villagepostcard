@@ -93,7 +93,17 @@ def plates(village):
     cfg = json.loads((SRC / village / "plates.json").read_text())
     model = cfg.get("model", "openai/gpt-5.4-image-2")
     jobs = []
-    for sid, prompt in cfg["plates"].items():
+    for sid, spec in cfg["plates"].items():
+        if isinstance(spec, dict):
+            # a plate made to the current art direction (art_src/ART_DIRECTION.md): its own
+            # references (freshened plates, see scratch_art/refs) and the fresh common prompt
+            refs = [str(ROOT / r) for r in spec.get("refs", [])] or [ref_png(STYLE_REF, 512)]
+            # "restyle": redraw the first reference (an earlier take) keeping its composition
+            prompt = spec["restyle"] if spec.get("restyle") else cfg.get("commonFresh", cfg["common"]) + " " + spec["prompt"]
+            jobs.append((sid, SRC / village / "plates" / f"{sid}.webp", model, prompt, refs,
+                         cfg.get("aspect", "2:1"), cfg.get("size", "2K")))
+            continue
+        prompt = spec
         refs = [ref_png(STYLE_REF, 512)]
         # optional per-scene reference (e.g. an earlier crop of the same place)
         if cfg.get("refDir"):
@@ -151,5 +161,6 @@ if __name__ == "__main__":
         extra(args[1])
     elif cmd == "spend":
         print(f"${spent():.2f} spent on image generation so far")
+        print(f"${spent() - 24.56:.2f} of it in the September 2026 visual polish pass (budget $50)")
     else:
         print(__doc__)

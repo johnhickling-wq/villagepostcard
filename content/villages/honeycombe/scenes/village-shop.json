@@ -1,0 +1,341 @@
+{
+ "id": "village-shop",
+ "name": "The Post Office & Stores",
+ "short": "the Post Office",
+ "blurb": "Mrs Pemberton's shop: stamps, sweets, string and all the village news.",
+ "villager": "postmistress",
+ "plate": "plate/village-shop",
+ "size": [
+  2000,
+  1000
+ ],
+ "depth": {
+  "farY": 700,
+  "farScale": 0.72,
+  "nearY": 1000,
+  "nearScale": 1.1
+ },
+ "difficultyOffset": 0.45,
+ "ambience": [
+  "birds",
+  "village"
+ ],
+ "sets": [
+  "fete",
+  "curios"
+ ],
+ "mess": {
+  "themes": {
+   "general": 1,
+   "market": 1.4,
+   "fete": 0.8,
+   "doorstep": 0.6
+  }
+ },
+ "interior": true,
+ "zones": [
+  {
+   "id": "floor",
+   "poly": [
+    [
+     140,
+     864
+    ],
+    [
+     520,
+     760
+    ],
+    [
+     722,
+     802
+    ],
+    [
+     1000,
+     844
+    ],
+    [
+     1300,
+     890
+    ],
+    [
+     1500,
+     920
+    ],
+    [
+     1500,
+     945
+    ],
+    [
+     140,
+     945
+    ]
+   ]
+  }
+ ],
+ "occluders": [],
+ "edges": [],
+ "regions": [
+  {
+   "id": "shop-window",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     125,
+     150
+    ],
+    [
+     470,
+     150
+    ],
+    [
+     470,
+     650
+    ],
+    [
+     125,
+     650
+    ]
+   ]
+  },
+  {
+   "id": "door-glass",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     644,
+     208
+    ],
+    [
+     694,
+     208
+    ],
+    [
+     694,
+     666
+    ],
+    [
+     644,
+     666
+    ]
+   ]
+  },
+  {
+   "id": "sweet-case",
+   "tags": [
+    "window"
+   ],
+   "poly": [
+    [
+     1036,
+     630
+    ],
+    [
+     1098,
+     470
+    ],
+    [
+     1536,
+     470
+    ],
+    [
+     1522,
+     630
+    ]
+   ]
+  },
+  {
+   "id": "counter",
+   "tags": [
+    "paintable"
+   ],
+   "poly": [
+    [
+     728,
+     642
+    ],
+    [
+     1690,
+     708
+    ],
+    [
+     1690,
+     905
+    ],
+    [
+     728,
+     772
+    ]
+   ]
+  }
+ ],
+ "lamps": [
+  {
+   "id": "pendant",
+   "x": 947,
+   "y": 142,
+   "r": 40
+  }
+ ],
+ "props": [
+  {
+   "id": "enamel-sign",
+   "sprite": "props/enamel-sign",
+   "x": 880,
+   "y": 212,
+   "h": 175,
+   "pivot": "top",
+   "tags": [
+    "tiltable"
+   ],
+   "label": "POST\nOFFICE",
+   "labelBox": [
+    0.16,
+    0.22,
+    0.84,
+    0.78
+   ],
+   "labelColor": "#f4f0e6"
+  },
+  {
+   "id": "sack",
+   "sprite": "props/flour-sack",
+   "x": 790,
+   "y": 872,
+   "h": 145,
+   "tags": [
+    "standing"
+   ]
+  },
+  {
+   "id": "a-board",
+   "sprite": "props/a-board",
+   "x": 540,
+   "y": 898,
+   "h": 210,
+   "tags": [
+    "standing",
+    "tiltable"
+   ],
+   "label": "FRESH\nEGGS",
+   "labelBox": [
+    0.2,
+    0.1,
+    0.8,
+    0.62
+   ],
+   "labelColor": "#f4f0e6",
+   "labelFont": "hand"
+  }
+ ],
+ "perches": [],
+ "cats": [
+  {
+   "x": 420,
+   "y": 672,
+   "pose": "cat-loaf"
+  },
+  {
+   "x": 880,
+   "y": 632,
+   "pose": "cat-sit"
+  },
+  {
+   "x": 1180,
+   "y": 930,
+   "pose": "cat-walk"
+  }
+ ],
+ "chimneys": [],
+ "water": [],
+ "neglect": [
+  {
+   "target": "shop-window",
+   "type": "grimy",
+   "amount": 0.7,
+   "effect": "shop-clean"
+  },
+  {
+   "target": "counter",
+   "type": "faded",
+   "amount": 0.6,
+   "effect": "shop-clean"
+  },
+  {
+   "target": "sweet-case",
+   "type": "grimy",
+   "amount": 0.5,
+   "effect": "shop-fete",
+   "later": "The sweet jars? I'll have those sparkling for the fête, dear."
+  }
+ ],
+ "restoration": [
+  {
+   "effect": "shop-clean",
+   "props": []
+  },
+  {
+   "effect": "shop-fete",
+   "labels": {
+    "a-board": "FÊTE\nSATURDAY"
+   },
+   "props": [
+    {
+     "id": "sill-box",
+     "sprite": "props/window-box",
+     "x": 300,
+     "y": 684,
+     "h": 118,
+     "tags": [
+      "flowers"
+     ]
+    },
+    {
+     "id": "counter-pot",
+     "sprite": "props/geranium-pot",
+     "x": 800,
+     "y": 630,
+     "h": 108,
+     "tags": [
+      "flowers"
+     ]
+    },
+    {
+     "id": "hamper",
+     "sprite": "props/hamper",
+     "x": 290,
+     "y": 930,
+     "h": 118,
+     "tags": []
+    }
+   ],
+   "decor": [
+    {
+     "kind": "bunting",
+     "points": [
+      [
+       60,
+       118
+      ],
+      [
+       480,
+       128
+      ],
+      [
+       1000,
+       96
+      ],
+      [
+       1560,
+       120
+      ]
+     ],
+     "sag": 45
+    }
+   ]
+  }
+ ]
+}

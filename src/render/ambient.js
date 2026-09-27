@@ -1,6 +1,7 @@
 // Ambient life drawn over the plate: chimney smoke, swallows, butterflies,
 // shimmering water, fog banks, fireflies, drips... chosen by the condition's
 // `ambient` list and the scene's slots (chimneys, water). All in scene units.
+// An interior scene (`interior: true`) has only dust motes.
 
 import { Rng } from '../core/rng.js';
 import { randomPointInPoly, bbox } from '../core/geometry.js';
@@ -13,7 +14,9 @@ export class Ambient {
     this.cond = cond;
     this.r = new Rng(seed);
     this.t = 0;
-    this.kinds = new Set(cond.ambient || []);
+    // indoors (scene.interior) the weather's outdoor life stays outside: only
+    // dust motes drift in the light from the window
+    this.kinds = scene.interior ? new Set(['motes']) : new Set(cond.ambient || []);
     this.smoke = [];
     this.birds = [];
     this.nextFlock = 2 + this.r.float(0, 4);

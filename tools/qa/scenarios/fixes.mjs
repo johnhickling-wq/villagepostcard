@@ -41,7 +41,7 @@ export default async function ({ page, shot, wait, url }) {
   await wait(4000);
   await page.evaluate(async () => {
     const s = window.__app.save;
-    for (const id of ['row-restore', 'mill-race', 'hs-fete', 'pub-garden', 'green-flourish', 'church-restore', 'mill-storm', 'cottage-garden']) {
+    for (const id of ['row-restore', 'mill-race', 'shop-restore', 'shop-fete', 'pub-garden', 'green-flourish', 'church-restore', 'mill-storm', 'cottage-garden']) {
       const v = window.__app.content.visit('honeycombe', id);
       s.villages.honeycombe.visits[id] = { done: 1 };
       for (const e of v.effects) s.villages.honeycombe.effects[e] = 1;

@@ -12,6 +12,7 @@
  "scenes": [
   "railway-halt",
   "high-street",
+  "village-shop",
   "village-green",
   "weavers-row",
   "old-mill",
@@ -33,6 +34,10 @@
    "high-street": [
     960,
     700
+   ],
+   "village-shop": [
+    1085,
+    790
    ],
    "village-green": [
     760,

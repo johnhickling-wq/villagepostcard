@@ -7,7 +7,7 @@ export default async function ({ page, shot, wait, url }) {
   await page.reload();
   await wait(2500);
   await seedStory(page, 6, { plays: 10 });
-  await page.evaluate(() => { const s = window.__app.save; s.villages.honeycombe.progress['hs-fete'] = { play: window.__progression.planVisit(s, window.__app.content, 'honeycombe', 'hs-fete'), done: ['litter.1'], cat: false, collectible: false, hints: 0, t: 12 }; });
+  await page.evaluate(() => { const s = window.__app.save; s.villages.honeycombe.progress['shop-fete'] = { play: window.__progression.planVisit(s, window.__app.content, 'honeycombe', 'shop-fete'), done: ['litter.1'], cat: false, collectible: false, hints: 0, t: 12 }; });
   await page.evaluate(() => window.__flows.goMap(window.__app, { transition: 'none' }));
   await wait(1800);
   await shot('10-map');

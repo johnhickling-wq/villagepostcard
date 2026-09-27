@@ -888,25 +888,6 @@
      "sag": 55
     }
    ]
-  },
-  {
-   "effect": "hs-fete",
-   "added": 3,
-   "labels": {
-    "a-board": "FÊTE\nTODAY"
-   },
-   "props": [
-    {
-     "id": "fete-trough",
-     "sprite": "props/stone-trough",
-     "x": 1330,
-     "y": 772,
-     "h": 64,
-     "tags": [
-      "flowers"
-     ]
-    }
-   ]
   }
  ],
  "water": []

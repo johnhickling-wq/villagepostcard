@@ -3,7 +3,7 @@
 // fix animation. It also renders still "before"/"after" images for postcards.
 
 import { bakePlate, gradeSprite, gradeColor } from './grade.js';
-import { drawCobweb, flakes, peeling, sootScrap } from './textures.js';
+import { drawCobweb, flakes, peeling, sootScrap, stoneGrime } from './textures.js';
 import { Particles } from './particles.js';
 import { Ambient } from './ambient.js';
 import { Ease, springDecay, clamp01, lerp } from '../engine/tween.js';
@@ -533,9 +533,14 @@ export class SceneView {
       g.globalAlpha = 1;
       flakes(g, c.width, c.height, f.pattern, f.amount * 0.6);
       peeling(g, c.width, c.height, f.pattern, f.amount, this.tone);
+    } else if (!region.tags.includes('window')) {
+      // stone, not glass: stains, streaks and moss on the stone itself
+      g.drawImage(this.base, b.x * u, b.y * u, b.w * u, b.h * u, 0, 0, c.width, c.height);
+      stoneGrime(g, c.width, c.height, f.pattern, Math.min(1, 0.45 + 0.55 * f.amount), this.tone);
     } else {
-      // a stained scrap of paper stuck over the glass
-      sootScrap(g, c.width, c.height, f.pattern, Math.min(1, 0.35 + 0.65 * f.amount), this.tone);
+      // a stained scrap of paper stuck over the glass; big panes stay see-through
+      const big = Math.min(b.w, b.h) > 160 ? 0.72 : 1;
+      sootScrap(g, c.width, c.height, f.pattern, Math.min(1, 0.35 + 0.65 * f.amount) * big, this.tone);
     }
     // cut to the region's shape
     g.globalCompositeOperation = 'destination-in';

@@ -68,8 +68,9 @@ const plain = (hex, a = 1) => {
 };
 
 /**
- * Faded paint, cut-paper style: the coloured paper has peeled away in torn
- * patches to bare cream paper beneath, and a corner has lifted and curled.
+ * Faded paint, cut-paper style: the coloured paper has worn through in torn
+ * patches to weathered grey-brown wood beneath (never bright white, which
+ * reads as litter stuck on), and a corner has lifted and curled.
  * Drawn over the bleached region; bold shapes that read at phone size.
  * `tone(hex, alpha)` grades a colour for the scene's light (dusk, mist...).
  */
@@ -78,21 +79,25 @@ export function peeling(g, w, h, seed, amount, tone = plain) {
   const m = Math.min(w, h);
   const patches = 1 + Math.round(2 * amount);
   for (let i = 0; i < patches; i++) {
-    const s = m * r.float(0.16, 0.28) * (0.6 + 0.6 * amount);
+    const s = m * r.float(0.14, 0.24) * (0.6 + 0.6 * amount);
     const cx = r.float(0.2, 0.8) * w, cy = r.float(0.15, 0.85) * h;
     const pts = tornBlob(r, cx, cy, s * r.float(0.8, 1.3), s * r.float(0.7, 1.1));
-    // a shadow on one side sells the paper's thickness
+    // bare, weathered wood where the paint has gone
+    g.fillStyle = tone('#a89a82', 0.92);
+    tracePath(g, pts);
+    g.fill();
+    // grain lines in the bare wood
     g.save();
-    g.translate(m * 0.02, m * 0.025);
-    g.fillStyle = tone('#46372a', 0.45);
     tracePath(g, pts);
-    g.fill();
+    g.clip();
+    g.strokeStyle = tone('#7d6f58', 0.5);
+    g.lineWidth = Math.max(1, m * 0.01);
+    for (let k = -3; k <= 3; k++) {
+      g.beginPath(); g.moveTo(cx - s * 1.4, cy + k * s * 0.28); g.lineTo(cx + s * 1.4, cy + k * s * 0.28 + r.float(-2, 2)); g.stroke();
+    }
     g.restore();
-    g.fillStyle = tone('#f2ead7');
-    tracePath(g, pts);
-    g.fill();
-    // fibres at the torn edge
-    g.strokeStyle = tone('#ffffff', 0.7);
+    // the thin raised edge of the old paint
+    g.strokeStyle = tone('#efe6d2', 0.55);
     g.lineWidth = Math.max(1, m * 0.012);
     tracePath(g, pts);
     g.stroke();
@@ -103,11 +108,52 @@ export function peeling(g, w, h, seed, amount, tone = plain) {
   const x0 = left ? 0 : w, sx = left ? 1 : -1;
   g.fillStyle = tone('#3c2d1e', 0.4);
   g.beginPath(); g.moveTo(x0, 0); g.lineTo(x0 + sx * f * 1.15, 0); g.lineTo(x0, f * 1.15); g.closePath(); g.fill();
-  g.fillStyle = tone('#e4d8bd');
+  g.fillStyle = tone('#b9ab90');
   g.beginPath(); g.moveTo(x0 + sx * f, 0); g.quadraticCurveTo(x0 + sx * f * 0.35, f * 0.35, x0, f); g.lineTo(x0 + sx * f * 0.62, f * 0.62); g.closePath(); g.fill();
   g.strokeStyle = tone('#5a4832', 0.55);
   g.lineWidth = Math.max(1, m * 0.012);
   g.stroke();
+}
+
+/**
+ * Grime on stone (a cross, a clock face, a trough): dark weathering stains,
+ * streaks running down from the top and patches of green moss. Unlike a
+ * window there is no paper scrap: the stone itself looks dirty.
+ */
+export function stoneGrime(g, w, h, seed, alpha, tone = plain) {
+  const r = new Rng(seed);
+  const m = Math.min(w, h);
+  g.save();
+  g.globalAlpha = alpha;
+  // an overall dulling
+  g.fillStyle = tone('#5e5443', 0.38);
+  g.fillRect(0, 0, w, h);
+  // blotchy stains
+  for (let i = 0; i < 18; i++) {
+    const x = r.float(0, w), y = r.float(0, h), rad = m * r.float(0.25, 0.7);
+    const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+    gr.addColorStop(0, tone(r.chance(0.7) ? '#3b3226' : '#4f5a2e', r.float(0.35, 0.6)));
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr;
+    g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
+  // streaks running down the stone
+  g.strokeStyle = tone('#2e271d', 0.45);
+  g.lineCap = 'round';
+  const n = Math.max(3, Math.round(w / (m * 0.35)));
+  for (let i = 0; i < n; i++) {
+    const x = r.float(0.08, 0.92) * w;
+    g.lineWidth = m * r.float(0.06, 0.14);
+    g.beginPath(); g.moveTo(x, r.float(0, 0.3) * h); g.lineTo(x + r.float(-4, 4), r.float(0.45, 0.95) * h); g.stroke();
+  }
+  // moss, as small torn pieces of green paper
+  for (let i = 0; i < 5; i++) {
+    const cx = r.float(0.1, 0.9) * w, cy = r.float(0.4, 0.95) * h, s = m * r.float(0.15, 0.3);
+    g.fillStyle = tone(r.chance(0.5) ? '#5f7a34' : '#71873f', 0.85);
+    tracePath(g, tornBlob(r, cx, cy, s, s * 0.6));
+    g.fill();
+  }
+  g.restore();
 }
 
 /**

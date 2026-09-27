@@ -101,12 +101,13 @@
     }
    ],
    "effects": [
-    "hs-paint"
+    "hs-paint",
+    "hs-bunting"
    ],
    "restores": true,
    "todo": "A faded kiosk and pillar box",
    "stage": "Restored",
-   "improved": "Post Office red on the kiosk and pillar box",
+   "improved": "Post Office red on the kiosk and pillar box, and bunting up the street",
    "reaction": "Oh, that red! Now do go and see the Colonel on the Green. He's been pacing since breakfast."
   },
   {
@@ -229,7 +230,65 @@
    "todo": "A shelter to paint and tubs to plant",
    "stage": "Restored",
    "improved": "A painted shelter, a clean window and flower tubs",
-   "reaction": "Best-Kept Station, here we come! The porters have even brought out the old luggage trolley."
+   "reaction": "Best-Kept Station, here we come! The porters have even brought out the old luggage trolley. Mrs Pemberton wants you at the Post Office."
+  },
+  {
+   "id": "shop-restore",
+   "scene": "village-shop",
+   "kind": "restoration",
+   "after": [
+    "halt-refresh"
+   ],
+   "villager": "postmistress",
+   "title": "Open up the Post Office",
+   "goal": "spring-clean the shop",
+   "brief": "Come in, dear, and mind the sacks! The window's so grimy nobody can see in, the counter's gone shabby and my Post Office sign is all anyhow. Would you help me spring-clean?",
+   "condition": "clear",
+   "subtlety": 0.05,
+   "tasks": [
+    {
+     "id": "shop-window",
+     "op": "grimy",
+     "target": "shop-window"
+    },
+    {
+     "id": "counter",
+     "op": "faded",
+     "target": "counter"
+    },
+    {
+     "id": "enamel-sign",
+     "op": "crooked",
+     "target": "enamel-sign"
+    },
+    {
+     "id": "sack",
+     "op": "toppled",
+     "target": "sack"
+    },
+    {
+     "id": "litter",
+     "op": "litter",
+     "count": 2,
+     "zones": [
+      "floor"
+     ],
+     "items": [
+      "paper-bag",
+      "newspaper",
+      "cardboard-box",
+      "milk-bottle"
+     ]
+    }
+   ],
+   "effects": [
+    "shop-clean"
+   ],
+   "restores": true,
+   "todo": "A grimy window and a shabby counter",
+   "stage": "Spring-cleaned",
+   "improved": "A sparkling window and a fresh green counter",
+   "reaction": "Now they can see my window from the street! Percy's been asking after you on Weavers' Row."
   },
   {
    "id": "row-restore",
@@ -349,36 +408,37 @@
    "todo": "Rubbish in the ford and peeling doors",
    "stage": "Restored",
    "improved": "A clear ford, mill-green doors and a garden by the water",
-   "reaction": "Lovely! A bench by the ford and a hive on the bank. The Committee has a job for you on the High Street."
+   "reaction": "Lovely! A bench by the ford and a hive on the bank. The Committee has a job for you at the Post Office."
   },
   {
-   "id": "hs-fete",
-   "scene": "high-street",
+   "id": "shop-fete",
+   "scene": "village-shop",
    "kind": "committee",
    "after": [
-    "mill-race"
+    "mill-race",
+    "shop-restore"
    ],
    "villager": "postmistress",
-   "title": "Dress the street for the fête",
-   "goal": "dress the street for the fête",
-   "brief": "Committee business, dear! The village fête is on Saturday. Flowers, a clean shop window and the fête board, if you please. Percy's doing the bunting.",
-   "condition": "golden",
-   "subtlety": 0.15,
+   "title": "Dress the window for the fête",
+   "goal": "dress the window for the fête",
+   "brief": "Committee business, dear! The fête's on Saturday. Flowers in the window, my sweet jars sparkling and the fête board out, if you please. Percy's doing the bunting.",
+   "condition": "clear",
+   "subtlety": 0.1,
    "tasks": [
     {
-     "id": "basket-r",
-     "op": "plant",
-     "target": "basket-r"
-    },
-    {
-     "id": "fete-trough",
-     "op": "plant",
-     "target": "fete-trough"
-    },
-    {
-     "id": "bow-window",
+     "id": "sweet-case",
      "op": "grimy",
-     "target": "bow-window"
+     "target": "sweet-case"
+    },
+    {
+     "id": "sill-box",
+     "op": "plant",
+     "target": "sill-box"
+    },
+    {
+     "id": "counter-pot",
+     "op": "plant",
+     "target": "counter-pot"
     },
     {
      "id": "a-board",
@@ -388,27 +448,24 @@
     {
      "id": "litter",
      "op": "litter",
-     "count": 2,
+     "count": 1,
      "zones": [
-      "street"
+      "floor"
      ],
      "items": [
-      "paper-plate",
+      "paper-bag",
       "balloon",
-      "ice-cream",
-      "sweet-wrapper",
-      "crisp-packet"
+      "paper-plate"
      ]
     }
    ],
    "effects": [
-    "hs-bunting",
-    "hs-fete"
+    "shop-fete"
    ],
    "todo": "The Committee's fête request",
    "stage": "Ready for the fête",
-   "improved": "Bunting, flowers and the fête board",
-   "reaction": "It looks like Coronation Day! Mabel says the Bee & Bramble garden is next."
+   "improved": "Flowers, bunting and the fête board in the window",
+   "reaction": "It looks like Coronation Day in here! Mabel says the Bee & Bramble garden is next."
   },
   {
    "id": "pub-garden",
@@ -762,7 +819,7 @@
    "after": [
     "halt-colours",
     "mill-storm",
-    "hs-fete"
+    "shop-fete"
    ],
    "villager": "colonel",
    "title": "Final preparations",

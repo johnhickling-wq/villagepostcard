@@ -12,7 +12,7 @@
 import { h, icon, wait } from '../dom.js';
 import { postcardEl, beforeAfter, gradeStamp } from '../components/postcard.js';
 import { goMap, playVisit, playWalk, judging, goNext } from '../flows.js';
-import { nextStep, placeStatus, introCardsDue, levelInfo, introduced } from '../../core/progression.js';
+import { nextStep, placeStatus, levelInfo, introduced } from '../../core/progression.js';
 import { celebrateEvent } from '../components/rewards.js';
 
 const STAMP_WORDS = ['Snapped!', 'Lovely!', 'Picture Perfect!'];
@@ -270,9 +270,11 @@ export class RevealScreen {
     app.sfx('ui.tap');
     if (next.kind === 'judging') return judging(app);
     if (next.kind !== 'visit') return goMap(app, { transition: 'iris', from: 'reveal', receipt: r });
-    // a new place, or something new to show on the map, goes by way of the map
+    // a named Next carries the player into that visit. A place that has just
+    // opened is shown on the map for a moment on the way (it carries on by
+    // itself); new-feature cues wait for the player's own visits to the map.
     const opened = (r.events || []).some((e) => e.kind === 'placeOpened');
-    if (opened || introCardsDue(app.save, app.content).length) return goMap(app, { transition: 'iris', from: 'reveal', receipt: r, focus: next.scene, next: true });
+    if (opened) return goMap(app, { transition: 'iris', from: 'reveal', receipt: r, focus: next.scene, next: true, autoGo: next.visit.id });
     return goNext(app);
   }
 

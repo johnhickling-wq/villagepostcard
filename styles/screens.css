@@ -856,3 +856,18 @@ html.reduced-motion *, html.reduced-motion *::before, html.reduced-motion *::aft
   animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important;
   transition-property: opacity, background-color, color !important; scroll-behavior: auto !important;
 }
+
+/* On the way to the next visit: the ribbon fills, then the visit begins (a touch stops it). */
+.next-ribbon.auto-go { overflow: hidden; }
+.ribbon-timer { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: var(--teal, #2f7f78); transform-origin: left; transform: scaleX(0); animation: ribbonTimer linear forwards; border-radius: 0 2px 2px 0; }
+@keyframes ribbonTimer { to { transform: scaleX(1); } }
+.reduced-motion .ribbon-timer { animation-name: none; transform: scaleX(1); opacity: 0.6; }
+
+/* A new feature's cue on the map: small, beside the buttons, never blocking. */
+.feature-cue { position: absolute; z-index: 12; top: calc(var(--safe-t) + 64px); right: calc(var(--safe-r) + 92px); width: min(330px, 46%); display: flex; gap: 10px; align-items: flex-start; padding: 10px 8px 10px 12px; pointer-events: auto; transition: opacity 0.3s, transform 0.3s; }
+.feature-cue.left { right: auto; left: calc(var(--safe-l) + 12px); top: calc(var(--safe-t) + 70px); }
+.feature-cue.cue-out { opacity: 0; transform: translateY(-6px); }
+.feature-cue .cue-ico svg { width: 30px; height: 30px; }
+.feature-cue .cue-title { font-size: 18px; margin: 1px 0 3px; }
+.feature-cue p { margin: 0; font-size: 14px; line-height: 1.3; }
+.feature-cue .cue-close { flex: none; width: 44px; height: 44px; margin: -6px -2px 0 0; }

@@ -15,7 +15,7 @@
   "slot": "zones",
   "pool": "litter",
   "sizeMul": [
-   1.6,
+   1.2,
    0.85
   ],
   "camouflage": [
@@ -45,7 +45,7 @@
   "slot": "edges",
   "pool": "weeds",
   "sizeMul": [
-   1.35,
+   1.15,
    0.85
   ],
   "camouflage": [
@@ -137,7 +137,7 @@
   "verb": "Polish off the grime",
   "action": "Clean",
   "actionIcon": "clean",
-  "intro": "A dirty window has a murky smudge over the glass. Tap it to polish it clean.",
+  "intro": "Grime has built up on glass or stone. Tap it to clean it.",
   "icon": "ui/window",
   "points": 140,
   "weight": 1.4,
@@ -156,7 +156,11 @@
   "sfx": "fix.squeak",
   "haptic": "light",
   "particles": "glint",
-  "phrase": "grimy windows"
+  "phrase": "grimy windows and stonework",
+  "introFor": {
+   "window": "A dirty window has a murky film over the glass. Tap it to polish it clean.",
+   "grime": "Stonework gone grubby with grime and moss. Tap it to scrub it clean."
+  }
  },
  "wilted": {
   "name": "Wilted flowers",

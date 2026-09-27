@@ -1,5 +1,6 @@
 // A new player's opening: title -> one-sentence opening -> the Halt (brief,
-// coached tidy) -> the reveal -> the map -> the High Street -> the Green.
+// coached tidy) -> the reveal -> Next: the map shows the High Street opening
+// and carries on by itself -> the High Street -> Next: the Green.
 // Taps are made in screen space, like a finger.
 const tapAll = async (page, wait, gap = 380) => {
   for (let guard = 0; guard < 20; guard++) {
@@ -45,11 +46,11 @@ export default async function ({ page, shot, wait, url }) {
   const st = await page.evaluate(() => ({ visits: Object.keys(window.__app.save.villages.honeycombe.visits), journal: Object.keys(window.__app.save.villages.honeycombe.journal), active: window.__app.save.active }));
   console.log(JSON.stringify(st));
   await page.locator('.rv-next').click({ force: true });
-  await wait(2600);
-  await shot('s08-map');
-  const c = page.locator('.intro-card .btn'); if (await c.count()) { await shot('s08b-card'); await c.click({ force: true }); await wait(500); }
-  await page.locator('.next-ribbon').click({ force: true });
-  await wait(2800);
+  await wait(1500);
+  await shot('s08-map-on-the-way');
+  await wait(3600);
+  const scr = await page.evaluate(() => ({ screen: window.__app.screen.constructor.name, visit: window.__app.screen.visit?.id }));
+  console.log('after Next:', JSON.stringify(scr), scr.visit === 'hs-refresh' ? 'OK: carried straight into the High Street' : 'CHECK');
   await shot('s09-hs-brief');
   await briefGo(page, wait);
   await wait(400);
@@ -63,9 +64,11 @@ export default async function ({ page, shot, wait, url }) {
   await wait(6500);
   await shot('s12-hs-postcard');
   await page.locator('.rv-next').click({ force: true });
-  await wait(2800);
-  const c2 = page.locator('.intro-card .btn'); if (await c2.count()) await c2.click({ force: true });
-  await wait(600);
+  await wait(1500);
   await shot('s13-map-green');
+  await wait(3600);
+  const scr2 = await page.evaluate(() => ({ screen: window.__app.screen.constructor.name, visit: window.__app.screen.visit?.id }));
+  console.log('after Next:', JSON.stringify(scr2), scr2.visit === 'green-tidy' ? 'OK: carried straight into the Green' : 'CHECK');
+  await shot('s14-green-brief');
   console.log(JSON.stringify(await page.evaluate(() => window.__progression.nextStep(window.__app.save, window.__app.content, 'honeycombe').label)));
 }

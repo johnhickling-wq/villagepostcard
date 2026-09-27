@@ -115,7 +115,8 @@
      550,
      800
     ]
-   ]
+   ],
+   "scale": 0.75
   },
   {
    "id": "lawn",
@@ -157,7 +158,8 @@
      550,
      940
     ]
-   ]
+   ],
+   "scale": 0.75
   }
  ],
  "edges": [
@@ -606,7 +608,7 @@
      "sprite": "props/hanging-basket",
      "x": 1175,
      "y": 440,
-     "h": 86,
+     "h": 104,
      "pivot": "top",
      "tags": [
       "flowers",
@@ -618,7 +620,7 @@
      "sprite": "props/hanging-basket",
      "x": 1500,
      "y": 420,
-     "h": 80,
+     "h": 100,
      "pivot": "top",
      "tags": [
       "flowers",

@@ -78,7 +78,7 @@
      "op": "litter",
      "count": 2,
      "zones": [
-      "street"
+      "street-near"
      ],
      "items": [
       "newspaper",
@@ -354,7 +354,7 @@
    "villager": "beekeeper",
    "title": "Clear the mill race",
    "goal": "clear the mill race",
-   "brief": "Nan Honeysett, dear. The ford's full of rubbish, the doors are peeling and the sacks are all anyhow. My bees are quite ashamed.",
+   "brief": "Nan Honeysett, dear. The ford's full of rubbish, the doors are peeling, the flour sign's hanging all anyhow and the sacks are in a heap. My bees are quite ashamed.",
    "condition": "clear",
    "subtlety": 0.15,
    "tasks": [
@@ -369,9 +369,9 @@
      "target": "stable-door"
     },
     {
-     "id": "cartwheel",
+     "id": "mill-sign",
      "op": "crooked",
-     "target": "cartwheel"
+     "target": "mill-sign"
     },
     {
      "id": "sack-a",

@@ -14,6 +14,7 @@ import { Gestures } from '../../engine/input.js';
 import { commitPlay, showReveal, leavePlay } from '../flows.js';
 import { checkpoint, leavePlay as leaveSave } from '../../core/progression.js';
 import { shapeBounds } from '../../core/geometry.js';
+import { allProps } from '../../core/mess.js';
 
 export class PlayScreen {
   constructor(app, play, mess, progress = null) {
@@ -116,11 +117,19 @@ export class PlayScreen {
     const again = this.progress?.done?.length;
     const left = this.session.left;
     const go = h('button.btn.teal', { text: again ? 'Carry on' : this.tutorial ? 'Let’s tidy up!' : 'Let’s start' });
+    // a job never met before is introduced right here, in the resident's card,
+    // rather than on a second card after it (the first visit teaches by pointing)
+    const fresh = this.tutorial ? [] : Object.keys(this.session.remainingByType()).filter((t) => !this.seen[`job:${t}`]);
+    const jobs = fresh.map((t) => {
+      const f = this.content.faults[t];
+      return h('div.job-row.brief-job', h('span.job-ico', this.jobArt(f)), h('div', h('div.label.muted', { text: 'A new job' }), h('div.display.job-name', { text: f.action }), h('div.job-text', { text: this.jobIntro(t) })));
+    });
     const card = h('div.brief.card.paper.pop-in',
       h('img.brief-portrait', { src: app.assets.spriteUrl(who.portrait, app.village, 0.45), alt: '' }),
       h('div.brief-body',
         h('div.label.muted', { text: v.kind === 'committee' ? `Committee request · ${who.short}` : v.kind === 'incident' ? `After the storm · ${who.short}` : `${who.short} · ${this.scene.name}` }),
         h('p.brief-text', { text: again ? `Welcome back! ${left} thing${left === 1 ? '' : 's'} still to do.` : v.brief }),
+        ...jobs,
         h('div.brief-foot', go),
       ),
     );
@@ -131,7 +140,11 @@ export class PlayScreen {
       app.sfx('ui.tap');
       card.classList.add('leaving');
       setTimeout(() => card.remove(), 260);
-      this.introduceJobs();
+      if (!fresh.length) return this.introduceJobs();
+      for (const t of fresh) this.seen[`job:${t}`] = true;
+      app.persist();
+      for (const t of fresh) { const c = this.chips[t]?.chip; if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); } }
+      this.start();
     };
     go.addEventListener('click', done, { once: true });
   }
@@ -148,7 +161,7 @@ export class PlayScreen {
     this.newJobs = fresh;
     const rows = fresh.map((t) => {
       const f = this.content.faults[t];
-      return h('div.job-row', h('span.job-ico', this.jobArt(f)), h('div', h('div.display.job-name', { text: f.action }), h('div.job-text', { text: f.intro })));
+      return h('div.job-row', h('span.job-ico', this.jobArt(f)), h('div', h('div.display.job-name', { text: f.action }), h('div.job-text', { text: this.jobIntro(t) })));
     });
     const go = h('button.btn.teal.small', { text: 'Got it' });
     const card = h('div.job-card.card.paper.pop-in', h('div.label.muted', { text: fresh.length > 1 ? 'New jobs' : 'A new job' }), ...rows, go);
@@ -163,6 +176,22 @@ export class PlayScreen {
       for (const t of fresh) { const c = this.chips[t]?.chip; if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); } }
       this.start();
     });
+  }
+
+  /**
+   * A new job's one-line introduction, in terms of what is actually in front
+   * of the player: the target's own line (a region's or prop's "intro"), else
+   * the job's line for that kind of thing (faults.json "introFor", by tag:
+   * glass or stone), else the job's general line.
+   */
+  jobIntro(type) {
+    const f = this.content.faults[type];
+    const fault = this.mess.faults.find((x) => x.type === type && this.session.remaining.has(x.id));
+    const target = fault && ((fault.region && (this.scene.regions || []).find((r) => r.id === fault.region))
+      || (fault.prop && allProps(this.scene).find((p) => p.id === fault.prop)));
+    if (target?.intro) return target.intro;
+    for (const tag of target?.tags || []) if (f.introFor?.[tag]) return f.introFor[tag];
+    return f.intro;
   }
 
   /** The play begins (the clock, if any, starts now). */

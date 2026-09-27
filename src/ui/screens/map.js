@@ -61,30 +61,51 @@ export class MapScreen {
     const opened = (o.receipt?.events || []).filter((e) => e.kind === 'placeOpened').map((e) => e.scene);
     for (const sid of opened) setTimeout(() => this.celebrateUnlock(sid), 450);
     if (o.next || opened.length) this.ribbon.classList.add('attention');
+    if (o.autoGo) return this.autoGo(o.autoGo);
     setTimeout(() => this.introduceFeatures(), opened.length ? 1500 : 800);
   }
 
-  /** New features arrive one per visit to the map, each with a card and a pulsing button. */
-  async introduceFeatures() {
-    const app = this.app, seen = app.save.flags.seen;
-    for (const f of introCardsDue(app.save, app.content).slice(0, 1)) {
+  /** On the way from a reveal to the next visit: show where the new place is,
+   *  then carry on into the visit. Any touch on the map stops it, so the
+   *  player can look around and choose for themselves. */
+  autoGo(visitId) {
+    const app = this.app;
+    const ms = app.reducedMotion ? 1500 : 2300;
+    const timer = h('i.ribbon-timer', { style: { animationDuration: `${ms}ms` } });
+    this.ribbon.append(timer);
+    this.ribbon.classList.add('auto-go');
+    const stop = () => { clearTimeout(this.autoTimer); this.ribbon.classList.remove('auto-go'); timer.remove(); };
+    this.el.addEventListener('pointerdown', stop, { once: true, capture: true });
+    this.autoTimer = setTimeout(() => {
       if (app.screen !== this || app.ui.querySelector('.overlay')) return;
-      const card = app.content.intro.cards[f];
-      seen[`intro:${f}`] = true;
-      app.persist();
-      const btn = this.nav.querySelector(`[data-feature="${f}"]`) || (f === 'level' ? this.top.el.querySelector('.level-badge') : null);
-      btn?.classList.add('just-new');
-      app.sfx('unlock');
-      const ok = h('button.btn.teal', { text: 'Lovely!' });
-      const m = app.modal(h('div.celebrate.card.paper.deckle.intro-card',
-        h('div.intro-ico.pop-in', icon(card.icon)),
-        h('div.label.muted', { text: f === 'update' ? 'Welcome back' : 'Something new' }),
-        h('div.display.celebrate-title', { text: card.title }),
-        h('p.hand', { text: card.text }),
-        h('div.celebrate-foot', ok),
-      ), { dismissable: false });
-      await new Promise((res) => ok.addEventListener('click', () => { app.sfx('ui.tap'); m.close(); res(); }));
-    }
+      playVisit(app, visitId);
+    }, ms);
+  }
+
+  exit() { clearTimeout(this.autoTimer); }
+
+  /** New features arrive one per visit to the map, as a small cue by their
+   *  button that the player can read or wave away; it never blocks the map. */
+  introduceFeatures() {
+    const app = this.app, seen = app.save.flags.seen;
+    const f = introCardsDue(app.save, app.content)[0];
+    if (!f || app.screen !== this || app.ui.querySelector('.overlay')) return;
+    const card = app.content.intro.cards[f];
+    seen[`intro:${f}`] = true;
+    app.persist();
+    const btn = this.nav.querySelector(`[data-feature="${f}"]`) || (f === 'level' ? this.top.el.querySelector('.level-badge') : null);
+    btn?.classList.add('just-new');
+    app.sfx('unlock');
+    const close = h('button.iconbtn.small.cue-close', { 'aria-label': 'Close' }, icon('close'));
+    const cue = h('div.feature-cue.card.paper.pop-in' + (f === 'level' ? '.left' : ''), { role: 'status' },
+      h('div.cue-ico', icon(card.icon)),
+      h('div.cue-body', h('div.label.muted', { text: 'Something new' }), h('div.display.cue-title', { text: card.title }), h('p', { text: card.text })),
+      close);
+    const hide = () => { clearTimeout(this.cueTimer); cue.classList.add('cue-out'); setTimeout(() => cue.remove(), 300); };
+    close.addEventListener('click', (e) => { e.stopPropagation(); app.sfx('ui.tap'); hide(); });
+    cue.addEventListener('click', hide);
+    this.el.append(cue);
+    this.cueTimer = setTimeout(hide, 9000);
   }
 
   centerOn(sid, smooth = false) {

@@ -570,9 +570,7 @@
    "x": 1090,
    "y": 650,
    "h": 76,
-   "tags": [
-    "tiltable"
-   ]
+   "tags": []
   },
   {
    "id": "barrel",
@@ -593,6 +591,24 @@
    "tags": [
     "flowers",
     "standing"
+   ]
+  },
+  {
+   "id": "mill-sign",
+   "sprite": "props/sign-hanging",
+   "x": 1088,
+   "y": 468,
+   "h": 100,
+   "pivot": "top",
+   "tags": [
+    "tiltable"
+   ],
+   "label": "FLOUR\n& MEAL",
+   "labelBox": [
+    0.16,
+    0.36,
+    0.84,
+    0.86
    ]
   }
  ],
@@ -766,7 +782,7 @@
      "sprite": "props/flower-tub",
      "x": 490,
      "y": 705,
-     "h": 62,
+     "h": 74,
      "tags": [
       "flowers"
      ]
@@ -779,9 +795,9 @@
     {
      "id": "bench",
      "sprite": "props/bench",
-     "x": 1550,
-     "y": 985,
-     "h": 110,
+     "x": 1640,
+     "y": 875,
+     "h": 100,
      "tags": []
     },
     {

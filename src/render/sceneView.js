@@ -829,9 +829,10 @@ export class SceneView {
     g.restore();
   }
 
-  /** A little paper seed packet on a stick: "plant me here". */
+  /** A paper seed packet on a stick: "plant me here". Big enough to read at
+   *  phone size, so an empty planter never looks like a full one. */
   drawSeedPacket(g, w, h, rim, f) {
-    const pw = Math.max(15, w * 0.2), ph = pw * 1.25;
+    const pw = Math.max(22, w * 0.3), ph = pw * 1.25;
     const x = w * 0.2 * (f.replant ? -1 : 1), top = rim - ph * 1.35;
     const bob = Math.sin(this.time * 2.4 + x) * ph * 0.04;
     g.save();

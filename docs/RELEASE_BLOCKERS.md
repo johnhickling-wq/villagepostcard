@@ -105,6 +105,9 @@ request. Possible improvements, none blocking:
   post-story requests could reuse the same data.
 - A save that cannot be read is kept aside (`postcard-perfect/save/unreadable`)
   and a new village begins; there is no in-game way to export or import a save.
+- **Developer tools off.** Set `DEV_TOOLS` to `false` in `src/dev/flags.js`
+  (the Developer button in Settings and the pause menu, `src/dev/devtools.js`)
+  and check neither appears in the release build.
 - **Save migration before release.** During development saves are not carried
   between versions (the owner's 27 September 2026 brief): a save from an
   earlier development version starts a fresh village. Before the first store

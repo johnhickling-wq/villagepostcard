@@ -66,6 +66,17 @@ bought yet.
   - Do not open a PR unless asked.
   - Keep model names out of commits, code and docs.
 
+## Developer panel (dev phase only)
+
+- Settings → Developer (also in the pause menu) plays any story visit as
+  first met, resumed half-way, one job from the reveal, or the map as you
+  arrive; Judging Day and after; any photo walk (place, postcard, weather,
+  village state) and the daily. It builds a save that really played the
+  route (`seededSave` in `src/dev/devtools.js`); the owner's own village is
+  set aside and "Back to my real village" restores it.
+- `DEV_TOOLS` in `src/dev/flags.js` must be `false` for release
+  (`docs/RELEASE_BLOCKERS.md`). `tools/qa/scenarios/dev.mjs` tests every jump.
+
 ## Setup and everyday commands
 
 ```sh

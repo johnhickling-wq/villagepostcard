@@ -1,4 +1,5 @@
 import { h, icon } from '../dom.js';
+import { DEV_TOOLS } from '../../dev/flags.js';
 
 export function openSettings(app, onChange) {
   const s = app.save.settings;
@@ -50,6 +51,10 @@ export function openSettings(app, onChange) {
       h('div.grow', h('div', { text: 'Start again' }), h('div.label.muted', { text: 'A fresh village from the first visit.' })),
       h('button.btn.ink.small', { 'data-act': 'start-again', onclick: () => resetProgress(app) }, h('span', { text: 'Start again' })),
     ),
+    DEV_TOOLS ? h('div.setting.progress-row.dev-entry',
+      h('div.grow', h('div', { text: 'Developer' }), h('div.label.muted', { text: 'Testing tools: play any visit, walk or the finale. Removed for release.' })),
+      h('button.btn.small', { 'data-act': 'developer', onclick: () => { app.sfx('ui.tap'); sheet.close(); import('../../dev/devtools.js').then((m) => m.openDevTools(app)); } }, h('span', { text: 'Open' })),
+    ) : null,
     h('div.display.sheet-sub', { text: 'Your postcards' }),
     group('frames', 'Frames'),
     group('films', 'Film'),

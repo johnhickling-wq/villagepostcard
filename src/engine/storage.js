@@ -80,6 +80,7 @@ export const storage = {
   reset(fresh) {
     this.cancel();
     try { this.backend.remove(BACKUP); } catch { /* nothing to remove */ }
+    try { this.backend.remove(`${KEY}/dev-real`); } catch { /* a developer's set-aside village (src/dev) */ }
     try { this.backend.remove(KEY); } catch { /* nothing to remove */ }
     const ok = this._write(KEY, JSON.stringify(fresh));
     this._locked = true;

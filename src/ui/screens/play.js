@@ -15,6 +15,7 @@ import { commitPlay, showReveal, leavePlay } from '../flows.js';
 import { checkpoint, leavePlay as leaveSave } from '../../core/progression.js';
 import { shapeBounds } from '../../core/geometry.js';
 import { allProps } from '../../core/mess.js';
+import { DEV_TOOLS } from '../../dev/flags.js';
 
 export class PlayScreen {
   constructor(app, play, mess, progress = null) {
@@ -651,7 +652,12 @@ export class PlayScreen {
       h('button.btn.teal', { text: 'Carry on', onclick: () => sheet.close() }),
       h('button.btn.ink.small', { text: 'Back to the map', onclick: () => { sheet.close('leave'); } }),
       h('p.label.muted.pause-keep', { text: 'Anything you’ve done here is kept for next time.' }),
-    ), { onClose: (val) => { this.paused = wasPaused; if (val === 'leave') { leaveSave(app.save); app.persist(true); leavePlay(app); } } });
+      DEV_TOOLS ? h('button.chip.dev-btn', { 'data-act': 'developer', onclick: () => sheet.close('dev') }, h('span', { text: 'Developer' })) : null,
+    ), { onClose: (val) => {
+      this.paused = wasPaused;
+      if (val === 'leave') { leaveSave(app.save); app.persist(true); leavePlay(app); }
+      if (val === 'dev') { this.paused = true; import('../../dev/devtools.js').then((m) => m.openDevTools(app, { onClose: () => { this.paused = wasPaused; } })); }
+    } });
   }
 
   // ---------------------------------------------------------- finishing ---

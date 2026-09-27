@@ -1,5 +1,7 @@
 # Postcard Perfect: restoration and commercial polish handover
 
+> **Update, 27 September 2026:** Read [the visual playtest and next polish brief](VISUAL_PLAYTEST_2026-09-27.md) for the current work. The owner permits development saves to reset and no longer requires backwards compatibility. This supersedes this document's migration and legacy-preservation requirements; reliable current-version save/resume and Start again remain required.
+
 Prepared 26 September 2026. Product: Postcard Perfect. Repository: [johnhickling-wq/villagepostcard](https://github.com/johnhickling-wq/villagepostcard), reviewed at commit [`d385548`](https://github.com/johnhickling-wq/villagepostcard/tree/d385548a543a5aa73b0e373f0503bb35b3f070bc).
 
 ## 1. The change to make

@@ -9,9 +9,15 @@ postcard of the visit goes into their journal. The first village, Honeycombe
 Village judging. Other villages are shown as "in preparation"; nothing can be
 bought yet.
 
+- **Current work (start here):** `docs/VISUAL_PLAYTEST_2026-09-27.md`, the
+  owner's brief for the next polish pass: fix Start again, fresher colour and
+  one consistent art style in every scene, closer work areas, a shop interior,
+  tasks that look like their action. Where it conflicts with anything below or
+  in older docs, the brief wins.
 - **Why the game works as it does:** `DESIGN.md`. Its numbers match the content JSON.
 - **The brief behind the current design:** `docs/RESTORATION_HANDOVER.md`
-  (September 2026). It superseded the old Village Fund economy.
+  (26 September 2026). It superseded the old Village Fund economy and has been
+  implemented (merged to `main` at `c843fca`).
 - **What stands between this build and a store release:** `docs/RELEASE_BLOCKERS.md`.
 - **Run, architecture and checks:** `README.md`.
 - **Adding a village from data alone:** `docs/ADDING_A_VILLAGE.md`. This is critical to the owner.
@@ -132,19 +138,29 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
     still 1500×1000 (3:2).
   - Never use `getBoundingClientRect`/`clientX` directly for layout or hit
     tests. Use `app.toLocal(cx, cy)`, `app.localRect(el)`, `app.width`,
-    `app.height`, `app.safe` and `app.rail`.
+    `app.height` and `app.safe`.
   - On a portrait touch device, `#app` gets `.rotated`, is turned 90° and is
     given swapped dimensions, so window maths is wrong there. Check the
     `rotated` scenario after touching layout or input.
 - **Pointer events:** `#ui` passes clicks through to the canvas. Only
-  buttons, trays, chips and cards take pointer events. `#ui > .toasts` must
-  stay `pointer-events: none`.
+  buttons, trays, chips and cards take pointer events. `#ui > *` turns pointer
+  events on for every direct child of `#ui`, so any overlay added there that
+  must not catch taps (`.toasts`, `.safe-probe`, the reduced-motion
+  `.fade-cover`) has to be listed in the `pointer-events: none` rule in
+  `layout.css`; one that wasn't froze every tap after a screen change.
 - **`h()` in `src/ui/dom.js`:** the second argument can be props or a child.
   Style objects set `--vars` via `setProperty`.
-- **Screens:** `enter()` must not await long ceremonies. The judging and
-  restore screens call a non-awaited `run()`, because otherwise the screen
-  stacks on the previous one. Toasts are cleared on every screen change.
-- **Determinism:**
+- **Screens:** `enter()` must not await long ceremonies. The reveal
+  (`RevealScreen` in `results.js`) and judging screens call a non-awaited
+  `run()`, because otherwise the screen stacks on the previous one. Toasts are
+  cleared on every screen change.
+- **Saves and determinism:**
+  - **The owner no longer requires backwards compatibility during
+    development** (27 September 2026 brief): progress may reset, and the
+    version-2 migration, legacy postcard path and their tests may be removed
+    or simplified. Current-version save, resume, once-only completion and a
+    reliable Start again are still required. The notes below describe the code
+    as it stands.
   - New postcards (render version 2) store their own faults and the
     permanent state before and after, so they never change.
   - Version-2 album postcards are stored as seeds and re-rendered by the
@@ -201,11 +217,16 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
 - **Budget:**
   - Every call is logged to `tools/art/spend.jsonl` (committed).
     `python3 tools/art/generate.py spend` shows the total.
-  - The owner has authorised spending all the credit on the account (about
-    $45 in total) on the cut-paper art rebuild. Ask before going past that.
+  - For the graphics pass in `docs/VISUAL_PLAYTEST_2026-09-27.md` the owner
+    authorises spending up to US$50 without asking per generation (use the
+    available balance if lower; never exceed the cap or assume a top-up).
+    Track cumulative cost including retries and report it. Spend before that
+    pass: $24.56.
   - The key belongs to an OpenRouter workspace with its own lifetime budget.
     A 403 "Workspace lifetime budget exceeded" means the owner must raise it
     in the workspace's settings on openrouter.ai; the key can't change it.
+- **Setup:** the art tools need Pillow (`pip install pillow`); a fresh
+  container may not have it.
 - **Scratch output:** `scratch_art/` and `art_src/cut/` are gitignored and
   are lost with the container. Anything worth keeping goes in `art_src/` or
   `assets/`. The painted plates, sheets, map and posters are kept in
@@ -224,16 +245,23 @@ node tools/qa/shots.mjs <scenario> [outdir]   # 844x390 phone screenshots into s
   4. Pass `root` as the absolute path `/home/user/villagepostcard/dist`
      (a relative root fails).
   5. Pass `files` listing every file under `dist/` except the html pages.
+  6. If the publish is refused because published files changed since you last
+     saw them, list the artifact's files (`action: "list"`, `scope: "files"`)
+     and publish again.
+- `main` is also served live at https://johnhickling-wq.github.io/villagepostcard/
+  (GitHub Pages, straight from the source; no build step).
 
 ## Not yet verified
 
 - The game hasn't been tried on a real iPhone. Audio unlock, haptics,
   safe-area insets and performance there are unconfirmed. On desktop Chromium
-  a frame takes about 0.24 ms.
+  a frame takes about 0.4 ms.
 - Sound is fully synthesised. `audio.register(name, url)` can swap in recorded
   samples, but nothing uses it yet.
 - The other villages (Porthkennack, Glenbrae, Saint-Amour) exist only as
   Travel Office posters marked "In preparation". There is no purchase flow.
-- No human has played the restoration route yet: its timings are simulated.
-  See `docs/RELEASE_BLOCKERS.md` for the playtest plan and everything else
-  still to verify.
+- No human has played the whole restoration route yet: its timings are
+  simulated. The owner's desktop-browser playtest of the first nine visits is
+  written up in `docs/VISUAL_PLAYTEST_2026-09-27.md`. See
+  `docs/RELEASE_BLOCKERS.md` for the playtest plan and everything else still
+  to verify.
